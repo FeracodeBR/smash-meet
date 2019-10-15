@@ -145,9 +145,6 @@
     "ios": "react-native run-ios",
     "test": "jest"
   },
-  "pre-commit": [
-    "lint"
-  ],
   "browser": {
     "jQuery-Impromptu": "jQuery-Impromptu/src/jquery-impromptu.js"
   }
