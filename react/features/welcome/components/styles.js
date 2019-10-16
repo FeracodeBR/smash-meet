@@ -175,7 +175,8 @@ export default {
      */
     roomContainer: {
         alignSelf: 'stretch',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: ColorPalette.screen
     },
 
     /**
@@ -248,13 +249,11 @@ export default {
      * Room input style.
      */
     textInput: {
-        backgroundColor: 'transparent',
-        borderColor: ColorPalette.white,
-        borderRadius: 4,
-        borderWidth: 1,
-        color: TEXT_COLOR,
-        fontSize: 23,
-        height: 50,
+        backgroundColor: '#4E5054',
+        borderRadius: 50,
+        color: '#DFDFDF',
+        fontSize: 16,
+        height: 40,
         padding: 4,
         textAlign: 'center'
     },
@@ -273,7 +272,35 @@ export default {
      * The style of the top-level container of {@code WelcomePage}.
      */
     welcomePage: {
-        backgroundColor: ColorPalette.blue,
+        backgroundColor: ColorPalette.white,
         overflow: 'hidden'
+    },
+
+    /**
+     * The style of the gradient button of {@code WelcomePage}.
+     */
+    gradientContainer: {
+        height: 40,
+        width: '100%',
+        borderRadius: 20
+    },
+    textIos: {
+        fontSize: 16,
+        textTransform: 'lowercase',
+        color: ColorPalette.white,
+        fontVariant: [ 'small-caps' ],
+        letterSpacing: 0.5
+    },
+    textAndroid: {
+        fontSize: 16,
+        textTransform: 'uppercase',
+        color: ColorPalette.white,
+        letterSpacing: 0.5
+    },
+    gradientButton: {
+        width: '100%',
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 };

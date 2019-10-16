@@ -24,12 +24,10 @@ export const ColorPalette = {
     buttonUnderlay: '#495258',
     darkGrey: '#555555',
     green: '#40b183',
-    lightGrey: '#AAAAAA',
     overflowMenuItemUnderlay: '#EEEEEE',
     red: '#D00000',
     transparent: 'rgba(0, 0, 0, 0)',
     warning: 'rgb(215, 121, 118)',
-    white: '#FFFFFF',
 
     /**
      * These are colors from the atlaskit to be used on mobile, when needed.
@@ -40,5 +38,27 @@ export const ColorPalette = {
     G400: '#00875A', // Slime
     N500: '#42526E', // McFanning
     R400: '#DE350B', // Red dirt
-    Y200: '#FFC400' // Pub mix
+    Y200: '#FFC400', // Pub mix
+
+    /**
+     * Smash Meet Color Palette.
+     * the respective atlaskit components.
+     */
+
+    white: '#FFFFFF',
+    lightGrey: '#BDBDBD',
+    screen: '#3A3D43',
+    primary: '#50D9C4',
+    primaryLight: '#22D4EC',
+    primaryLighter: '#27D3E8',
+    primaryDark: '#02899B',
+    primaryDarker: '#23D4EB',
+    subtitle: '#3ED9C5',
+    inputBackground: '#4E5054',
+    inputPlaceholder: '#828282',
+    inputText: '#DFDFDF',
+    sidebarLight: '#50D9C4',
+    sidebarDark: '#22D4EC',
+    headerLight: '#434850',
+    headerDark: '#292C31',
 };

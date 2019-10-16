@@ -5,25 +5,23 @@ import {
     SafeAreaView,
     TextInput,
     TouchableHighlight,
+    View,
     TouchableOpacity,
-    View
+    Platform
 } from 'react-native';
 
 import { getName } from '../../app';
 
 import { ColorSchemeRegistry } from '../../base/color-scheme';
 import { translate } from '../../base/i18n';
-import { Icon, IconMenu } from '../../base/icons';
 import { MEDIA_TYPE } from '../../base/media';
-import { Header, LoadingIndicator, Text } from '../../base/react';
+import { LoadingIndicator, Text } from '../../base/react';
 import { connect } from '../../base/redux';
 import { ColorPalette } from '../../base/styles';
 import {
     createDesiredLocalTracks,
     destroyLocalTracks
 } from '../../base/tracks';
-import { DialInSummary } from '../../invite';
-import { SettingsView } from '../../settings';
 
 import { setSideBarVisible } from '../actions';
 
@@ -31,11 +29,8 @@ import {
     AbstractWelcomePage,
     _mapStateToProps as _abstractMapStateToProps
 } from './AbstractWelcomePage';
-import LocalVideoTrackUnderlay from './LocalVideoTrackUnderlay';
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
-import VideoSwitch from './VideoSwitch';
-import WelcomePageLists from './WelcomePageLists';
-import WelcomePageSideBar from './WelcomePageSideBar';
+import LinearGradient from 'react-native-linear-gradient';
 
 /**
  * The native container rendering the welcome page.
@@ -256,47 +251,45 @@ class WelcomePage extends AbstractWelcomePage {
         const { _headerStyles, t } = this.props;
 
         return (
-            <LocalVideoTrackUnderlay style = { styles.welcomePage }>
-                <View style = { _headerStyles.page }>
-                    <Header style = { styles.header }>
-                        <TouchableOpacity onPress = { this._onShowSideBar } >
-                            <Icon
-                                src = { IconMenu }
-                                style = { _headerStyles.headerButtonIcon } />
-                        </TouchableOpacity>
-                        <VideoSwitch />
-                    </Header>
-                    <SafeAreaView style = { styles.roomContainer } >
-                        <View style = { styles.joinControls } >
-                            <TextInput
-                                accessibilityLabel = { t(roomnameAccLabel) }
-                                autoCapitalize = 'none'
-                                autoComplete = 'off'
-                                autoCorrect = { false }
-                                autoFocus = { false }
-                                onBlur = { this._onFieldBlur }
-                                onChangeText = { this._onRoomChange }
-                                onFocus = { this._onFieldFocus }
-                                onSubmitEditing = { this._onJoin }
-                                placeholder = { t('welcomepage.roomname') }
-                                placeholderTextColor = {
-                                    PLACEHOLDER_TEXT_COLOR
-                                }
-                                returnKeyType = { 'go' }
-                                style = { styles.textInput }
-                                underlineColorAndroid = 'transparent'
-                                value = { this.state.room } />
-                            {
-                                this._renderHintBox()
+            <View style = { _headerStyles }>
+                <SafeAreaView style = { styles.roomContainer } >
+                    <View style = { styles.joinControls } >
+                        <TextInput
+                            accessibilityLabel = { t(roomnameAccLabel) }
+                            autoCapitalize = 'none'
+                            autoComplete = 'off'
+                            autoCorrect = { false }
+                            autoFocus = { false }
+                            onBlur = { this._onFieldBlur }
+                            onChangeText = { this._onRoomChange }
+                            onFocus = { this._onFieldFocus }
+                            onSubmitEditing = { this._onJoin }
+                            placeholder = { t('welcomepage.roomname') }
+                            placeholderTextColor = {
+                                PLACEHOLDER_TEXT_COLOR
                             }
-                        </View>
-                    </SafeAreaView>
-                    <WelcomePageLists disabled = { this.state._fieldFocused } />
-                    <SettingsView />
-                    <DialInSummary />
-                </View>
-                <WelcomePageSideBar />
-            </LocalVideoTrackUnderlay>
+                            returnKeyType = { 'go' }
+                            style = { styles.textInput }
+                            underlineColorAndroid = 'transparent'
+                            value = { this.state.room } />
+                        {
+                            this._renderHintBox()
+                        }
+                    </View>
+                    <View style = { styles.joinControls }>
+                        <LinearGradient
+                            colors = { [ ColorPalette.primaryLighter, ColorPalette.primaryDark ] }
+                            locations = { [ 0.2207, 0.9063 ] }
+                            style = { styles.gradientContainer }>
+                            <TouchableOpacity style = { styles.gradientButton }>
+                                <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
+                                    { t('welcomepage.roomname') }
+                                </Text>
+                            </TouchableOpacity>
+                        </LinearGradient>
+                    </View>
+                </SafeAreaView>
+            </View>
         );
     }
 

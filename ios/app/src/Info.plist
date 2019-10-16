@@ -26,10 +26,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>CFBundleURLName</key>
-			<string>org.jitsi.meet</string>
+			<string>org.feracode.smashmeet</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>org.jitsi.meet</string>
+				<string>org.feracode.smashmeet</string>
 			</array>
 		</dict>
 		<dict>
@@ -72,7 +72,7 @@
 	<string>Participate in meetings with voice.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>org.jitsi.JitsiMeet.ios.conference</string>
+		<string>org.feracode.smashmeet.ios.conference</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
