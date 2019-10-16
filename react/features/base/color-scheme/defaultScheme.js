@@ -39,9 +39,9 @@ export default {
         background: 'rgb(94, 109, 122)'
     },
     'Toolbox': {
-        button: 'rgb(255, 255, 255)',
-        buttonToggled: 'rgb(38, 58, 76)',
-        buttonToggledBorder: getRGBAFormat('#a4b8d1', 0.6),
+        button: '#2DCFBA',
+        buttonToggled: '#2DCFBA',
+        buttonToggledBorder: getRGBAFormat('#2DCFBA', 0.6),
         hangup: 'rgb(225, 45, 45)'
     }
 };

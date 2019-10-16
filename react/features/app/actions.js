@@ -31,6 +31,8 @@ import logger from './logger';
 
 declare var APP: Object;
 
+const PUBLIC_TOKEN = 'auhaushsudhaushdauhsduahsduash';
+
 /**
  * Triggers an in-app navigation to a specific route. Allows navigation to be
  * abstracted between the mobile/React Native and Web/React applications.
@@ -123,6 +125,9 @@ export function appNavigate(uri: ?string) {
         }
 
         dispatch(setLocationURL(locationURL));
+        if (room) {
+            notifyRoomOwner(locationURL);
+        }
         dispatch(setConfig(config));
         dispatch(setRoom(room));
 
@@ -280,3 +285,34 @@ export function maybeRedirectToWelcomePage(options: Object = {}) {
     };
 }
 
+// eslint-disable-next-line require-jsdoc
+function notifyRoomOwner(
+        location: { protocol: string, host: string, pathname: string}
+) {
+    const room = `${location.protocol}://${location.host}${location.pathname}`;
+    const getPrefix = (host: string) => {
+        if (host.includes('meet-dev.') || host.includes('meet-development.')) {
+            return 'dev';
+        }
+        if (host.includes('meet-staging.')) {
+            return 'staging';
+        }
+
+        return 'app';
+    };
+    const prefix = getPrefix(location.host);
+
+    fetch(
+        `https://${prefix}.smashinnovations.com/module/chat/conference/notify`,
+        {
+            method: 'POST',
+            headers: new Headers({
+                Authorization: PUBLIC_TOKEN,
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({ room })
+        },
+    )
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+}

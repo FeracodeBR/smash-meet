@@ -60,5 +60,5 @@ export const ColorPalette = {
     sidebarLight: '#50D9C4',
     sidebarDark: '#22D4EC',
     headerLight: '#434850',
-    headerDark: '#292C31',
+    headerDark: '#292C31'
 };

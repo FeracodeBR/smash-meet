@@ -1,5 +1,7 @@
 // @flow
 
+import { Dimensions } from 'react-native';
+
 import { BoxModel, ColorPalette } from '../../base/styles';
 
 export const PLACEHOLDER_TEXT_COLOR = 'rgba(255, 255, 255, 0.3)';
@@ -79,13 +81,6 @@ export default {
     },
 
     /**
-     * The welcome screen header style.
-     */
-    header: {
-        justifyContent: 'space-between'
-    },
-
-    /**
      * Container for the button on the hint box.
      */
     hintButtonContainer: {
@@ -134,7 +129,7 @@ export default {
      * A view that contains the field and hint box.
      */
     joinControls: {
-        padding: BoxModel.padding
+        padding: 20
     },
 
     /**
@@ -174,8 +169,7 @@ export default {
      * Container for room name input box and 'join' button.
      */
     roomContainer: {
-        alignSelf: 'stretch',
-        flexDirection: 'column',
+        height: Dimensions.get('window').height,
         backgroundColor: ColorPalette.screen
     },
 
@@ -259,21 +253,62 @@ export default {
     },
 
     /**
-     * Application title style.
-     */
-    title: {
-        color: TEXT_COLOR,
-        fontSize: 25,
-        marginBottom: 2 * BoxModel.margin,
-        textAlign: 'center'
-    },
-
-    /**
      * The style of the top-level container of {@code WelcomePage}.
      */
     welcomePage: {
         backgroundColor: ColorPalette.white,
         overflow: 'hidden'
+    },
+
+    /**
+     * The style of the header of {@code WelcomePage}.
+     */
+
+    header: {
+        flexDirection: 'row',
+        marginTop: 80,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    content: {
+        position: 'absolute',
+        top: '45%',
+        width: '100%'
+    },
+    logo: {
+        alignSelf: 'center',
+        marginRight: 10
+    },
+    row: {
+        flexDirection: 'row'
+    },
+    column: {
+        height: 60
+    },
+    title: {
+        fontWeight: '300',
+        fontSize: 30,
+        color: ColorPalette.white
+    },
+    subtitleIos: {
+        fontSize: 16,
+        color: ColorPalette.subtitle,
+        letterSpacing: 0.5,
+        fontVariant: [ 'small-caps' ],
+        textTransform: 'lowercase'
+    },
+    subtitleAndroid: {
+        fontSize: 16,
+        color: ColorPalette.subtitle,
+        fontFamily: 'Roboto',
+        letterSpacing: 0.5,
+        textTransform: 'uppercase'
+    },
+    smallDot: {
+        fontSize: 30,
+        color: ColorPalette.subtitle,
+        letterSpacing: 0.5,
+        textTransform: 'uppercase'
     },
 
     /**

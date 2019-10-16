@@ -7,10 +7,12 @@ import {
     TouchableHighlight,
     View,
     TouchableOpacity,
-    Platform
+    Platform,
+    Image
 } from 'react-native';
 
 import { getName } from '../../app';
+import logo from '../../../../images/smash-meet-logo.png';
 
 import { ColorSchemeRegistry } from '../../base/color-scheme';
 import { translate } from '../../base/i18n';
@@ -93,21 +95,6 @@ class WelcomePage extends AbstractWelcomePage {
      * @returns {ReactElement}
      */
     render() {
-        // We want to have the welcome page support the reduced UI layout,
-        // but we ran into serious issues enabling it so we disable it
-        // until we have a proper fix in place. We leave the code here though, because
-        // this part should be fine when the bug is fixed.
-        //
-        // NOTE: when re-enabling, don't forget to uncomment the respective _mapStateToProps line too
-
-        /*
-        const { _reducedUI } = this.props;
-
-        if (_reducedUI) {
-            return this._renderReducedUI();
-        }
-        */
-
         return this._renderFullUI();
     }
 
@@ -253,40 +240,69 @@ class WelcomePage extends AbstractWelcomePage {
         return (
             <View style = { _headerStyles }>
                 <SafeAreaView style = { styles.roomContainer } >
-                    <View style = { styles.joinControls } >
-                        <TextInput
-                            accessibilityLabel = { t(roomnameAccLabel) }
-                            autoCapitalize = 'none'
-                            autoComplete = 'off'
-                            autoCorrect = { false }
-                            autoFocus = { false }
-                            onBlur = { this._onFieldBlur }
-                            onChangeText = { this._onRoomChange }
-                            onFocus = { this._onFieldFocus }
-                            onSubmitEditing = { this._onJoin }
-                            placeholder = { t('welcomepage.roomname') }
-                            placeholderTextColor = {
-                                PLACEHOLDER_TEXT_COLOR
-                            }
-                            returnKeyType = { 'go' }
-                            style = { styles.textInput }
-                            underlineColorAndroid = 'transparent'
-                            value = { this.state.room } />
-                        {
-                            this._renderHintBox()
-                        }
-                    </View>
-                    <View style = { styles.joinControls }>
-                        <LinearGradient
-                            colors = { [ ColorPalette.primaryLighter, ColorPalette.primaryDark ] }
-                            locations = { [ 0.2207, 0.9063 ] }
-                            style = { styles.gradientContainer }>
-                            <TouchableOpacity style = { styles.gradientButton }>
-                                <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
-                                    { t('welcomepage.roomname') }
+                    <View style = { styles.header }>
+                        <View style = { styles.column }>
+                            <Image
+                                source = { logo }
+                                style = { styles.logo } />
+                        </View>
+                        <View style = { styles.column }>
+                            <View style = { styles.row }>
+                                <Text style = { styles.title }>smash</Text>
+                                <Text
+                                    style = {
+                                        Platform.OS === 'ios' ? styles.smallDot : styles.smallDot
+                                    }>
+                                    .
                                 </Text>
-                            </TouchableOpacity>
-                        </LinearGradient>
+                            </View>
+                            <View style = { styles.row }>
+                                <Text
+                                    style = {
+                                        Platform.OS === 'ios'
+                                            ? styles.subtitleIos
+                                            : styles.subtitleAndroid
+                                    }>
+                                    meet
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style = { styles.content }>
+                        <View style = { styles.joinControls } >
+                            <TextInput
+                                accessibilityLabel = { t(roomnameAccLabel) }
+                                autoCapitalize = 'none'
+                                autoComplete = 'off'
+                                autoCorrect = { false }
+                                autoFocus = { false }
+                                onBlur = { this._onFieldBlur }
+                                onChangeText = { this._onRoomChange }
+                                onFocus = { this._onFieldFocus }
+                                onSubmitEditing = { this._onJoin }
+                                placeholder = { 'Enter Link or Room Name' }
+                                placeholderTextColor = {
+                                    PLACEHOLDER_TEXT_COLOR
+                                }
+                                returnKeyType = { 'go' }
+                                style = { styles.textInput }
+                                underlineColorAndroid = 'transparent'
+                                value = { this.state.room } />
+                        </View>
+                        <View style = { styles.joinControls }>
+                            <LinearGradient
+                                colors = { [ ColorPalette.primaryLighter, ColorPalette.primaryDark ] }
+                                locations = { [ 0.2207, 0.9063 ] }
+                                style = { styles.gradientContainer }>
+                                <TouchableOpacity
+                                    onPress = { this._onJoin }
+                                    style = { styles.gradientButton }>
+                                    <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
+                                        JOIN MEETING
+                                    </Text>
+                                </TouchableOpacity>
+                            </LinearGradient>
+                        </View>
                     </View>
                 </SafeAreaView>
             </View>
@@ -321,8 +337,6 @@ function _mapStateToProps(state) {
     return {
         ..._abstractMapStateToProps(state),
         _headerStyles: ColorSchemeRegistry.get(state, 'Header')
-
-        // _reducedUI: state['features/base/responsive-ui'].reducedUI
     };
 }
 

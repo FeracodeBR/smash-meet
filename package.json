@@ -86,6 +86,7 @@
     "react-textarea-autosize": "7.1.0",
     "react-transition-group": "2.4.0",
     "redux": "4.0.4",
+    "redux-logger": "3.0.6",
     "redux-thunk": "2.2.0",
     "rnnoise-wasm": "github:jitsi/rnnoise-wasm.git#db96d11f175a22ef56c7db1ba9550835b716e615",
     "styled-components": "3.4.9",
@@ -147,5 +148,9 @@
   },
   "browser": {
     "jQuery-Impromptu": "jQuery-Impromptu/src/jquery-impromptu.js"
-  }
+  },
+  "pre-commit": [
+    "validate",
+    "test"
+  ]
 }
