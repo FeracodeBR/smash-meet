@@ -31,7 +31,7 @@ import logger from './logger';
 
 declare var APP: Object;
 
-const PUBLIC_TOKEN = 'auhaushsudhaushdauhsduahsduash';
+const PUBLIC_TOKEN = 'bFdkZXJ1VGFsdUpyY2VicmxsaWFiYW9vbG9wZW9haWwkK0dpOGd2ZkJZVnFWR3ZnV1JRVmYyVmIvQUVlTHdSVW9VaTIybXZzemhSNG0rVytScWRqZHNjd0JwTzJjUlNxTGQ3TTN0MTNleWFWeDFVUGwxQ2xBREo2bGxXbkdtZzBXVWV6cnI5aytWQ2tIQ1dBY1E5VTVjTEpJY0tMVUtEYVdkTGFJWnhMbktaUVlLZTk4a3VVQktBdVNZMjBPMUt6aGxLYldySDg3Q1kwPQ==';
 
 /**
  * Triggers an in-app navigation to a specific route. Allows navigation to be
