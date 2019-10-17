@@ -57,9 +57,14 @@ class ChatMessage extends AbstractChatMessage<Props> {
                                 this.props.showDisplayName
                                     && this._renderDisplayName()
                             }
-                            <Linkify linkStyle = { styles.chatLink }>
-                                { replaceNonUnicodeEmojis(this._getMessageText()) }
-                            </Linkify>
+                            <View>
+                                <Linkify linkStyle = { styles.chatLink }>
+                                    { replaceNonUnicodeEmojis(this._getMessageText()) }
+                                </Linkify>
+                                <View style = { styles.timestampContainer }>
+                                    {this._renderTimestamp() }
+                                </View>
+                            </View>
                             {
                                 message.privateMessage
                                     && this._renderPrivateNotice()
@@ -72,7 +77,6 @@ class ChatMessage extends AbstractChatMessage<Props> {
                                 showLabel = { false }
                                 toggledStyles = { styles.replyStyles } /> }
                     </View>
-                    { this.props.showTimestamp && this._renderTimestamp() }
                 </View>
             </View>
         );

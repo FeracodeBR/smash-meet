@@ -7,7 +7,7 @@ import { ColorPalette, getRGBAFormat } from '../styles';
  */
 export default {
     'BottomSheet': {
-        background: 'rgb(255, 255, 255)',
+        background: 'rgb(41, 52, 71)',
         icon: '#1c2025',
         label: '#1c2025'
     },
@@ -40,7 +40,7 @@ export default {
     },
     'Toolbox': {
         button: '#2DCFBA',
-        buttonToggled: '#2DCFBA',
+        buttonToggled: '#DFDFDF',
         buttonToggledBorder: getRGBAFormat('#2DCFBA', 0.6),
         hangup: 'rgb(225, 45, 45)'
     }

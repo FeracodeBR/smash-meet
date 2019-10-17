@@ -45,6 +45,7 @@ export const ColorPalette = {
      * the respective atlaskit components.
      */
 
+    headerBackground: '#333439',
     white: '#FFFFFF',
     lightGrey: '#BDBDBD',
     screen: '#3A3D43',

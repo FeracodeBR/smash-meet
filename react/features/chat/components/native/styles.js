@@ -24,8 +24,9 @@ export default {
      * Background of the chat screen.
      */
     backdrop: {
-        backgroundColor: ColorPalette.white,
-        flex: 1
+        backgroundColor: '#101013',
+        flex: 1,
+        opacity: 0.7
     },
 
     chatContainer: {
@@ -36,6 +37,12 @@ export default {
 
     chatLink: {
         color: ColorPalette.blue
+    },
+
+    footer: {
+        height: 65,
+        marginTop: 8,
+        backgroundColor: ColorPalette.headerBackground
     },
 
     /**
@@ -64,16 +71,17 @@ export default {
 
     inputBar: {
         alignItems: 'center',
-        borderTopColor: 'rgb(209, 219, 231)',
-        borderTopWidth: 1,
         flexDirection: 'row',
         paddingHorizontal: BoxModel.padding
     },
 
     inputField: {
-        color: 'rgb(28, 32, 37)',
+        color: ColorPalette.white,
         flex: 1,
-        height: 48
+        height: 40,
+        padding: 12,
+        borderRadius: 50,
+        backgroundColor: '#606266'
     },
 
     messageContainer: {
@@ -152,8 +160,12 @@ export default {
     },
 
     sendButtonIcon: {
-        color: ColorPalette.darkGrey,
-        fontSize: 22
+        fontSize: 20,
+        marginHorizontal: 4
+    },
+
+    timestampContainer: {
+        alignItems: 'flex-end'
     },
 
     /**

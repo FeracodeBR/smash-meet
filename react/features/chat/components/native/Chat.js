@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { KeyboardAvoidingView, SafeAreaView, View } from 'react-native';
 
 import { translate } from '../../../base/i18n';
 
@@ -57,6 +57,7 @@ class Chat extends AbstractChat<Props> {
                         <MessageRecipient />
                         <ChatInputBar onSend = { this.props._onSendMessage } />
                     </SafeAreaView>
+                    <View style = { styles.footer } />
                 </KeyboardAvoidingView>
             </SlidingView>
         );

@@ -70,3 +70,6 @@ export { default as IconVideoQualityHD } from './HD.svg';
 export { default as IconVideoQualityLD } from './LD.svg';
 export { default as IconVideoQualitySD } from './SD.svg';
 export { default as IconVolume } from './volume.svg';
+export { default as IconSmashHexagon } from './smash-hexagon.svg';
+export { default as IconSmashHexagonDisabled } from './disabled-hexagon.svg';
+export { default as IconHangupHexagon } from './hangup-hexagon.svg';
