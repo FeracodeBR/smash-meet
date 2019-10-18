@@ -90,7 +90,6 @@ class ConferencePageSideBar extends Component<Props> {
                     <ScrollView
                         style = { styles.itemContainer }>
                         <SideBarItem
-                            icon = { IconSmashHexagon }
                             isLocalParticipant = { _localParticipant.local }
                             participant = { _localParticipant } />
                         {this._renderContent(_participants)}

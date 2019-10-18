@@ -14,6 +14,7 @@ import {
     isEveryoneModerator, PARTICIPANT_ROLE
 } from '../../../base/participants';
 import { ColorSchemeRegistry } from '../../../base/color-scheme';
+import { getInitials } from '../../../base/avatar';
 
 type Props = {
 
@@ -82,9 +83,26 @@ class SideBarItem extends Component<Props> {
      * @inheritdoc
      * @returns {ReactElement}
      */
+
+    _renderAvatar() {
+        const { name, loadableAvatarUrl } = this.props.participant;
+        const initials = getInitials(name);
+
+        if (loadableAvatarUrl) {
+            return (<Image
+                source = {{ uri: loadableAvatarUrl }}
+                style = { styles.sideBarAvatar } />);
+        }
+
+        return (
+            <Text style = { styles.sideBarItemText }>
+                { initials }
+            </Text>
+        );
+    }
     render() {
         const { participant, isLocalParticipant, _audioMuted, _videoTrack } = this.props;
-        const { name, loadableAvatarUrl } = participant;
+        const { name } = participant;
         const displayName = isLocalParticipant ? `${name} ( me )` : name;
         const videoMuted = !_videoTrack || _videoTrack.muted;
 
@@ -93,12 +111,7 @@ class SideBarItem extends Component<Props> {
                 style = { styles.sideBarItem }>
                 <View style = { styles.sideBarItemButtonContainer }>
                     <View style = { styles.sideBarAvatarContainer }>
-                        <Icon
-                            src = { this.props.icon }
-                            style = { styles.sideBarItemIcon } />
-                        <Image
-                            source = {{ uri: loadableAvatarUrl }}
-                            style = { styles.sideBarAvatar } />
+                        { this._renderAvatar()}
                     </View>
                     <View style = { styles.sideBarDescriptionContainer }>
                         <Text style = { styles.sideBarItemText }>

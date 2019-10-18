@@ -181,15 +181,17 @@ export default {
     },
 
     sideBarAvatarContainer: {
-        position: 'relative',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRadius: 15,
+        height: 30,
+        width: 30,
+        backgroundColor: ColorPalette.darkGrey
     },
 
     sideBarAvatar: {
-        position: 'absolute',
-        height: 28,
-        width: 28
+        height: 30,
+        width: 30
     },
 
     /**

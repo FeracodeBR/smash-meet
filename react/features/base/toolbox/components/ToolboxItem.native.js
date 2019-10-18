@@ -7,7 +7,7 @@ import { Icon } from '../../icons';
 
 import AbstractToolboxItem from './AbstractToolboxItem';
 import type { Props } from './AbstractToolboxItem';
-import {ColorPalette} from "../../styles/components/styles";
+import { ColorPalette } from '../../styles/components/styles';
 
 const hexagonIconStyles = StyleSheet.create({
     container: {
