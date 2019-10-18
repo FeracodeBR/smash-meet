@@ -73,3 +73,6 @@ export { default as IconVolume } from './volume.svg';
 export { default as IconSmashHexagon } from './smash-hexagon.svg';
 export { default as IconSmashHexagonDisabled } from './disabled-hexagon.svg';
 export { default as IconHangupHexagon } from './hangup-hexagon.svg';
+export { default as IconSmashCamera } from './smash-camera.svg';
+export { default as IconSmashParticipants } from './participants.svg';
+export { default as IconSmashCircularContainer } from './smash-circular-container.svg';

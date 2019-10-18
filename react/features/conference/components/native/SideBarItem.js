@@ -3,8 +3,8 @@
 import React, { Component } from 'react';
 import { Linking, Text, TouchableOpacity, View } from 'react-native';
 
-import { translate } from '../../base/i18n';
-import { Icon } from '../../base/icons';
+import { translate } from '../../../base/i18n';
+import { Icon } from '../../../base/icons';
 
 import styles from './styles';
 

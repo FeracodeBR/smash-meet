@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react';
-import { NativeModules, SafeAreaView, StatusBar, View } from 'react-native';
+import { NativeModules, SafeAreaView, StatusBar, View, Keyboard } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import { appNavigate } from '../../../app';
+import { setSideBarVisible } from '../../actions';
 import { PIP_ENABLED, getFeatureFlag } from '../../../base/flags';
 import { Container, LoadingIndicator, TintedView } from '../../../base/react';
 import { connect } from '../../../base/redux';
@@ -28,6 +29,7 @@ import { BackButtonRegistry } from '../../../mobile/back-button';
 import { AddPeopleDialog, CalleeInfoContainer } from '../../../invite';
 import { Captions } from '../../../subtitles';
 import { isToolboxVisible, setToolboxVisible, Toolbox } from '../../../toolbox';
+import ParticipantsListButton from '../../../toolbox/components/native/ParticipantsListButton';
 
 import {
     AbstractConference,
@@ -35,9 +37,12 @@ import {
 } from '../AbstractConference';
 import Labels from './Labels';
 import NavigationBar from './NavigationBar';
+import ConferencePageSideBar from './ConferencePageSideBar';
 import styles, { NAVBAR_GRADIENT_COLORS } from './styles';
 
 import type { AbstractProps } from '../AbstractConference';
+import { ColorSchemeRegistry } from '../../../base/color-scheme';
+import AudioMuteButton from '../../../toolbox/components/AudioMuteButton';
 
 /**
  * The type of the React {@code Component} props of {@link Conference}.
@@ -129,6 +134,7 @@ class Conference extends AbstractConference<Props, *> {
         this._onClick = this._onClick.bind(this);
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._setToolboxVisible = this._setToolboxVisible.bind(this);
+        this._onShowSideBar = this._onShowSideBar.bind(this);
     }
 
     /**
@@ -184,6 +190,7 @@ class Conference extends AbstractConference<Props, *> {
      */
     _onClick() {
         this._setToolboxVisible(!this.props._toolboxVisible);
+        this.props.dispatch(setSideBarVisible(false));
     }
 
     _onHardwareBackPress: () => boolean;
@@ -210,6 +217,11 @@ class Conference extends AbstractConference<Props, *> {
         });
 
         return true;
+    }
+
+    _onShowSideBar() {
+        Keyboard.dismiss();
+        this.props.dispatch(setSideBarVisible(true));
     }
 
     /**
@@ -240,8 +252,10 @@ class Conference extends AbstractConference<Props, *> {
             _largeVideoParticipantId,
             _reducedUI,
             _shouldDisplayTileView,
-            _toolboxVisible
+            _toolboxVisible,
+            _styles
         } = this.props;
+        const { buttonStyles, toggledButtonStyles } = _styles;
         const showGradient = _toolboxVisible;
         const applyGradientStretching = _filmstripVisible && isNarrowAspectRatio(this) && !_shouldDisplayTileView;
 
@@ -308,6 +322,7 @@ class Conference extends AbstractConference<Props, *> {
                     {/*
                       * The Toolbox is in a stacking layer below the Filmstrip.
                       */}
+
                     <Toolbox />
 
                     {/*
@@ -326,10 +341,15 @@ class Conference extends AbstractConference<Props, *> {
                     pointerEvents = 'box-none'
                     style = { styles.navBarSafeView }>
                     <NavigationBar />
+                    <ParticipantsListButton
+                        styles = { buttonStyles }
+                        toggledStyles = { toggledButtonStyles } />
                     { this._renderNotificationsContainer() }
                 </SafeAreaView>
 
                 <TestConnectionInfo />
+
+                <ConferencePageSideBar />
 
                 { this._renderConferenceNotification() }
             </>
@@ -435,6 +455,7 @@ function _mapStateToProps(state) {
 
     return {
         ...abstractMapStateToProps(state),
+        _styles: ColorSchemeRegistry.get(state, 'Toolbox'),
 
         /**
          * Wherther the calendar feature is enabled or not.

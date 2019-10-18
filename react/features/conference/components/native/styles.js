@@ -1,8 +1,12 @@
+import { Dimensions } from 'react-native';
+
 import { BoxModel, ColorPalette, fixAndroidViewClipping } from '../../../base/styles';
 
 import { FILMSTRIP_SIZE } from '../../../filmstrip';
 
 export const NAVBAR_GRADIENT_COLORS = [ '#000000FF', '#00000000' ];
+
+const SIDEBAR_HEADER_HEIGHT = 150;
 
 // From brand guideline
 const BOTTOM_GRADIENT_HEIGHT = 290;
@@ -138,5 +142,62 @@ export default {
         // On iPhone X there is the notch. In the two cases BoxModel.margin is
         // not enough.
         top: BoxModel.margin * 3
-    }
+    },
+
+    sideBar: {
+        width: 250,
+        height: Dimensions.get('window').height
+    },
+
+    /**
+     * The body of the side bar where the items are.
+     */
+    sideBarBody: {
+        backgroundColor: ColorPalette.white,
+        flex: 1
+    },
+
+    /**
+     * The style of the side bar header.
+     */
+    sideBarHeader: {
+        alignItems: 'center',
+        flexDirection: 'column',
+        height: SIDEBAR_HEADER_HEIGHT,
+        justifyContent: 'center',
+        padding: BoxModel.padding
+    },
+
+    /**
+     * Style of the menu items in the side bar.
+     */
+    sideBarItem: {
+        padding: 13
+    },
+
+    /**
+     * The View inside the side bar buttons (icon + text).
+     */
+    sideBarItemButtonContainer: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+
+    /**
+     * The icon in the side bar item touchables.
+     */
+    sideBarItemIcon: {
+        color: ColorPalette.blueHighlight,
+        fontSize: 20,
+        marginRight: 15
+    },
+
+    /**
+     * The label of the side bar item touchables.
+     */
+    sideBarItemText: {
+        color: ColorPalette.black,
+        fontWeight: 'bold'
+    },
 };

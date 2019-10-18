@@ -1,24 +1,22 @@
 // @flow
 
 import React, { Component } from 'react';
-import { SafeAreaView, ScrollView, Text } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
-import { Avatar } from '../../base/avatar';
-import { IconInfo, IconSettings } from '../../base/icons';
+import { IconInfo, IconSettings } from '../../../base/icons';
 import {
     getLocalParticipant,
     getParticipantDisplayName
-} from '../../base/participants';
+} from '../../../base/participants';
 import {
-    Header,
     SlidingView
-} from '../../base/react';
-import { connect } from '../../base/redux';
-import { setSettingsViewVisible } from '../../settings';
+} from '../../../base/react';
+import { connect } from '../../../base/redux';
+import { setSettingsViewVisible } from '../../../settings';
 
-import { setSideBarVisible } from '../actions';
+import { setSideBarVisible } from '../../actions';
 import SideBarItem from './SideBarItem';
-import styles, { SIDEBAR_AVATAR_SIZE } from './styles';
+import styles from './styles';
 
 /**
  * The URL at which the privacy policy is available to the user.
@@ -61,7 +59,7 @@ type Props = {
 /**
  * A component rendering a welcome page sidebar.
  */
-class WelcomePageSideBar extends Component<Props> {
+class ConferencePageSideBar extends Component<Props> {
     /**
      * Constructs a new SideBar instance.
      *
@@ -85,17 +83,9 @@ class WelcomePageSideBar extends Component<Props> {
         return (
             <SlidingView
                 onHide = { this._onHideSideBar }
-                position = 'left'
+                position = 'right'
                 show = { this.props._visible }
                 style = { styles.sideBar } >
-                <Header style = { styles.sideBarHeader }>
-                    <Avatar
-                        participantId = { this.props._localParticipantId }
-                        size = { SIDEBAR_AVATAR_SIZE } />
-                    <Text style = { styles.displayName }>
-                        { this.props._displayName }
-                    </Text>
-                </Header>
                 <SafeAreaView style = { styles.sideBarBody }>
                     <ScrollView
                         style = { styles.itemContainer }>
@@ -164,8 +154,8 @@ function _mapStateToProps(state: Object) {
     return {
         _displayName,
         _localParticipantId,
-        _visible: state['features/welcome'].sideBarVisible
+        _visible: state['features/conference'].sideBarVisible
     };
 }
 
-export default connect(_mapStateToProps)(WelcomePageSideBar);
+export default connect(_mapStateToProps)(ConferencePageSideBar);
