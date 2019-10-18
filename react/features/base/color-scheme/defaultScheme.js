@@ -20,7 +20,7 @@ export default {
         text: '#1c2025'
     },
     'Header': {
-        background: ColorPalette.blue,
+        background: ColorPalette.screenDarker,
         icon: ColorPalette.white,
         statusBar: ColorPalette.blueHighlight,
         statusBarContent: ColorPalette.white,

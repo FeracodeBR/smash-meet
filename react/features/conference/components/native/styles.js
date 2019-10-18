@@ -153,7 +153,7 @@ export default {
      * The body of the side bar where the items are.
      */
     sideBarBody: {
-        backgroundColor: ColorPalette.white,
+        backgroundColor: ColorPalette.screenDarker,
         flex: 1
     },
 
@@ -172,7 +172,24 @@ export default {
      * Style of the menu items in the side bar.
      */
     sideBarItem: {
-        padding: 13
+        padding: 12
+    },
+
+    sideBarDescriptionContainer: {
+        justifyContent: 'center',
+        marginLeft: 8
+    },
+
+    sideBarAvatarContainer: {
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
+    sideBarAvatar: {
+        position: 'absolute',
+        height: 28,
+        width: 28
     },
 
     /**
@@ -188,8 +205,13 @@ export default {
      * The icon in the side bar item touchables.
      */
     sideBarItemIcon: {
-        color: ColorPalette.blueHighlight,
-        fontSize: 20,
+        color: ColorPalette.white,
+        fontSize: 38
+    },
+
+    sideBarItemIconSmall: {
+        color: ColorPalette.white,
+        fontSize: 18,
         marginRight: 15
     },
 
@@ -197,7 +219,8 @@ export default {
      * The label of the side bar item touchables.
      */
     sideBarItemText: {
-        color: ColorPalette.black,
-        fontWeight: 'bold'
-    },
+        color: '#DFDFDF',
+        fontSize: 10,
+        lineHeight: 28
+    }
 };

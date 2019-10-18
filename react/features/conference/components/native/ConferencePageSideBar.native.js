@@ -3,35 +3,18 @@
 import React, { Component } from 'react';
 import { SafeAreaView, ScrollView } from 'react-native';
 
-import { IconInfo, IconSettings } from '../../../base/icons';
+import { IconSmashHexagon } from '../../../base/icons';
 import {
-    getLocalParticipant,
-    getParticipantDisplayName
+    getLocalParticipant
 } from '../../../base/participants';
 import {
     SlidingView
 } from '../../../base/react';
 import { connect } from '../../../base/redux';
-import { setSettingsViewVisible } from '../../../settings';
 
 import { setSideBarVisible } from '../../actions';
 import SideBarItem from './SideBarItem';
 import styles from './styles';
-
-/**
- * The URL at which the privacy policy is available to the user.
- */
-const PRIVACY_URL = 'https://jitsi.org/meet/privacy';
-
-/**
- * The URL at which the user may send feedback.
- */
-const SEND_FEEDBACK_URL = 'mailto:support@jitsi.org';
-
-/**
- * The URL at which the terms (of service/use) are available to the user.
- */
-const TERMS_URL = 'https://jitsi.org/meet/terms';
 
 type Props = {
 
@@ -41,14 +24,18 @@ type Props = {
     dispatch: Function,
 
     /**
-     * Display name of the local participant.
+     * The participants in the conference.
+     *
+     * @private
      */
-    _displayName: ?string,
+    _participants: Array<any>,
 
     /**
-     * ID of the local participant.
+     * The participants in the conference.
+     *
+     * @private
      */
-    _localParticipantId: ?string,
+    _localParticipant: Object,
 
     /**
      * Sets the side bar visible or hidden.
@@ -73,6 +60,17 @@ class ConferencePageSideBar extends Component<Props> {
         this._onOpenSettings = this._onOpenSettings.bind(this);
     }
 
+    _renderContent(participants: Object) {
+        return participants.map(participant => (
+            <SideBarItem
+                icon = { IconSmashHexagon }
+                key = { participant.id }
+                label = 'settings.title'
+                onPress = { this._onOpenSettings }
+                participant = { participant } />
+        ));
+    }
+
     /**
      * Implements React's {@link Component#render()}, renders the sidebar.
      *
@@ -80,31 +78,22 @@ class ConferencePageSideBar extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
+        const { _localParticipant, _participants } = this.props;
+
         return (
             <SlidingView
                 onHide = { this._onHideSideBar }
-                position = 'right'
+                position = 'left'
                 show = { this.props._visible }
                 style = { styles.sideBar } >
                 <SafeAreaView style = { styles.sideBarBody }>
                     <ScrollView
                         style = { styles.itemContainer }>
                         <SideBarItem
-                            icon = { IconSettings }
-                            label = 'settings.title'
-                            onPress = { this._onOpenSettings } />
-                        <SideBarItem
-                            icon = { IconInfo }
-                            label = 'welcomepage.terms'
-                            url = { TERMS_URL } />
-                        <SideBarItem
-                            icon = { IconInfo }
-                            label = 'welcomepage.privacy'
-                            url = { PRIVACY_URL } />
-                        <SideBarItem
-                            icon = { IconInfo }
-                            label = 'welcomepage.sendFeedback'
-                            url = { SEND_FEEDBACK_URL } />
+                            icon = { IconSmashHexagon }
+                            isLocalParticipant = { _localParticipant.local }
+                            participant = { _localParticipant } />
+                        {this._renderContent(_participants)}
                     </ScrollView>
                 </SafeAreaView>
             </SlidingView>
@@ -135,7 +124,6 @@ class ConferencePageSideBar extends Component<Props> {
         const { dispatch } = this.props;
 
         dispatch(setSideBarVisible(false));
-        dispatch(setSettingsViewVisible(true));
     }
 }
 
@@ -148,12 +136,11 @@ class ConferencePageSideBar extends Component<Props> {
  */
 function _mapStateToProps(state: Object) {
     const _localParticipant = getLocalParticipant(state);
-    const _localParticipantId = _localParticipant?.id;
-    const _displayName = _localParticipant && getParticipantDisplayName(state, _localParticipantId);
+    const participants = state['features/base/participants'];
 
     return {
-        _displayName,
-        _localParticipantId,
+        _localParticipant,
+        _participants: participants.filter(p => !p.local),
         _visible: state['features/conference'].sideBarVisible
     };
 }

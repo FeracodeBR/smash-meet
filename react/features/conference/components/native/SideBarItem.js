@@ -1,19 +1,53 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Text, View, Image } from 'react-native';
 
-import { translate } from '../../../base/i18n';
-import { Icon } from '../../../base/icons';
+import { Icon, IconCameraDisabled, IconMicDisabled } from '../../../base/icons';
 
 import styles from './styles';
+import { connect } from '../../../base/redux';
+import { getTrackByMediaTypeAndParticipant } from '../../../base/tracks';
+import { MEDIA_TYPE } from '../../../base/media';
+import {
+    getParticipantCount,
+    isEveryoneModerator, PARTICIPANT_ROLE
+} from '../../../base/participants';
+import { ColorSchemeRegistry } from '../../../base/color-scheme';
 
 type Props = {
+
+
+    /**
+     * Whether local audio (microphone) is muted or not.
+     */
+    _audioMuted: boolean,
+
+    /**
+     * Whether to show the dominant speaker indicator or not.
+     */
+    _renderDominantSpeakerIndicator: boolean,
+
+    /**
+     * Whether to show the moderator indicator or not.
+     */
+    _renderModeratorIndicator: boolean,
+
+    /**
+     * The Redux representation of the participant's video track.
+     */
+    _videoTrack: Object,
 
     /**
      * The icon of the item.
      */
     icon: Object,
+
+
+    isLocalParticipant: boolean,
+
+
+    participant: Object,
 
     /**
      * The i18n label of the item.
@@ -43,59 +77,69 @@ type Props = {
 class SideBarItem extends Component<Props> {
 
     /**
-     * Initializes a new {@code SideBarItem} instance.
-     *
-     * @inheritdoc
-     */
-    constructor(props: Props) {
-        super(props);
-
-        // Bind event handlers so they are only bound once per instance.
-        this._onOpenURL = this._onOpenURL.bind(this);
-    }
-
-    /**
      * Implements React's {@link Component#render()}, renders the sidebar item.
      *
      * @inheritdoc
      * @returns {ReactElement}
      */
     render() {
-        const { label, onPress, t } = this.props;
-        const onPressCalculated
-            = typeof onPress === 'function' ? onPress : this._onOpenURL;
+        const { participant, isLocalParticipant, _audioMuted, _videoTrack } = this.props;
+        const { name, loadableAvatarUrl } = participant;
+        const displayName = isLocalParticipant ? `${name} ( me )` : name;
+        const videoMuted = !_videoTrack || _videoTrack.muted;
 
         return (
-            <TouchableOpacity
-                onPress = { onPressCalculated }
+            <View
                 style = { styles.sideBarItem }>
                 <View style = { styles.sideBarItemButtonContainer }>
-                    <Icon
-                        src = { this.props.icon }
-                        style = { styles.sideBarItemIcon } />
-                    <Text style = { styles.sideBarItemText }>
-                        { t(label) }
-                    </Text>
+                    <View style = { styles.sideBarAvatarContainer }>
+                        <Icon
+                            src = { this.props.icon }
+                            style = { styles.sideBarItemIcon } />
+                        <Image
+                            source = {{ uri: loadableAvatarUrl }}
+                            style = { styles.sideBarAvatar } />
+                    </View>
+                    <View style = { styles.sideBarDescriptionContainer }>
+                        <Text style = { styles.sideBarItemText }>
+                            { displayName }
+                        </Text>
+                        <View style = { styles.sideBarItemButtonContainer }>
+                            { _audioMuted && <Icon
+                                src = { IconMicDisabled }
+                                style = { styles.sideBarItemIconSmall } />}
+                            {videoMuted && <Icon
+                                src = { IconCameraDisabled }
+                                style = { styles.sideBarItemIconSmall } />}
+                        </View>
+                    </View>
                 </View>
-            </TouchableOpacity>
+            </View>
         );
     }
 
-    _onOpenURL: () => void;
-
-    /**
-     * Opens the URL if one is provided.
-     *
-     * @private
-     * @returns {void}
-     */
-    _onOpenURL() {
-        const { url } = this.props;
-
-        if (typeof url === 'string') {
-            Linking.openURL(url);
-        }
-    }
 }
 
-export default translate(SideBarItem);
+function _mapStateToProps(state, ownProps) {
+    const tracks = state['features/base/tracks'];
+    const { participant } = ownProps;
+    const id = participant.id;
+    const audioTrack
+        = getTrackByMediaTypeAndParticipant(tracks, MEDIA_TYPE.AUDIO, id);
+    const videoTrack
+        = getTrackByMediaTypeAndParticipant(tracks, MEDIA_TYPE.VIDEO, id);
+    const participantCount = getParticipantCount(state);
+    const renderDominantSpeakerIndicator = participant.dominantSpeaker && participantCount > 2;
+    const _isEveryoneModerator = isEveryoneModerator(state);
+    const renderModeratorIndicator = !_isEveryoneModerator && participant.role === PARTICIPANT_ROLE.MODERATOR;
+
+    return {
+        _audioMuted: audioTrack?.muted ?? true,
+        _renderDominantSpeakerIndicator: renderDominantSpeakerIndicator,
+        _renderModeratorIndicator: renderModeratorIndicator,
+        _styles: ColorSchemeRegistry.get(state, 'Thumbnail'),
+        _videoTrack: videoTrack
+    };
+}
+
+export default connect(_mapStateToProps)(SideBarItem);

@@ -20,7 +20,8 @@ const hexagonIconStyles = StyleSheet.create({
     },
     icon: {
         position: 'absolute',
-        fontSize: 28
+        fontSize: 28,
+        color: ColorPalette.black
     }
 });
 

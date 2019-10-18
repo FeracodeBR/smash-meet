@@ -21,16 +21,8 @@ export default class AbstractParticipantsListButton<P: Props, S: *>
     toggledIcon = IconSmashCamera;
     toggledIconContainerIcon = IconSmashHexagonDisabled;
 
-    /**
-     * Handles clicking / pressing the button, and toggles the audio mute state
-     * accordingly.
-     *
-     * @override
-     * @protected
-     * @returns {void}
-     */
     _handleClick() {
-        console.log('clikei');
+        this._setIsParticipantsShown(!this._isParticipantsShown());
     }
 
     /**

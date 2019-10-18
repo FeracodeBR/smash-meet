@@ -49,6 +49,7 @@ export const ColorPalette = {
     white: '#FFFFFF',
     lightGrey: '#BDBDBD',
     screen: '#3A3D43',
+    screenDarker: '#333439',
     primary: '#50D9C4',
     primaryLight: '#22D4EC',
     primaryLighter: '#27D3E8',
