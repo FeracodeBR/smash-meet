@@ -10,6 +10,9 @@ import { PictureInPictureButton } from '../../../mobile/picture-in-picture';
 import { isToolboxVisible } from '../../../toolbox';
 
 import styles, { NAVBAR_GRADIENT_COLORS } from './styles';
+import { ColorSchemeRegistry } from '../../../base/color-scheme';
+import ParticipantsListButton
+    from '../../../toolbox/components/native/ParticipantsListButton';
 
 type Props = {
 
@@ -21,7 +24,9 @@ type Props = {
     /**
      * True if the navigation bar should be visible.
      */
-    _visible: boolean
+    _visible: boolean,
+
+    _styles: Object
 };
 
 /**
@@ -38,6 +43,8 @@ class NavigationBar extends Component<Props> {
         if (!this.props._visible) {
             return null;
         }
+
+        const { _styles } = this.props;
 
         return [
             <LinearGradient
@@ -58,11 +65,19 @@ class NavigationBar extends Component<Props> {
                 <View
                     pointerEvents = 'box-none'
                     style = { styles.roomNameWrapper }>
-                    <Text
-                        numberOfLines = { 1 }
-                        style = { styles.roomName }>
-                        { this.props._meetingName }
-                    </Text>
+                    <View style = { styles.roomNameAction } />
+                    <View style = { styles.roomNameTitle } >
+                        <Text
+                            numberOfLines = { 1 }
+                            style = { styles.roomName }>
+                            { this.props._meetingName }
+                        </Text>
+                    </View>
+                    <View style = { styles.roomNameAction } >
+                        <ParticipantsListButton
+                            styles = { _styles.buttonStyles }
+                            toggledStyles = { _styles.toggledButtonStyles } />
+                    </View>
                 </View>
             </View>
         ];
@@ -82,7 +97,8 @@ class NavigationBar extends Component<Props> {
 function _mapStateToProps(state) {
     return {
         _meetingName: getConferenceName(state),
-        _visible: isToolboxVisible(state)
+        _visible: isToolboxVisible(state),
+        _styles: ColorSchemeRegistry.get(state, 'Toolbox')
     };
 }
 

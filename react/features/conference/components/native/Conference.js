@@ -29,7 +29,6 @@ import { BackButtonRegistry } from '../../../mobile/back-button';
 import { AddPeopleDialog, CalleeInfoContainer } from '../../../invite';
 import { Captions } from '../../../subtitles';
 import { isToolboxVisible, setToolboxVisible, Toolbox } from '../../../toolbox';
-import ParticipantsListButton from '../../../toolbox/components/native/ParticipantsListButton';
 
 import {
     AbstractConference,
@@ -42,7 +41,6 @@ import styles, { NAVBAR_GRADIENT_COLORS } from './styles';
 
 import type { AbstractProps } from '../AbstractConference';
 import { ColorSchemeRegistry } from '../../../base/color-scheme';
-import AudioMuteButton from '../../../toolbox/components/AudioMuteButton';
 
 /**
  * The type of the React {@code Component} props of {@link Conference}.
@@ -253,9 +251,7 @@ class Conference extends AbstractConference<Props, *> {
             _reducedUI,
             _shouldDisplayTileView,
             _toolboxVisible,
-            _styles
         } = this.props;
-        const { buttonStyles, toggledButtonStyles } = _styles;
         const showGradient = _toolboxVisible;
         const applyGradientStretching = _filmstripVisible && isNarrowAspectRatio(this) && !_shouldDisplayTileView;
 
@@ -341,9 +337,6 @@ class Conference extends AbstractConference<Props, *> {
                     pointerEvents = 'box-none'
                     style = { styles.navBarSafeView }>
                     <NavigationBar />
-                    <ParticipantsListButton
-                        styles = { buttonStyles }
-                        toggledStyles = { toggledButtonStyles } />
                     { this._renderNotificationsContainer() }
                 </SafeAreaView>
 

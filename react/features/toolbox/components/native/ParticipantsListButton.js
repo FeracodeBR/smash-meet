@@ -10,7 +10,8 @@ import {
     createShortcutEvent,
     sendAnalytics
 } from '../../../analytics';
-import { setSideBarVisible } from '../../../conference/actions.native';
+import { setSideBarVisible } from '../../../conference';
+import { toggleToolboxVisible } from '../../';
 
 declare var APP: Object;
 
@@ -121,6 +122,7 @@ class ParticipantsListButton extends AbstractParticipantsListButton<Props, *> {
      */
     _setIsParticipantsShown(participantsIsShow: boolean) {
         this.props.dispatch(setSideBarVisible(participantsIsShow, /* ensureTrack */ true));
+        this.props.dispatch(toggleToolboxVisible());
     }
 
     /**

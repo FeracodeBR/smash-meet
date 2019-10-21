@@ -6,8 +6,6 @@ import { FILMSTRIP_SIZE } from '../../../filmstrip';
 
 export const NAVBAR_GRADIENT_COLORS = [ '#000000FF', '#00000000' ];
 
-const SIDEBAR_HEADER_HEIGHT = 150;
-
 // From brand guideline
 const BOTTOM_GRADIENT_HEIGHT = 290;
 const DEFAULT_GRADIENT_SIZE = 140;
@@ -112,16 +110,23 @@ export default {
     roomName: {
         color: ColorPalette.white,
         fontSize: 17,
-        fontWeight: '400'
+        fontWeight: '400',
+        textAlign: 'center'
     },
 
     roomNameWrapper: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         left: 0,
-        paddingHorizontal: 48,
         position: 'absolute',
         right: 0
+    },
+    roomNameTitle: {
+        flex: 6
+    },
+    roomNameAction: {
+        flex: 2
     },
 
     /**
@@ -161,11 +166,24 @@ export default {
      * The style of the side bar header.
      */
     sideBarHeader: {
-        alignItems: 'center',
-        flexDirection: 'column',
-        height: SIDEBAR_HEADER_HEIGHT,
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         padding: BoxModel.padding
+    },
+    sideBarHeaderTitle: {
+        fontSize: 18,
+        color: ColorPalette.white,
+        textAlign: 'center'
+    },
+    sideBarHeaderIcon: {
+        fontSize: 22,
+        color: ColorPalette.white
+    },
+    sideBarHeaderAction: {
+        flex: 2
+    },
+    sideBarHeaderText: {
+        flex: 6
     },
 
     /**
@@ -191,7 +209,8 @@ export default {
 
     sideBarAvatar: {
         height: 30,
-        width: 30
+        width: 30,
+        borderRadius: 15
     },
 
     /**

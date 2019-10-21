@@ -1,14 +1,15 @@
 // @flow
 
 import React, { Component } from 'react';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
-import { IconSmashHexagon } from '../../../base/icons';
+import { IconSmashHexagon, IconArrowBack, Icon } from '../../../base/icons';
 import {
     getLocalParticipant
 } from '../../../base/participants';
 import {
-    SlidingView
+    SlidingView,
+    Header
 } from '../../../base/react';
 import { connect } from '../../../base/redux';
 
@@ -86,6 +87,19 @@ class ConferencePageSideBar extends Component<Props> {
                 position = 'left'
                 show = { this.props._visible }
                 style = { styles.sideBar } >
+                <Header style = { styles.sideBarHeader }>
+                    <View style = { styles.sideBarHeaderAction }>
+                        <TouchableOpacity onPress = { this._onHideSideBar }>
+                            <Icon
+                                src = { IconArrowBack }
+                                style = { styles.sideBarHeaderIcon } />
+                        </TouchableOpacity>
+                    </View>
+                    <View style = { styles.sideBarHeaderText }>
+                        <Text style = { styles.sideBarHeaderTitle } >Participants</Text>
+                    </View>
+                    <View style = { styles.sideBarHeaderAction } />
+                </Header>
                 <SafeAreaView style = { styles.sideBarBody }>
                     <ScrollView
                         style = { styles.itemContainer }>
