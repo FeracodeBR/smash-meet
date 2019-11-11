@@ -125,9 +125,6 @@ export function appNavigate(uri: ?string) {
         }
 
         dispatch(setLocationURL(locationURL));
-        if (room) {
-            notifyRoomOwner(locationURL);
-        }
         dispatch(setConfig(config));
         dispatch(setRoom(room));
 

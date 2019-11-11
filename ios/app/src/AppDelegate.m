@@ -44,7 +44,7 @@
     jitsiMeet.universalLinkDomains = @[@"meet.smashinnovations.com", @"meet-staging.smashinnovations.com", @"meet-dev.smashinnovations.com"];
 
     jitsiMeet.defaultConferenceOptions = [JitsiMeetConferenceOptions fromBuilder:^(JitsiMeetConferenceOptionsBuilder *builder) {
-        builder.serverURL = [NSURL URLWithString:@"https://meet-staging.smashinnovations.com"];
+        builder.serverURL = [NSURL URLWithString:@"https://meet-dev.smashinnovations.com"];
         builder.welcomePageEnabled = YES;
 
         // Apple rejected our app because they claim requiring a
