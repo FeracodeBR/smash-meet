@@ -28,6 +28,7 @@ import {
     getName
 } from './functions';
 import logger from './logger';
+import { loadEnv } from '../base/lib-jitsi-meet/functions.native';
 
 declare var APP: Object;
 
@@ -100,9 +101,8 @@ export function appNavigate(uri: ?string) {
 
         if (!config) {
             try {
-                window.localEnv = await loadConfig(envUrl, 'localEnv');
-                config = await loadConfig(url, 'config');
-                window.localEnv = undefined
+                const localEnv = await loadEnv(envUrl);
+                config = await loadConfig(url, localEnv);
                 dispatch(storeConfig(baseURL, config));
             } catch (error) {
                 config = restoreConfig(baseURL);
