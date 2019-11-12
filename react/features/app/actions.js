@@ -87,7 +87,7 @@ export function appNavigate(uri: ?string) {
 
         const baseURL = `${protocol}//${host}${contextRoot || '/'}`;
         let url = `${baseURL}config.js`;
-        let envUrl = `${baseURL}env.js`;
+        const envUrl = `${baseURL}env.js`;
 
         // XXX In order to support multiple shards, tell the room to the deployment.
         room && (url += `?room=${getBackendSafeRoomName(room)}`);
@@ -102,6 +102,7 @@ export function appNavigate(uri: ?string) {
         if (!config) {
             try {
                 const localEnv = await loadEnv(envUrl);
+
                 config = await loadConfig(url, localEnv);
                 dispatch(storeConfig(baseURL, config));
             } catch (error) {

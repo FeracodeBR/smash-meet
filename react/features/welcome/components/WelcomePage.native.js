@@ -6,6 +6,7 @@ import {
     TextInput,
     TouchableHighlight,
     View,
+    KeyboardAvoidingView,
     TouchableOpacity,
     Platform,
     Image
@@ -238,8 +239,11 @@ class WelcomePage extends AbstractWelcomePage {
         const { _headerStyles, t } = this.props;
 
         return (
-            <View style = { _headerStyles }>
-                <SafeAreaView style = { styles.roomContainer } >
+            <View
+                style = { _headerStyles }>
+                <KeyboardAvoidingView
+                    behavior = 'padding'
+                    style = { styles.roomContainer } >
                     <View style = { styles.header }>
                         <View style = { styles.column }>
                             <Image
@@ -268,7 +272,9 @@ class WelcomePage extends AbstractWelcomePage {
                             </View>
                         </View>
                     </View>
-                    <View style = { styles.content }>
+                    <KeyboardAvoidingView
+                        behavior = 'padding'
+                        style = { styles.content }>
                         <View style = { styles.joinControls } >
                             <TextInput
                                 accessibilityLabel = { t(roomnameAccLabel) }
@@ -303,8 +309,8 @@ class WelcomePage extends AbstractWelcomePage {
                                 </TouchableOpacity>
                             </LinearGradient>
                         </View>
-                    </View>
-                </SafeAreaView>
+                    </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
             </View>
         );
     }
