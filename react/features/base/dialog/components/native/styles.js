@@ -20,8 +20,6 @@ export const MD_FONT_SIZE = 16;
 export const MD_ITEM_HEIGHT = 48;
 export const MD_ITEM_MARGIN_PADDING = 16;
 
-export const PLACEHOLDER_COLOR = ColorPalette.lightGrey;
-
 /**
  * The React {@code Component} styles of {@code BottomSheet}. These have
  * been implemented as per the Material Design guidelines:
@@ -147,7 +145,7 @@ ColorSchemeRegistry.register('BottomSheet', {
      * Style for the label in a generic item rendered in the menu.
      */
     labelStyle: {
-        color: schemeColor('text'),
+        color: '#fff',
         flexShrink: 1,
         fontSize: MD_FONT_SIZE,
         marginLeft: 32,

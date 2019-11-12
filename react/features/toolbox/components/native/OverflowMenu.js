@@ -8,7 +8,6 @@ import { BottomSheet, hideDialog, isDialogOpen } from '../../../base/dialog';
 import { CHAT_ENABLED, IOS_RECORDING_ENABLED, getFeatureFlag } from '../../../base/flags';
 import { connect } from '../../../base/redux';
 import { StyleType } from '../../../base/styles';
-import { SharedDocumentButton } from '../../../etherpad';
 import { InfoDialogButton, InviteButton } from '../../../invite';
 import { AudioRouteButton } from '../../../mobile/audio-mode';
 import { LiveStreamButton, RecordButton } from '../../../recording';
@@ -17,7 +16,6 @@ import { ClosedCaptionButton } from '../../../subtitles';
 import { TileViewButton } from '../../../video-layout';
 
 import AudioOnlyButton from './AudioOnlyButton';
-import HelpButton from '../HelpButton';
 import RaiseHandButton from './RaiseHandButton';
 import ToggleCameraButton from './ToggleCameraButton';
 
@@ -93,6 +91,13 @@ class OverflowMenu extends Component<Props> {
 
         return (
             <BottomSheet onCancel = { this._onCancel }>
+                <RaiseHandButton { ...buttonProps } />
+                {
+                    this.props._chatEnabled
+                    && <InfoDialogButton { ...buttonProps } />
+                }
+                <InviteButton { ...buttonProps } />
+                <TileViewButton { ...buttonProps } />
                 <AudioRouteButton { ...buttonProps } />
                 <ToggleCameraButton { ...buttonProps } />
                 <AudioOnlyButton { ...buttonProps } />
@@ -103,15 +108,6 @@ class OverflowMenu extends Component<Props> {
                         && <RecordButton { ...buttonProps } />
                 }
                 <LiveStreamButton { ...buttonProps } />
-                <TileViewButton { ...buttonProps } />
-                <InviteButton { ...buttonProps } />
-                {
-                    this.props._chatEnabled
-                        && <InfoDialogButton { ...buttonProps } />
-                }
-                <RaiseHandButton { ...buttonProps } />
-                <SharedDocumentButton { ...buttonProps } />
-                <HelpButton { ...buttonProps } />
             </BottomSheet>
         );
     }

@@ -1,40 +1,51 @@
 /* eslint-disable no-unused-vars, no-var */
 
 var config = {
+    // Configuration
+    //
+
+    // Alternative location for the configuration.
+    // configLocation: './config.json',
+
+    // Custom function which given the URL path should return a room name.
+    // getroomnode: function (path) { return 'someprefixpossiblybasedonpath'; },
+
+
     // Connection
     //
 
     hosts: {
         // XMPP domain.
-        domain: 'jitsi-meet.example.com',
+        domain: 'meet-dev.smashinnovations.com',
 
         // When using authentication, domain for guest users.
-        // anonymousdomain: 'guest.example.com',
+        anonymousdomain: 'guest.meet-dev.smashinnovations.com',
 
         // Domain for authenticated users. Defaults to <domain>.
-        // authdomain: 'jitsi-meet.example.com',
+        // authdomain: 'meet-dev.smashinnovations.com',
 
         // Jirecon recording component domain.
-        // jirecon: 'jirecon.jitsi-meet.example.com',
+        // jirecon: 'jirecon.meet-dev.smashinnovations.com',
 
         // Call control component (Jigasi).
-        // call_control: 'callcontrol.jitsi-meet.example.com',
+        // eslint-disable-next-line camelcase
+        call_control: 'callcontrol.meet-dev.smashinnovations.com',
 
         // Focus component domain. Defaults to focus.<domain>.
-        // focus: 'focus.jitsi-meet.example.com',
+        // focus: 'focus.meet-dev.smashinnovations.com',
 
         // XMPP MUC domain. FIXME: use XEP-0030 to discover it.
-        muc: 'conference.jitsi-meet.example.com'
+        muc: 'conference.meet-dev.smashinnovations.com'
     },
 
     // BOSH URL. FIXME: use XEP-0156 to discover it.
-    bosh: '//jitsi-meet.example.com/http-bind',
+    bosh: '//meet-dev.smashinnovations.com/http-bind',
 
     // The name of client node advertised in XEP-0115 'c' stanza
     clientNode: 'http://jitsi.org/jitsimeet',
 
     // The real JID of focus participant - can be overridden here
-    // focusUserJid: 'focus@auth.jitsi-meet.example.com',
+    // focusUserJid: 'focus@auth.meet-dev.smashinnovations.com',
 
 
     // Testing / experimental features.
@@ -50,10 +61,6 @@ var config = {
 
         // Enables the test specific features consumed by jitsi-meet-torture
         // testMode: false
-
-        // Disables the auto-play behavior of *all* newly created video element.
-        // This is useful when the client runs on a host with limited resources.
-        // noAutoPlayVideo: false
     },
 
     // Disables ICE/UDP by filtering out local and remote UDP candidates in
@@ -75,7 +82,7 @@ var config = {
 
     // Start the conference in audio only mode (no video is being received nor
     // sent).
-    // startAudioOnly: false,
+    startAudioOnly: true,
 
     // Every participant after the Nth will start audio muted.
     // startAudioMuted: 10,
@@ -91,23 +98,23 @@ var config = {
     // Video
 
     // Sets the preferred resolution (height) for local video. Defaults to 720.
-    // resolution: 720,
+    resolution: 720,
 
     // w3c spec-compliant video constraints to use for video capture. Currently
     // used by browsers that return true from lib-jitsi-meet's
     // util#browser#usesNewGumFlow. The constraints are independency from
     // this config's resolution value. Defaults to requesting an ideal aspect
     // ratio of 16:9 with an ideal resolution of 720.
-    // constraints: {
-    //     video: {
-    //         aspectRatio: 16 / 9,
-    //         height: {
-    //             ideal: 720,
-    //             max: 720,
-    //             min: 240
-    //         }
-    //     }
-    // },
+    constraints: {
+        video: {
+            aspectRatio: 16 / 9,
+            height: {
+                ideal: 720,
+                max: 720,
+                min: 240
+            }
+        }
+    },
 
     // Enable / disable simulcast support.
     // disableSimulcast: false,
@@ -117,12 +124,16 @@ var config = {
     // are requested again.
     // enableLayerSuspension: false,
 
+    // Suspend sending video if bandwidth estimation is too low. This may cause
+    // problems with audio playback. Disabled until these are fixed.
+    disableSuspendVideo: true,
+
     // Every participant after the Nth will start video muted.
     // startVideoMuted: 10,
 
     // Start calls with video muted. Unlike the option above, this one is only
     // applied locally. FIXME: having these 2 options is confusing.
-    // startWithVideoMuted: false,
+    startWithVideoMuted: true,
 
     // If set to true, prefer to use the H.264 video codec (if supported).
     // Note that it's not recommended to do this because simulcast is not
@@ -164,15 +175,17 @@ var config = {
     // Recording
 
     // Whether to enable file recording or not.
-    // fileRecordingsEnabled: false,
+    fileRecordingsEnabled: true,
+    hiddenDomain: 'recorder.meet-dev.smashinnovations.com',
+
     // Enable the dropbox integration.
     // dropbox: {
     //     appKey: '<APP_KEY>' // Specify your app key here.
     //     // A URL to redirect the user to, after authenticating
     //     // by default uses:
-    //     // 'https://jitsi-meet.example.com/static/oauth.html'
+    //     // 'https://meet-dev.smashinnovations.com/static/oauth.html'
     //     redirectURI:
-    //          'https://jitsi-meet.example.com/subfolder/static/oauth.html'
+    //          'https://meet-dev.smashinnovations.com/subfolder/static/oauth.html'
     // },
     // When integrations like dropbox are enabled only that will be shown,
     // by enabling fileRecordingsServiceEnabled, we show both the integrations
@@ -185,14 +198,11 @@ var config = {
     // fileRecordingsServiceSharingEnabled: false,
 
     // Whether to enable live streaming or not.
-    // liveStreamingEnabled: false,
+    liveStreamingEnabled: true,
 
     // Transcription (in interface_config,
     // subtitles and buttons can be configured)
     // transcribingEnabled: false,
-
-    // Enables automatic turning on captions when recording is started
-    // autoCaptionOnRecord: false,
 
     // Misc
 
@@ -239,7 +249,7 @@ var config = {
     // useNicks: false,
 
     // Require users to always specify a display name.
-    // requireDisplayName: true,
+    requireDisplayName: true,
 
     // Whether to use a welcome page or not. In case it's false a random room
     // will be joined when no room is specified.
@@ -247,10 +257,10 @@ var config = {
 
     // Enabling the close page will ignore the welcome page redirection when
     // a call is hangup.
-    // enableClosePage: false,
+    enableClosePage: true,
 
     // Disable hiding of remote thumbnails when in a 1-on-1 conference call.
-    // disable1On1Mode: false,
+    disable1On1Mode: true,
 
     // Default language for the user interface.
     // defaultLanguage: 'en',
@@ -258,7 +268,7 @@ var config = {
     // If true all users without a token will be considered guests and all users
     // with token will be considered non-guests. Only guests will be allowed to
     // edit their profile.
-    enableUserRolesBasedOnToken: false,
+    enableUserRolesBasedOnToken: true,
 
     // Whether or not some features are checked based on token.
     // enableFeaturesBasedOnToken: false,
@@ -367,28 +377,30 @@ var config = {
     // Information about the jitsi-meet instance we are connecting to, including
     // the user region as seen by the server.
     deploymentInfo: {
-        // shard: "shard1",
-        // region: "europe",
-        // userRegion: "asia"
-    }
+        shard: 'shard1',
+        region: 'europe',
+        userRegion: 'asia'
+    },
 
     // Local Recording
     //
 
-    // localRecording: {
-    // Enables local recording.
-    // Additionally, 'localrecording' (all lowercase) needs to be added to
-    // TOOLBAR_BUTTONS in interface_config.js for the Local Recording
-    // button to show up on the toolbar.
-    //
-    //     enabled: true,
-    //
+    localRecording: {
+        // Enables local recording.
+        // Additionally, 'localrecording' (all lowercase) needs to be added to
+        // TOOLBAR_BUTTONS in interface_config.js for the Local Recording
+        // button to show up on the toolbar.
+        //
+        enabled: true,
 
-    // The recording format, can be one of 'ogg', 'flac' or 'wav'.
-    //     format: 'flac'
-    //
+        //
 
-    // }
+        // The recording format, can be one of 'ogg', 'flac' or 'wav'.
+        format: 'flac'
+
+        //
+
+    }
 
     // Options related to end-to-end (participant to participant) ping.
     // e2eping: {
@@ -416,16 +428,6 @@ var config = {
     // A property to disable the right click context menu for localVideo
     // the menu has option to flip the locally seen video for local presentations
     // disableLocalVideoFlip: false
-
-    // Deployment specific URLs.
-    // deploymentUrls: {
-    //    // If specified a 'Help' button will be displayed in the overflow menu with a link to the specified URL for
-    //    // user documentation.
-    //    userDocumentationURL: 'https://docs.example.com/video-meetings.html',
-    //    // If specified a 'Download our apps' button will be displayed in the overflow menu with a link
-    //    // to the specified URL for an app download page.
-    //    downloadAppsUrl: 'https://docs.example.com/our-apps.html'
-    // }
 
     // List of undocumented settings used in jitsi-meet
     /**

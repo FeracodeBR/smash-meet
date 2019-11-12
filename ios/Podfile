@@ -1,8 +1,8 @@
 platform :ios, '10.0'
-workspace 'jitsi-meet'
+workspace 'smash-meet'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'jitsi-meet' do
+target 'smash-meet' do
   project 'app/app.xcodeproj'
 
   pod 'Crashlytics', '~> 3.12.0'

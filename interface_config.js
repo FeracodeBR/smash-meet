@@ -3,7 +3,7 @@
 var interfaceConfig = {
     // TO FIX: this needs to be handled from SASS variables. There are some
     // methods allowing to use variables both in css and js.
-    DEFAULT_BACKGROUND: '#474747',
+    DEFAULT_BACKGROUND: '#3A3D43',
 
     /**
      * Whether or not the blurred video background for large video should be
@@ -14,7 +14,7 @@ var interfaceConfig = {
     INITIAL_TOOLBAR_TIMEOUT: 20000,
     TOOLBAR_TIMEOUT: 4000,
     TOOLBAR_ALWAYS_VISIBLE: false,
-    DEFAULT_REMOTE_DISPLAY_NAME: 'Fellow Jitster',
+    DEFAULT_REMOTE_DISPLAY_NAME: 'Smash User',
     DEFAULT_LOCAL_DISPLAY_NAME: 'me',
     SHOW_JITSI_WATERMARK: true,
     JITSI_WATERMARK_LINK: 'https://jitsi.org',
@@ -28,9 +28,9 @@ var interfaceConfig = {
     GENERATE_ROOMNAMES_ON_WELCOME_PAGE: true,
     DISPLAY_WELCOME_PAGE_CONTENT: true,
     DISPLAY_WELCOME_PAGE_TOOLBAR_ADDITIONAL_CONTENT: false,
-    APP_NAME: 'Jitsi Meet',
-    NATIVE_APP_NAME: 'Jitsi Meet',
-    PROVIDER_NAME: 'Jitsi',
+    APP_NAME: 'Smash Meet',
+    NATIVE_APP_NAME: 'Smash Meet',
+    PROVIDER_NAME: 'Smash',
     LANG_DETECTION: false, // Allow i18n to detect the system language
     INVITATION_POWERED_BY: true,
 
@@ -127,7 +127,7 @@ var interfaceConfig = {
      * If indicated some of the error dialogs may point to the support URL for
      * help.
      */
-    SUPPORT_URL: 'https://github.com/jitsi/jitsi-meet/issues/new',
+    SUPPORT_URL: 'https://github.com/FeracodeBR/smash-meet/issues/new',
 
     /**
      * Whether the connection indicator icon should hide itself based on
@@ -209,12 +209,12 @@ var interfaceConfig = {
     /**
      * Specify mobile app scheme for opening the app from the mobile browser.
      */
-    // APP_SCHEME: 'org.jitsi.meet',
+    // APP_SCHEME: 'org.feracode.smashmeet',
 
     /**
      * Specify the Android app package name.
      */
-    // ANDROID_APP_PACKAGE: 'org.jitsi.meet',
+    // ANDROID_APP_PACKAGE: 'org.feracode.smashmeet',
 
     /**
      * Override the behavior of some notifications to remain displayed until

@@ -7,6 +7,7 @@ import {
     openDialog
 } from '../base/dialog';
 import { getParticipantDisplayName } from '../base/participants';
+import { SET_SIDEBAR_VISIBLE } from './actionTypes';
 
 /**
  * Notify that we've been kicked out of the conference.
@@ -27,5 +28,12 @@ export function notifyKickedOut(participant: Object, submit: ?Function) {
             },
             onSubmit: submit
         }));
+    };
+}
+
+export function setSideBarVisible(visible: boolean) {
+    return {
+        type: SET_SIDEBAR_VISIBLE,
+        visible
     };
 }

@@ -40,11 +40,11 @@
     JitsiMeet *jitsiMeet = [JitsiMeet sharedInstance];
 
     jitsiMeet.conferenceActivityType = JitsiMeetConferenceActivityType;
-    jitsiMeet.customUrlScheme = @"org.jitsi.meet";
-    jitsiMeet.universalLinkDomains = @[@"meet.jit.si", @"alpha.jitsi.net", @"beta.meet.jit.si"];
+    jitsiMeet.customUrlScheme = @"org.feracode.smashmeet";
+    jitsiMeet.universalLinkDomains = @[@"meet.smashinnovations.com", @"meet-staging.smashinnovations.com", @"meet-dev.smashinnovations.com"];
 
     jitsiMeet.defaultConferenceOptions = [JitsiMeetConferenceOptions fromBuilder:^(JitsiMeetConferenceOptionsBuilder *builder) {
-        builder.serverURL = [NSURL URLWithString:@"https://meet.jit.si"];
+        builder.serverURL = [NSURL URLWithString:@"https://meet.smashinnovations.com"];
         builder.welcomePageEnabled = YES;
 
         // Apple rejected our app because they claim requiring a

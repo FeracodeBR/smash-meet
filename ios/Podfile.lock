@@ -397,8 +397,9 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - Amplitude-iOS
+    - AppAuth
     - boost-for-react-native
     - CocoaLumberjack
     - Crashlytics
@@ -410,14 +411,12 @@ SPEC REPOS:
     - FirebaseDynamicLinks
     - FirebaseInstanceID
     - GoogleAppMeasurement
-    - GoogleUtilities
-    - nanopb
-    - ObjectiveDropboxOfficial
-  trunk:
-    - AppAuth
     - GoogleSignIn
+    - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - nanopb
+    - ObjectiveDropboxOfficial
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -553,6 +552,6 @@ SPEC CHECKSUMS:
   RNWatch: 09738b339eceb66e4d80a2371633ca5fb380fa42
   Yoga: 02036f6383c0008edb7ef0773a0e6beb6ce82bd1
 
-PODFILE CHECKSUM: 63c90b1d33cd96709fb72bad6be440ae9c3deecb
+PODFILE CHECKSUM: aa506a751abd30a30f20288619c258652f5b1163
 
-COCOAPODS: 1.8.1
+COCOAPODS: 1.8.4

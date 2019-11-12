@@ -5,25 +5,25 @@ import {
     SafeAreaView,
     TextInput,
     TouchableHighlight,
+    View,
     TouchableOpacity,
-    View
+    Platform,
+    Image
 } from 'react-native';
 
 import { getName } from '../../app';
+import logo from '../../../../images/smash-meet-logo.png';
 
 import { ColorSchemeRegistry } from '../../base/color-scheme';
 import { translate } from '../../base/i18n';
-import { Icon, IconMenu } from '../../base/icons';
 import { MEDIA_TYPE } from '../../base/media';
-import { Header, LoadingIndicator, Text } from '../../base/react';
+import { LoadingIndicator, Text } from '../../base/react';
 import { connect } from '../../base/redux';
 import { ColorPalette } from '../../base/styles';
 import {
     createDesiredLocalTracks,
     destroyLocalTracks
 } from '../../base/tracks';
-import { DialInSummary } from '../../invite';
-import { SettingsView } from '../../settings';
 
 import { setSideBarVisible } from '../actions';
 
@@ -31,11 +31,8 @@ import {
     AbstractWelcomePage,
     _mapStateToProps as _abstractMapStateToProps
 } from './AbstractWelcomePage';
-import LocalVideoTrackUnderlay from './LocalVideoTrackUnderlay';
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
-import VideoSwitch from './VideoSwitch';
-import WelcomePageLists from './WelcomePageLists';
-import WelcomePageSideBar from './WelcomePageSideBar';
+import LinearGradient from 'react-native-linear-gradient';
 
 /**
  * The native container rendering the welcome page.
@@ -98,21 +95,6 @@ class WelcomePage extends AbstractWelcomePage {
      * @returns {ReactElement}
      */
     render() {
-        // We want to have the welcome page support the reduced UI layout,
-        // but we ran into serious issues enabling it so we disable it
-        // until we have a proper fix in place. We leave the code here though, because
-        // this part should be fine when the bug is fixed.
-        //
-        // NOTE: when re-enabling, don't forget to uncomment the respective _mapStateToProps line too
-
-        /*
-        const { _reducedUI } = this.props;
-
-        if (_reducedUI) {
-            return this._renderReducedUI();
-        }
-        */
-
         return this._renderFullUI();
     }
 
@@ -256,17 +238,37 @@ class WelcomePage extends AbstractWelcomePage {
         const { _headerStyles, t } = this.props;
 
         return (
-            <LocalVideoTrackUnderlay style = { styles.welcomePage }>
-                <View style = { _headerStyles.page }>
-                    <Header style = { styles.header }>
-                        <TouchableOpacity onPress = { this._onShowSideBar } >
-                            <Icon
-                                src = { IconMenu }
-                                style = { _headerStyles.headerButtonIcon } />
-                        </TouchableOpacity>
-                        <VideoSwitch />
-                    </Header>
-                    <SafeAreaView style = { styles.roomContainer } >
+            <View style = { _headerStyles }>
+                <SafeAreaView style = { styles.roomContainer } >
+                    <View style = { styles.header }>
+                        <View style = { styles.column }>
+                            <Image
+                                source = { logo }
+                                style = { styles.logo } />
+                        </View>
+                        <View style = { styles.column }>
+                            <View style = { styles.row }>
+                                <Text style = { styles.title }>smash</Text>
+                                <Text
+                                    style = {
+                                        Platform.OS === 'ios' ? styles.smallDot : styles.smallDot
+                                    }>
+                                    .
+                                </Text>
+                            </View>
+                            <View style = { styles.row }>
+                                <Text
+                                    style = {
+                                        Platform.OS === 'ios'
+                                            ? styles.subtitleIos
+                                            : styles.subtitleAndroid
+                                    }>
+                                    meet
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style = { styles.content }>
                         <View style = { styles.joinControls } >
                             <TextInput
                                 accessibilityLabel = { t(roomnameAccLabel) }
@@ -278,7 +280,7 @@ class WelcomePage extends AbstractWelcomePage {
                                 onChangeText = { this._onRoomChange }
                                 onFocus = { this._onFieldFocus }
                                 onSubmitEditing = { this._onJoin }
-                                placeholder = { t('welcomepage.roomname') }
+                                placeholder = { 'Enter Link or Room Name' }
                                 placeholderTextColor = {
                                     PLACEHOLDER_TEXT_COLOR
                                 }
@@ -286,17 +288,24 @@ class WelcomePage extends AbstractWelcomePage {
                                 style = { styles.textInput }
                                 underlineColorAndroid = 'transparent'
                                 value = { this.state.room } />
-                            {
-                                this._renderHintBox()
-                            }
                         </View>
-                    </SafeAreaView>
-                    <WelcomePageLists disabled = { this.state._fieldFocused } />
-                    <SettingsView />
-                    <DialInSummary />
-                </View>
-                <WelcomePageSideBar />
-            </LocalVideoTrackUnderlay>
+                        <View style = { styles.joinControls }>
+                            <LinearGradient
+                                colors = { [ ColorPalette.primaryLighter, ColorPalette.primaryDark ] }
+                                locations = { [ 0.2207, 0.9063 ] }
+                                style = { styles.gradientContainer }>
+                                <TouchableOpacity
+                                    onPress = { this._onJoin }
+                                    style = { styles.gradientButton }>
+                                    <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
+                                        JOIN MEETING
+                                    </Text>
+                                </TouchableOpacity>
+                            </LinearGradient>
+                        </View>
+                    </View>
+                </SafeAreaView>
+            </View>
         );
     }
 
@@ -328,8 +337,6 @@ function _mapStateToProps(state) {
     return {
         ..._abstractMapStateToProps(state),
         _headerStyles: ColorSchemeRegistry.get(state, 'Header')
-
-        // _reducedUI: state['features/base/responsive-ui'].reducedUI
     };
 }
 

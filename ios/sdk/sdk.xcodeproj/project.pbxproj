@@ -260,8 +260,8 @@
 		C5E72ADFC30ED96F9B35F076 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				98E09B5C73D9036B4ED252FC /* Pods-JitsiMeet.debug.xcconfig */,
 				9C77CA3CC919B081F1A52982 /* Pods-JitsiMeet.release.xcconfig */,
+				98E09B5C73D9036B4ED252FC /* Pods-JitsiMeet.debug.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -337,7 +337,7 @@
 		0BD906DC1EC0C00300C8C18E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = Jitsi;
 				TargetAttributes = {
 					0BD906E41EC0C00300C8C18E = {

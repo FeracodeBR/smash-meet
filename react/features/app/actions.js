@@ -28,8 +28,11 @@ import {
     getName
 } from './functions';
 import logger from './logger';
+import { loadEnv } from '../base/lib-jitsi-meet/functions.native';
 
 declare var APP: Object;
+
+const PUBLIC_TOKEN = 'bFdkZXJ1VGFsdUpyY2VicmxsaWFiYW9vbG9wZW9haWwkK0dpOGd2ZkJZVnFWR3ZnV1JRVmYyVmIvQUVlTHdSVW9VaTIybXZzemhSNG0rVytScWRqZHNjd0JwTzJjUlNxTGQ3TTN0MTNleWFWeDFVUGwxQ2xBREo2bGxXbkdtZzBXVWV6cnI5aytWQ2tIQ1dBY1E5VTVjTEpJY0tMVUtEYVdkTGFJWnhMbktaUVlLZTk4a3VVQktBdVNZMjBPMUt6aGxLYldySDg3Q1kwPQ==';
 
 /**
  * Triggers an in-app navigation to a specific route. Allows navigation to be
@@ -84,6 +87,7 @@ export function appNavigate(uri: ?string) {
 
         const baseURL = `${protocol}//${host}${contextRoot || '/'}`;
         let url = `${baseURL}config.js`;
+        let envUrl = `${baseURL}env.js`;
 
         // XXX In order to support multiple shards, tell the room to the deployment.
         room && (url += `?room=${getBackendSafeRoomName(room)}`);
@@ -97,7 +101,8 @@ export function appNavigate(uri: ?string) {
 
         if (!config) {
             try {
-                config = await loadConfig(url);
+                const localEnv = await loadEnv(envUrl);
+                config = await loadConfig(url, localEnv);
                 dispatch(storeConfig(baseURL, config));
             } catch (error) {
                 config = restoreConfig(baseURL);
@@ -280,3 +285,34 @@ export function maybeRedirectToWelcomePage(options: Object = {}) {
     };
 }
 
+// eslint-disable-next-line require-jsdoc
+function notifyRoomOwner(
+        location: { protocol: string, host: string, pathname: string}
+) {
+    const room = `${location.protocol}://${location.host}${location.pathname}`;
+    const getPrefix = (host: string) => {
+        if (host.includes('meet-dev.') || host.includes('meet-development.')) {
+            return 'dev';
+        }
+        if (host.includes('meet-staging.')) {
+            return 'staging';
+        }
+
+        return 'app';
+    };
+    const prefix = getPrefix(location.host);
+
+    fetch(
+        `https://${prefix}.smashinnovations.com/module/chat/conference/notify`,
+        {
+            method: 'POST',
+            headers: new Headers({
+                Authorization: PUBLIC_TOKEN,
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({ room })
+        },
+    )
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+}

@@ -77,17 +77,27 @@ class ChatMessage extends AbstractChatMessage<Props> {
             <View style = { styles.messageWrapper } >
                 { this._renderAvatar() }
                 <View style = { detailsWrapperStyle }>
-                    <View style = { messageBubbleStyle }>
-                        <View style = { styles.textWrapper } >
-                            { this._renderDisplayName() }
-                            <Linkify linkStyle = { styles.chatLink }>
-                                { replaceNonUnicodeEmojis(this._getMessageText()) }
-                            </Linkify>
-                            { this._renderPrivateNotice() }
+                    <View style = { styles.replyWrapper }>
+                        <View style = { textWrapperStyle } >
+                            {
+                                this.props.showDisplayName
+                                    && this._renderDisplayName()
+                            }
+                            <View>
+                                <Linkify linkStyle = { styles.chatLink }>
+                                    { replaceNonUnicodeEmojis(this._getMessageText()) }
+                                </Linkify>
+                                <View style = { styles.timestampContainer }>
+                                    {this._renderTimestamp() }
+                                </View>
+                            </View>
+                            {
+                                message.privateMessage
+                                    && this._renderPrivateNotice()
+                            }
                         </View>
                         { this._renderPrivateReplyButton() }
                     </View>
-                    { this._renderTimestamp() }
                 </View>
             </View>
         );

@@ -1,3 +1,5 @@
+import { Dimensions } from 'react-native';
+
 import { BoxModel, ColorPalette, fixAndroidViewClipping } from '../../../base/styles';
 
 import { FILMSTRIP_SIZE } from '../../../filmstrip';
@@ -108,16 +110,23 @@ export default {
     roomName: {
         color: ColorPalette.white,
         fontSize: 17,
-        fontWeight: '400'
+        fontWeight: '400',
+        textAlign: 'center'
     },
 
     roomNameWrapper: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         left: 0,
-        paddingHorizontal: 48,
         position: 'absolute',
         right: 0
+    },
+    roomNameTitle: {
+        flex: 6
+    },
+    roomNameAction: {
+        flex: 2
     },
 
     /**
@@ -138,5 +147,101 @@ export default {
         // On iPhone X there is the notch. In the two cases BoxModel.margin is
         // not enough.
         top: BoxModel.margin * 3
+    },
+
+    sideBar: {
+        width: 250,
+        height: Dimensions.get('window').height
+    },
+
+    /**
+     * The body of the side bar where the items are.
+     */
+    sideBarBody: {
+        backgroundColor: ColorPalette.screenDarker,
+        flex: 1
+    },
+
+    /**
+     * The style of the side bar header.
+     */
+    sideBarHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: BoxModel.padding
+    },
+    sideBarHeaderTitle: {
+        fontSize: 18,
+        color: ColorPalette.white,
+        textAlign: 'center'
+    },
+    sideBarHeaderIcon: {
+        fontSize: 22,
+        color: ColorPalette.white
+    },
+    sideBarHeaderAction: {
+        flex: 2
+    },
+    sideBarHeaderText: {
+        flex: 6
+    },
+
+    /**
+     * Style of the menu items in the side bar.
+     */
+    sideBarItem: {
+        padding: 12
+    },
+
+    sideBarDescriptionContainer: {
+        justifyContent: 'center',
+        marginLeft: 8
+    },
+
+    sideBarAvatarContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 15,
+        height: 30,
+        width: 30,
+        backgroundColor: ColorPalette.darkGrey
+    },
+
+    sideBarAvatar: {
+        height: 30,
+        width: 30,
+        borderRadius: 15
+    },
+
+    /**
+     * The View inside the side bar buttons (icon + text).
+     */
+    sideBarItemButtonContainer: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+
+    /**
+     * The icon in the side bar item touchables.
+     */
+    sideBarItemIcon: {
+        color: ColorPalette.white,
+        fontSize: 38
+    },
+
+    sideBarItemIconSmall: {
+        color: ColorPalette.white,
+        fontSize: 18,
+        marginRight: 15
+    },
+
+    /**
+     * The label of the side bar item touchables.
+     */
+    sideBarItemText: {
+        color: '#DFDFDF',
+        fontSize: 10,
+        lineHeight: 28
     }
 };
