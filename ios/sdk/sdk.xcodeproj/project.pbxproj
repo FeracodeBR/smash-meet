@@ -337,7 +337,7 @@
 		0BD906DC1EC0C00300C8C18E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = Jitsi;
 				TargetAttributes = {
 					0BD906E41EC0C00300C8C18E = {
