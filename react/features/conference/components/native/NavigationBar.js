@@ -65,7 +65,7 @@ class NavigationBar extends Component<Props> {
                 <View
                     pointerEvents = 'box-none'
                     style = { styles.roomNameWrapper }>
-                    <View style = { styles.roomNameAction } />
+                    {/*<View style = { styles.roomNameAction } />*/}
                     <View style = { styles.roomNameTitle } >
                         <Text
                             numberOfLines = { 1 }
@@ -73,11 +73,11 @@ class NavigationBar extends Component<Props> {
                             { this.props._meetingName }
                         </Text>
                     </View>
-                    <View style = { styles.roomNameAction } >
-                        <ParticipantsListButton
-                            styles = { _styles.buttonStyles }
-                            toggledStyles = { _styles.toggledButtonStyles } />
-                    </View>
+                    {/*<View style = { styles.roomNameAction } >*/}
+                    {/*    <ParticipantsListButton*/}
+                    {/*        styles = { _styles.buttonStyles }*/}
+                    {/*        toggledStyles = { _styles.toggledButtonStyles } />*/}
+                    {/*</View>*/}
                 </View>
             </View>
         ];

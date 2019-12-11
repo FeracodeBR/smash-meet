@@ -28,6 +28,7 @@ import {
     getName
 } from './functions';
 import logger from './logger';
+import { loadEnv } from '../base/lib-jitsi-meet/functions.native';
 
 declare var APP: Object;
 
@@ -86,6 +87,7 @@ export function appNavigate(uri: ?string) {
 
         const baseURL = `${protocol}//${host}${contextRoot || '/'}`;
         let url = `${baseURL}config.js`;
+        const envUrl = `${baseURL}env.js`;
 
         // XXX In order to support multiple shards, tell the room to the deployment.
         room && (url += `?room=${getBackendSafeRoomName(room)}`);
@@ -99,7 +101,9 @@ export function appNavigate(uri: ?string) {
 
         if (!config) {
             try {
-                config = await loadConfig(url);
+                const localEnv = await loadEnv(envUrl);
+
+                config = await loadConfig(url, localEnv);
                 dispatch(storeConfig(baseURL, config));
             } catch (error) {
                 config = restoreConfig(baseURL);
@@ -125,9 +129,6 @@ export function appNavigate(uri: ?string) {
         }
 
         dispatch(setLocationURL(locationURL));
-        if (room) {
-            notifyRoomOwner(locationURL);
-        }
         dispatch(setConfig(config));
         dispatch(setRoom(room));
 

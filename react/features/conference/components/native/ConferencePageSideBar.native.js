@@ -85,7 +85,7 @@ class ConferencePageSideBar extends Component<Props> {
             <SlidingView
                 onHide = { this._onHideSideBar }
                 position = 'left'
-                show = { this.props._visible }
+                show = { false } // side removida por enquanto
                 style = { styles.sideBar } >
                 <Header style = { styles.sideBarHeader }>
                     <View style = { styles.sideBarHeaderAction }>
