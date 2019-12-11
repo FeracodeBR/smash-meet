@@ -21,9 +21,6 @@ import type { StyleType } from '../../base/styles';
 import { authenticateAndUpgradeRole, cancelLogin } from '../actions';
 import styles from './styles';
 
-// eslint-disable-next-line max-len
-const PUBLIC_TOKEN = 'bFdkZXJ1VGFsdUpyY2VicmxsaWFiYW9vbG9wZW9haWwkK0dpOGd2ZkJZVnFWR3ZnV1JRVmYyVmIvQUVlTHdSVW9VaTIybXZzemhSNG0rVytScWRqZHNjd0JwTzJjUlNxTGQ3TTN0MTNleWFWeDFVUGwxQ2xBREo2bGxXbkdtZzBXVWV6cnI5aytWQ2tIQ1dBY1E5VTVjTEpJY0tMVUtEYVdkTGFJWnhMbktaUVlLZTk4a3VVQktBdVNZMjBPMUt6aGxLYldySDg3Q1kwPQ==';
-
 /**
  * The type of the React {@link Component} props of {@link LoginDialog}.
  */

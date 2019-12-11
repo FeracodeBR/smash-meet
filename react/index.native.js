@@ -11,7 +11,7 @@
 import './features/base/lib-jitsi-meet/native/polyfills-bundler';
 
 import React, { PureComponent } from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, StatusBar } from 'react-native';
 
 import { App } from './features/app';
 import { IncomingCallApp } from './features/mobile/incoming-call';

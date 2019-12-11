@@ -58,3 +58,5 @@ export const UPGRADE_ROLE_STARTED = 'UPGRADE_ROLE_STARTED';
  * }
  */
 export const WAIT_FOR_OWNER = 'WAIT_FOR_OWNER';
+
+export const SIGN_IN = 'SIGN_IN';

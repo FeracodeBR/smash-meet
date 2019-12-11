@@ -170,7 +170,9 @@ export default {
      */
     roomContainer: {
         height: Dimensions.get('window').height,
-        backgroundColor: ColorPalette.screen
+        backgroundColor: ColorPalette.screen,
+        paddingHorizontal: 20,
+        alignItems: 'center'
     },
 
     /**
@@ -249,7 +251,8 @@ export default {
         fontSize: 16,
         height: 40,
         padding: 4,
-        textAlign: 'center'
+        paddingLeft: 15,
+        marginVertical: 10
     },
 
     /**
@@ -272,7 +275,7 @@ export default {
     },
     content: {
         position: 'absolute',
-        top: '45%',
+        top: '30%',
         width: '100%'
     },
     logo: {
@@ -337,5 +340,29 @@ export default {
         height: 40,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+
+    errorContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
+    forgotPassword: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    forgotPasswordLabel: {
+        color: ColorPalette.primaryDarker
+    },
+
+    separator: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 20
+    },
+    separatorLabel: {
+        color: ColorPalette.lightGrey
     }
 };

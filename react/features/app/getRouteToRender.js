@@ -12,6 +12,7 @@ import { UnsupportedDesktopBrowser } from '../unsupported-browser';
 import {
     BlankPage,
     WelcomePage,
+    SignInPage,
     isWelcomePageAppEnabled,
     isWelcomePageUserEnabled
 } from '../welcome';
@@ -63,6 +64,9 @@ function _getMobileRoute(state): Promise<Route> {
     } else {
         route.component = BlankPage;
     }
+
+    // TODO: REMOVER
+    route.component = WelcomePage;
 
     return Promise.resolve(route);
 }
