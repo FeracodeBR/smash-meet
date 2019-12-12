@@ -1,6 +1,7 @@
 // @flow
 
 import { SET_ROOM } from '../base/conference';
+import { APP_WILL_NAVIGATE } from '../base/app';
 import {
     CONNECTION_ESTABLISHED,
     getURLWithoutParams
@@ -15,6 +16,9 @@ MiddlewareRegistry.register(store => next => action => {
         return _connectionEstablished(store, next, action);
 
     case SET_ROOM:
+        return _setRoom(store, next, action);
+
+    case APP_WILL_NAVIGATE:
         return _setRoom(store, next, action);
     }
 
