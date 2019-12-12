@@ -35,6 +35,8 @@ import {
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { Icon, IconArrowBack } from '../../base/icons';
+
 /**
  * The native container rendering the welcome page.
  *
@@ -274,7 +276,7 @@ class WelcomePage extends AbstractWelcomePage {
                     </View>
                     <KeyboardAvoidingView
                         behavior = 'padding'
-                        style = { styles.content }>
+                        style = { styles.body }>
                         <View style = { styles.joinControls } >
                             <TextInput
                                 accessibilityLabel = { t(roomnameAccLabel) }
@@ -296,20 +298,30 @@ class WelcomePage extends AbstractWelcomePage {
                                 value = { this.state.room } />
                         </View>
                         <View style = { styles.joinControls }>
-                            <LinearGradient
-                                colors = { [ ColorPalette.primaryLighter, ColorPalette.primaryDark ] }
-                                locations = { [ 0.2207, 0.9063 ] }
+                            <View
                                 style = { styles.gradientContainer }>
                                 <TouchableOpacity
                                     onPress = { this._onJoin }
                                     style = { styles.gradientButton }>
-                                    <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
+                                    <Text style = { styles.gradientButtonText }>
                                         JOIN MEETING
                                     </Text>
                                 </TouchableOpacity>
-                            </LinearGradient>
+                            </View>
                         </View>
                     </KeyboardAvoidingView>
+                    <View style = { styles.footer }>
+                        <View style = { styles.backButton } >
+                            <TouchableOpacity style = { styles.touchableWrapper } onPress = { this._goBack } >
+                                <Icon
+                                    src = { IconArrowBack }
+                                    style = { styles.backButtonIcon } />
+                                <Text style = { styles.backButtonLabel }>
+                                    back
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </KeyboardAvoidingView>
             </View>
         );

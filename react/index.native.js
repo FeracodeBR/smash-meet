@@ -40,6 +40,12 @@ type Props = {
  * @extends Component
  */
 class Root extends PureComponent<Props> {
+
+    constructor() {
+        super();
+        StatusBar.setBarStyle('light-content');
+    }
+
     /**
      * Implements React's {@link Component#render()}.
      *

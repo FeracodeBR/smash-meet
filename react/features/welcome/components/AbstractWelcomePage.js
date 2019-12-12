@@ -96,6 +96,8 @@ export class AbstractWelcomePage extends Component<Props, *> {
             = this._animateRoomnameChanging.bind(this);
         this._onJoin = this._onJoin.bind(this);
         this._enterMeeting = this._enterMeeting.bind(this);
+        this._goBack = this._goBack.bind(this);
+        this._forgotPassword = this._forgotPassword.bind(this);
         this._onSignIn = this._onSignIn.bind(this);
         this._onRoomChange = this._onRoomChange.bind(this);
         this._onUsernameChange = this._onUsernameChange.bind(this);
@@ -188,6 +190,8 @@ export class AbstractWelcomePage extends Component<Props, *> {
     _onJoin() {
         const room = this.state.room || this.state.generatedRoomname;
 
+        console.log('room', room);
+
         sendAnalytics(
             createWelcomePageEvent('clicked', 'joinButton', {
                 isGenerated: !this.state.room,
@@ -213,11 +217,23 @@ export class AbstractWelcomePage extends Component<Props, *> {
         //dispatch navigation to welcome page
     }
 
+    _goBack: () => void;
+
+    _goBack() {
+        //dispatch navigation to go back
+    }
+
+    _forgotPassword: () => void;
+
+    _forgotPassword() {
+        //dispatch navigation to forgot password
+    }
+
     _onSignIn: () => void;
 
     _onSignIn() {
         const {username, password} = this.state;
-        this.props.dispatch(signIn(username, password))
+        if(username && password) this.props.dispatch(signIn(username, password))
     }
 
     _onRoomChange: (string) => void;

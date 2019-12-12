@@ -1,6 +1,6 @@
 // @flow
 
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 import { BoxModel, ColorPalette } from '../../base/styles';
 
@@ -18,6 +18,16 @@ export const SWITCH_UNDER_COLOR = 'rgba(0, 0, 0, 0.4)';
  * The default color of text on the WelcomePage.
  */
 const TEXT_COLOR = ColorPalette.white;
+
+const smallCapsOrUppercase = Platform.OS === 'ios'
+    ? {
+        fontVariant: [ 'small-caps' ],
+        textTransform: 'lowercase'
+    }
+    : {
+        textTransform: 'uppercase'
+    };
+
 
 /**
  * The styles of the React {@code Components} of the feature welcome including
@@ -275,8 +285,20 @@ export default {
     },
     content: {
         position: 'absolute',
-        top: '30%',
+        top: '25%',
         width: '100%'
+    },
+    body: {
+        position: 'absolute',
+        top: '35%',
+        width: '100%'
+    },
+    footer: {
+        position: 'absolute',
+        bottom: '10%',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     logo: {
         alignSelf: 'center',
@@ -320,20 +342,14 @@ export default {
     gradientContainer: {
         height: 40,
         width: '100%',
-        borderRadius: 20
+        borderRadius: 20,
+        backgroundColor: ColorPalette.secondaryLight
     },
-    textIos: {
-        fontSize: 16,
-        textTransform: 'lowercase',
+    gradientButtonText: {
+        fontSize: 17,
         color: ColorPalette.white,
-        fontVariant: [ 'small-caps' ],
-        letterSpacing: 0.5
-    },
-    textAndroid: {
-        fontSize: 16,
-        textTransform: 'uppercase',
-        color: ColorPalette.white,
-        letterSpacing: 0.5
+        letterSpacing: 0.5,
+        ...smallCapsOrUppercase
     },
     gradientButton: {
         width: '100%',
@@ -354,7 +370,9 @@ export default {
         justifyContent: 'center'
     },
     forgotPasswordLabel: {
-        color: ColorPalette.primaryDarker
+        color: ColorPalette.primaryDarker,
+        fontWeight: '300',
+        fontSize: 12
     },
 
     separator: {
@@ -363,6 +381,35 @@ export default {
         marginVertical: 20
     },
     separatorLabel: {
-        color: ColorPalette.lightGrey
+        color: ColorPalette.lightGrey,
+        fontSize: 16,
+        fontVariant: [ 'small-caps' ],
+        ...smallCapsOrUppercase
+    },
+
+    backButton: {
+        borderRadius: 50,
+        paddingHorizontal: 19,
+        paddingVertical: 12,
+        backgroundColor: ColorPalette.buttonDarker
+    },
+    touchableWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    backButtonLabel: {
+        color: ColorPalette.white,
+        paddingLeft: 5,
+        fontSize: 12,
+        letterSpacing: -0.0241176,
+        textShadowColor: 'rgba(0, 0, 0, 0.25)',
+        textShadowOffset: { width: 0, height: 0.774138 },
+        textShadowRadius: 0.774138,
+        ...smallCapsOrUppercase
+    },
+    backButtonIcon: {
+        color: ColorPalette.white,
+        fontSize: 20
     }
 };

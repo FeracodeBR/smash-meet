@@ -318,11 +318,11 @@ class SignInPage extends AbstractWelcomePage {
                                 underlineColorAndroid = 'transparent'
                                 value = { this.state.password }
                                 secureTextEntry />
-                            <TouchableOpacity style = { styles.forgotPassword }>
+                            {/* <TouchableOpacity style = { styles.forgotPassword } onPress = { this._forgotPassword } >
                                 <Text style = { styles.forgotPasswordLabel }>
                                     Forgot Password
                                 </Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                         <View style = { styles.joinControls }>
                             <LinearGradient
@@ -334,28 +334,26 @@ class SignInPage extends AbstractWelcomePage {
                                 <TouchableOpacity
                                     onPress = { this._onSignIn }
                                     style = { styles.gradientButton }>
-                                    <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
+                                    <Text style = { styles.gradientButtonText }>
                                         SIGN IN
                                     </Text>
                                 </TouchableOpacity>
                             </LinearGradient>
                             <View style = { styles.separator }>
                                 <Text style = { styles.separatorLabel }>
-                                    OR
+                                    or
                                 </Text>
                             </View>
-                            <LinearGradient
-                                colors = { [ ColorPalette.primaryLighter, ColorPalette.primaryDark ] }
-                                locations = { [ 0.2207, 0.9063 ] }
+                            <View
                                 style = { styles.gradientContainer }>
                                 <TouchableOpacity
                                     onPress = { this._enterMeeting }
                                     style = { styles.gradientButton }>
-                                    <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
+                                    <Text style = { styles.gradientButtonText }>
                                         ENTER MEETING
                                     </Text>
                                 </TouchableOpacity>
-                            </LinearGradient>
+                            </View>
                         </View>
                     </KeyboardAvoidingView>
                 </KeyboardAvoidingView>

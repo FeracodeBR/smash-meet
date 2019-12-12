@@ -65,9 +65,6 @@ function _getMobileRoute(state): Promise<Route> {
         route.component = BlankPage;
     }
 
-    // TODO: REMOVER
-    route.component = WelcomePage;
-
     return Promise.resolve(route);
 }
 
