@@ -34,7 +34,6 @@ export default {
         text: 'rgb(28, 32, 37)'
     },
     'Thumbnail': {
-        // activeParticipantHighlight: 'rgb(81, 214, 170)',
         activeParticipantHighlight: 'rgb(81, 214, 170)',
         activeParticipantTint: 'rgba(49, 183, 106, 0.3)',
         background: 'rgb(94, 109, 122)'

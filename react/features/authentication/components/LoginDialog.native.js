@@ -298,8 +298,6 @@ class LoginDialog extends Component<Props, State> {
         // If there's a conference it means that the connection has succeeded,
         // but authentication is required in order to join the room.
 
-        console.log('conference', conference);
-
         if (conference) {
             r = dispatch(authenticateAndUpgradeRole(jid, password, conference));
         } else {

@@ -7,7 +7,6 @@ import ReactLinkify from 'react-linkify';
 import { type StyleType, ColorPalette } from '../../../styles';
 
 import Link from './Link';
-import styles from './styles';
 
 type Props = {
 
