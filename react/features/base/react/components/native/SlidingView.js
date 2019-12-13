@@ -99,8 +99,6 @@ export default class SlidingView extends PureComponent<Props, State> {
         const { height, width } = Dimensions.get('window');
         const { position } = props;
 
-        console.log('position', position);
-
         let positionOffset = height;
 
         if (position === 'left' || position === 'right') {

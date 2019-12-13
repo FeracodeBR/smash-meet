@@ -81,7 +81,9 @@ export default class ChatInputBar extends Component<Props, State> {
                     returnKeyType = 'send'
                     style = { styles.inputField }
                     value = { this.state.message } />
-                <TouchableOpacity onPress = { this._onSubmit }>
+                <TouchableOpacity
+                    onPress = { this._onSubmit }
+                    style = { styles.sendButton }>
                     <Icon
                         src = { IconChatSend }
                         style = { styles.sendButtonIcon } />

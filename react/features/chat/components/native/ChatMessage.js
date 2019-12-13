@@ -8,7 +8,7 @@ import { ColorSchemeRegistry } from '../../../base/color-scheme';
 import { translate } from '../../../base/i18n';
 import { Linkify } from '../../../base/react';
 import { connect } from '../../../base/redux';
-import { type StyleType } from '../../../base/styles';
+import { type StyleType, ColorPalette } from '../../../base/styles';
 
 import { MESSAGE_TYPE_ERROR, MESSAGE_TYPE_LOCAL } from '../../constants';
 import { replaceNonUnicodeEmojis } from '../../functions';
@@ -48,6 +48,10 @@ class ChatMessage extends AbstractChatMessage<Props> {
         const messageBubbleStyle = [
             styles.messageBubble
         ];
+        const textWrapperStyle = [
+            styles.textWrapper
+        ];
+
 
         if (localMessage) {
             // This is a message sent by the local participant.
@@ -57,11 +61,15 @@ class ChatMessage extends AbstractChatMessage<Props> {
 
             // The bubble needs some additional styling
             messageBubbleStyle.push(_styles.localMessageBubble);
+
+            textWrapperStyle.push(styles.ownTextWrapper);
         } else if (message.messageType === MESSAGE_TYPE_ERROR) {
             // This is a system message.
 
             // The bubble needs some additional styling
             messageBubbleStyle.push(styles.systemMessageBubble);
+
+            textWrapperStyle.push(styles.systemTextWrapper);
         } else {
             // This is a remote message sent by a remote participant.
 
@@ -141,7 +149,7 @@ class ChatMessage extends AbstractChatMessage<Props> {
         }
 
         return (
-            <Text style = { _styles.displayName }>
+            <Text style = { styles.displayName }>
                 { message.displayName }
             </Text>
         );
