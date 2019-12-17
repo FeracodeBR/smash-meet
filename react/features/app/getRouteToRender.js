@@ -16,6 +16,7 @@ import {
     isWelcomePageAppEnabled,
     isWelcomePageUserEnabled
 } from '../welcome';
+import ProfileScreen from '../profile/components/ProfileScreen';
 
 /**
  * Object describing application route.
@@ -59,8 +60,10 @@ function _getMobileRoute(state): Promise<Route> {
 
     if (isRoomValid(state['features/base/conference'].room)) {
         route.component = Conference;
-    } else if (isWelcomePageAppEnabled(state)) {
-        route.component = WelcomePage;
+    } else if (isWelcomePageAppEnabled(state) && !state['features/base/app'].route) {
+        route.component = ProfileScreen;
+    } else if (state['features/base/app'].route === 'TESTE') {
+        route.component = ProfileScreen;
     } else {
         route.component = BlankPage;
     }

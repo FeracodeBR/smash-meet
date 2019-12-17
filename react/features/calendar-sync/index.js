@@ -5,3 +5,5 @@ export { isCalendarEnabled } from './functions';
 
 import './middleware';
 import './reducer';
+import '../profile/reducer';
+import '../profile/middleware';

@@ -2,8 +2,7 @@
 
 import type { Dispatch } from 'redux';
 
-import { APP_WILL_MOUNT, APP_WILL_UNMOUNT } from './actionTypes';
-
+import { APP_WILL_MOUNT, APP_WILL_UNMOUNT, APP_WILL_NAVIGATE } from './actionTypes';
 declare var APP;
 
 /**
@@ -46,5 +45,13 @@ export function appWillUnmount(app: Object) {
     return {
         type: APP_WILL_UNMOUNT,
         app
+    };
+}
+
+
+export function navigateToScreen(route: string) {
+    return {
+        type: APP_WILL_NAVIGATE,
+        route
     };
 }

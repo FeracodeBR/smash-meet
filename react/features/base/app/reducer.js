@@ -2,10 +2,18 @@
 
 import { ReducerRegistry } from '../redux';
 
-import { APP_WILL_MOUNT, APP_WILL_UNMOUNT } from './actionTypes';
+import { APP_WILL_MOUNT, APP_WILL_UNMOUNT, APP_WILL_NAVIGATE } from './actionTypes';
 
 ReducerRegistry.register('features/base/app', (state = {}, action) => {
     switch (action.type) {
+    case APP_WILL_NAVIGATE: {
+        const { route } = action;
+
+        return {
+            ...state,
+            route
+        };
+    }
     case APP_WILL_MOUNT: {
         const { app } = action;
 
