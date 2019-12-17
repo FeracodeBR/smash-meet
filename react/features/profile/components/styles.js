@@ -1,6 +1,6 @@
 // @flow
 
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { ColorPalette } from '../../base/styles/components/styles';
 
@@ -14,7 +14,7 @@ export default {
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 15,
-        paddingTop: getStatusBarHeight()
+        paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : 0
     },
     logo: {
         height: 33.86,
@@ -32,7 +32,7 @@ export default {
         color: '#BFBFBF',
         letterSpacing: 0.5,
         fontVariant: [ 'small-caps' ],
-        textTransform: 'lowercase'
+        textTransform: Platform.OS === 'ios' ? 'lowercase' : 'uppercase'
     },
     descriptionAndroid: {
         marginHorizontal: 7,
@@ -62,7 +62,7 @@ export default {
         backgroundColor: ColorPalette.black,
         opacity: 0.9,
         width: Dimensions.get('window').width,
-        paddingBottom: getBottomSpace(),
+        paddingBottom: Platform.OS === 'ios' ? getBottomSpace() : 8,
         paddingTop: 15
     },
     avatar: {
@@ -78,7 +78,8 @@ export default {
         color: '#BFBFBF',
         fontSize: 11,
         fontWeight: '300',
-        fontVariant: [ 'small-caps' ]
+        fontVariant: [ 'small-caps' ],
+        textTransform: Platform.OS === 'ios' ? 'lowercase' : 'uppercase'
     },
     userInfo: {
         flexDirection: 'row',
@@ -130,5 +131,5 @@ export default {
         fontSize: 11,
         fontWeight: '300',
         fontStyle: 'italic'
-    },
+    }
 };

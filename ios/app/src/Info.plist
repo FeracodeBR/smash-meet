@@ -66,6 +66,8 @@
 	<string>See your scheduled meetings in the app.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Participate in meetings with video.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>To sync contacts</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>

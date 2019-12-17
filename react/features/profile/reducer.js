@@ -1,0 +1,86 @@
+// @flow
+
+import { ReducerRegistry, set } from '../base/redux';
+import { PersistenceRegistry } from '../base/storage';
+
+import {
+    CLEAR_CONTACTS_INTEGRATION,
+    SET_CONTACTS_AUTHORIZATION,
+    SET_CONTACTS_ERROR,
+    SET_CONTACTS_EVENTS,
+    SET_CONTACTS_INTEGRATION,
+    SET_LOADING_CONTACTS_EVENTS,
+    SET_CONTACTS_AUTH_STATE,
+} from './actionTypes';
+
+/**
+ * The default state of the calendar feature.
+ *
+ * @type {Object}
+ */
+const DEFAULT_STATE = {
+    authorization: undefined,
+    contacts: [],
+    integrationReady: false,
+    integrationType: undefined,
+    msAuthState: undefined
+};
+
+/**
+ * Constant for the Redux subtree of the calendar feature.
+ *
+ * NOTE: This feature can be disabled and in that case, accessing this subtree
+ * directly will return undefined and will need a bunch of repetitive type
+ * checks in other features. Make sure you take care of those checks, or
+ * consider using the {@code isCalendarEnabled} value to gate features if
+ * needed.
+ */
+const STORE_NAME = 'features/contacts-sync';
+
+/**
+ * NOTE: Never persist the authorization value as it's needed to remain a
+ * runtime value to see if we need to re-request the calendar permission from
+ * the user.
+ */
+PersistenceRegistry.register(STORE_NAME, {
+    integrationType: true,
+    msAuthState: true
+});
+
+ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
+    switch (action.type) {
+    case CLEAR_CONTACTS_INTEGRATION:
+        return DEFAULT_STATE;
+
+    case SET_CONTACTS_AUTH_STATE: {
+        if (!action.msAuthState) {
+            // received request to delete the state
+            return set(state, 'msAuthState', undefined);
+        }
+
+        return set(state, 'msAuthState', {
+            ...state.msAuthState,
+            ...action.msAuthState
+        });
+    }
+
+    case SET_CONTACTS_AUTHORIZATION:
+        return set(state, 'authorization', action.authorization);
+
+    case SET_CONTACTS_ERROR:
+        return set(state, 'error', action.error);
+
+    case SET_CONTACTS_EVENTS:
+        return set(state, 'contacts', action.contacts);
+
+    case SET_CONTACTS_INTEGRATION:
+        return {
+            ...state
+        };
+
+    case SET_LOADING_CONTACTS_EVENTS:
+        return set(state, 'isLoadingContacts', action.isLoadingContacts);
+    }
+
+    return state;
+});

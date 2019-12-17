@@ -15,7 +15,7 @@ import {
     isWelcomePageAppEnabled,
     isWelcomePageUserEnabled
 } from '../welcome';
-import { ProfileScreen } from '../profile/components/ProfileScreen';
+import ProfileScreen from '../profile/components/ProfileScreen';
 
 /**
  * Object describing application route.

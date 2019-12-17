@@ -196,6 +196,8 @@ class ReactInstanceManagerHolder {
                 new com.horcrux.svg.SvgPackage(),
                 new com.ocetnik.timer.BackgroundTimerPackage(),
                 new com.reactnativecommunity.asyncstorage.AsyncStoragePackage(),
+                new org.reactnative.maskedview.RNCMaskedViewPackage(),
+                new com.rt2zz.reactnativecontacts.ReactNativeContacts(),
                 new com.reactnativecommunity.netinfo.NetInfoPackage(),
                 new com.reactnativecommunity.webview.RNCWebViewPackage(),
                 new com.rnimmersive.RNImmersivePackage(),
