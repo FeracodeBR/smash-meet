@@ -5,7 +5,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
-    SIGN_IN_RESPONSE
+    SIGN_IN_RESPONSE,
+    FETCH_PROFILES_FRIENDS_GROUPS
 } from './actionTypes';
 
 // import {}

@@ -247,32 +247,9 @@ class WelcomePage extends AbstractWelcomePage {
                     behavior = 'padding'
                     style = { styles.roomContainer } >
                     <View style = { styles.header }>
-                        <View style = { styles.column }>
-                            <Image
-                                source = { logo }
-                                style = { styles.logo } />
-                        </View>
-                        <View style = { styles.column }>
-                            <View style = { styles.row }>
-                                <Text style = { styles.title }>smash</Text>
-                                <Text
-                                    style = {
-                                        Platform.OS === 'ios' ? styles.smallDot : styles.smallDot
-                                    }>
-                                    .
-                                </Text>
-                            </View>
-                            <View style = { styles.row }>
-                                <Text
-                                    style = {
-                                        Platform.OS === 'ios'
-                                            ? styles.subtitleIos
-                                            : styles.subtitleAndroid
-                                    }>
-                                    meet
-                                </Text>
-                            </View>
-                        </View>
+                        <Image
+                            source={ logo }
+                            style = { styles.logo } />
                     </View>
                     <KeyboardAvoidingView
                         behavior = 'padding'

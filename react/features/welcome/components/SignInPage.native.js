@@ -246,42 +246,13 @@ class SignInPage extends AbstractWelcomePage {
                     behavior = 'padding'
                     style = { styles.roomContainer } >
                     <View style = { styles.header }>
-                        <View style = { styles.column }>
-                            <Image
-                                source = { logo }
-                                style = { styles.logo } />
-                        </View>
-                        <View style = { styles.column }>
-                            <View style = { styles.row }>
-                                <Text style = { styles.title }>smash</Text>
-                                <Text
-                                    style = {
-                                        Platform.OS === 'ios' ? styles.smallDot : styles.smallDot
-                                    }>
-                                    .
-                                </Text>
-                            </View>
-                            <View style = { styles.row }>
-                                <Text
-                                    style = {
-                                        Platform.OS === 'ios'
-                                            ? styles.subtitleIos
-                                            : styles.subtitleAndroid
-                                    }>
-                                    meet
-                                </Text>
-                            </View>
-                        </View>
+                        <Image
+                            source={ logo }
+                            style = { styles.logo } />
                     </View>
-                    <KeyboardAvoidingView
-                        behavior = 'padding'
+                    <View
                         style = { styles.content }>
                         <View style = { styles.joinControls } >
-                            <View style = { styles.errorContainer }>
-                                <Text style = { { color: _error ? ColorPalette.red : ColorPalette.transparent } }>
-                                    Invalid username or password
-                                </Text>
-                            </View>
                             <TextInput
                                 accessibilityLabel = { t(usernameAccLabel) }
                                 autoCapitalize = 'none'
@@ -339,6 +310,15 @@ class SignInPage extends AbstractWelcomePage {
                                     </Text>
                                 </TouchableOpacity>
                             </LinearGradient>
+                            {
+                                _error && (
+                                    <View style = { styles.errorContainer }>
+                                        <Text style = { { color: ColorPalette.red } }>
+                                            Invalid username or password
+                                        </Text>
+                                    </View>
+                                )
+                            }
                             <View style = { styles.separator }>
                                 <Text style = { styles.separatorLabel }>
                                     or
@@ -355,7 +335,7 @@ class SignInPage extends AbstractWelcomePage {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </KeyboardAvoidingView>
+                    </View>
                 </KeyboardAvoidingView>
             </View>
         );

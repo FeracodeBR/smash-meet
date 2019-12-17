@@ -4,6 +4,8 @@ import { Dimensions, Platform } from 'react-native';
 
 import { BoxModel, ColorPalette } from '../../base/styles';
 
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
+
 export const PLACEHOLDER_TEXT_COLOR = 'rgba(255, 255, 255, 0.3)';
 
 export const SIDEBAR_AVATAR_SIZE = 100;
@@ -278,10 +280,13 @@ export default {
      */
 
     header: {
-        flexDirection: 'row',
-        marginTop: 80,
+        marginTop: getStatusBarHeight(true) + 30,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    logo: {
+        width: 200,
+        height: 200
     },
     content: {
         position: 'absolute',
@@ -299,10 +304,6 @@ export default {
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center'
-    },
-    logo: {
-        alignSelf: 'center',
-        marginRight: 10
     },
     row: {
         flexDirection: 'row'
@@ -361,7 +362,8 @@ export default {
     errorContainer: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: BoxModel.margin
     },
 
     forgotPassword: {
@@ -388,12 +390,16 @@ export default {
     },
 
     backButton: {
+        width: 90,
+        height: 45,
         borderRadius: 50,
-        paddingHorizontal: 19,
-        paddingVertical: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: ColorPalette.buttonDarker
     },
     touchableWrapper: {
+        width: '100%',
+        height: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
@@ -404,7 +410,10 @@ export default {
         fontSize: 12,
         letterSpacing: -0.0241176,
         textShadowColor: 'rgba(0, 0, 0, 0.25)',
-        textShadowOffset: { width: 0, height: 0.774138 },
+        textShadowOffset: {
+            height: 0.774138,
+            width: 0
+        },
         textShadowRadius: 0.774138,
         ...smallCapsOrUppercase
     },

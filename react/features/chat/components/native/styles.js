@@ -1,6 +1,7 @@
 // @flow
 
 import { BoxModel, ColorPalette } from '../../../base/styles';
+import { ifIphoneX, getBottomSpace } from 'react-native-iphone-x-helper';
 
 /**
  * The styles of the feature chat.
@@ -39,9 +40,8 @@ export default {
     },
 
     footer: {
-        height: 100,
         paddingHorizontal: 10,
-        paddingTop: 10,
+        paddingBottom: getBottomSpace(),
         backgroundColor: ColorPalette.headerBackground
     },
 
@@ -73,7 +73,8 @@ export default {
     inputBar: {
         alignItems: 'center',
         flexDirection: 'row',
-        paddingHorizontal: BoxModel.padding
+        paddingHorizontal: BoxModel.padding,
+        paddingVertical: BoxModel.padding
     },
 
     inputField: {
