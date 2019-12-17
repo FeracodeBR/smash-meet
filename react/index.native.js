@@ -11,7 +11,7 @@
 import './features/base/lib-jitsi-meet/native/polyfills-bundler';
 
 import React, { PureComponent } from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, StatusBar } from 'react-native';
 
 import { App } from './features/app';
 import { IncomingCallApp } from './features/mobile/incoming-call';
@@ -40,6 +40,12 @@ type Props = {
  * @extends Component
  */
 class Root extends PureComponent<Props> {
+
+    constructor() {
+        super();
+        StatusBar.setBarStyle('light-content');
+    }
+
     /**
      * Implements React's {@link Component#render()}.
      *

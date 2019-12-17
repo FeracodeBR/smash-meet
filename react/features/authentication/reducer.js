@@ -7,7 +7,8 @@ import {
     STOP_WAIT_FOR_OWNER,
     UPGRADE_ROLE_FINISHED,
     UPGRADE_ROLE_STARTED,
-    WAIT_FOR_OWNER
+    WAIT_FOR_OWNER,
+    SIGN_IN
 } from './actionTypes';
 
 ReducerRegistry.register('features/authentication', (state = {}, action) => {
@@ -59,6 +60,12 @@ ReducerRegistry.register('features/authentication', (state = {}, action) => {
         return assign(state, {
             waitForOwnerTimeoutID: action.waitForOwnerTimeoutID
         });
+
+    case SIGN_IN:
+        return assign(state, {
+            userId: action.userId
+        });
+
     }
 
     return state;

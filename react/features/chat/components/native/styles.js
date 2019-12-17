@@ -1,6 +1,7 @@
 // @flow
 
 import { BoxModel, ColorPalette } from '../../../base/styles';
+import { ifIphoneX, getBottomSpace } from 'react-native-iphone-x-helper';
 
 /**
  * The styles of the feature chat.
@@ -25,8 +26,7 @@ export default {
      */
     backdrop: {
         backgroundColor: '#101013',
-        flex: 1,
-        opacity: 0.7
+        flex: 1
     },
 
     chatContainer: {
@@ -40,8 +40,8 @@ export default {
     },
 
     footer: {
-        height: 65,
-        marginTop: 8,
+        paddingHorizontal: 10,
+        paddingBottom: getBottomSpace(),
         backgroundColor: ColorPalette.headerBackground
     },
 
@@ -58,7 +58,8 @@ export default {
      * The text node for the display name.
      */
     displayName: {
-        color: 'rgb(118, 136, 152)',
+        color: ColorPalette.white,
+        fontWeight: 'bold',
         fontSize: 13
     },
 
@@ -72,7 +73,8 @@ export default {
     inputBar: {
         alignItems: 'center',
         flexDirection: 'row',
-        paddingHorizontal: BoxModel.padding
+        paddingHorizontal: BoxModel.padding,
+        paddingVertical: BoxModel.padding
     },
 
     inputField: {
@@ -109,8 +111,7 @@ export default {
      * The message text itself.
      */
     messageText: {
-        color: 'rgb(28, 32, 37)',
-        fontSize: 15
+        color: ColorPalette.white
     },
 
     /**
@@ -121,7 +122,8 @@ export default {
         flex: 1,
         flexDirection: 'row',
         marginHorizontal: 17,
-        marginVertical: 4
+        marginVertical: 4,
+        opacity: 1
     },
 
     /**
@@ -135,7 +137,7 @@ export default {
      * Style modifier for the {@code textWrapper} for own messages.
      */
     ownTextWrapper: {
-        backgroundColor: 'rgb(210, 231, 249)',
+        backgroundColor: 'rgb(84, 160, 165)',
         borderTopLeftRadius: 8,
         borderTopRightRadius: 0
     },
@@ -159,6 +161,9 @@ export default {
         fontStyle: 'italic'
     },
 
+    sendButton: {
+        paddingLeft: 10
+    },
     sendButtonIcon: {
         fontSize: 20,
         marginHorizontal: 4
@@ -180,7 +185,7 @@ export default {
      */
     textWrapper: {
         alignItems: 'flex-start',
-        backgroundColor: 'rgb(240, 243, 247)',
+        backgroundColor: 'rgb(142, 186, 180)',
         borderRadius: 8,
         borderTopLeftRadius: 0,
         flexDirection: 'column',
@@ -191,7 +196,7 @@ export default {
      * Text node for the timestamp.
      */
     timeText: {
-        color: 'rgb(164, 184, 209)',
+        color: ColorPalette.white,
         fontSize: 13
     }
 };

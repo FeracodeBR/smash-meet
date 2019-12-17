@@ -5,7 +5,8 @@ import { PersistenceRegistry } from '../base/storage';
 
 import {
     SET_SIDEBAR_VISIBLE,
-    SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE
+    SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
+    SIGN_IN_RESPONSE
 } from './actionTypes';
 
 /**
@@ -31,7 +32,12 @@ ReducerRegistry.register(STORE_NAME, (state = {}, action) => {
 
     case SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE:
         return set(state, 'defaultPage', action.pageIndex);
+
+    case SIGN_IN_RESPONSE:
+        return set(state, 'error', action.error);
+
     }
+
 
     return state;
 });

@@ -56,19 +56,20 @@ class Chat extends AbstractChat<Props> {
             <SlidingView
                 onHide = { this._onClose }
                 position = 'bottom'
-                show = { this.props._isOpen } >
+                show = { this.props._isOpen }>
                 <KeyboardAvoidingView
                     behavior = 'padding'
                     style = { styles.chatContainer }>
                     <HeaderWithNavigation
                         headerLabelKey = 'chat.title'
                         onPressBack = { this._onClose } />
-                    <SafeAreaView style = { _styles.backdrop }>
+                    <SafeAreaView style = { styles.backdrop }>
                         <MessageContainer messages = { this.props._messages } />
                         <MessageRecipient />
-                        <ChatInputBar onSend = { this.props._onSendMessage } />
                     </SafeAreaView>
-                    <View style = { styles.footer } />
+                    <View style = { styles.footer }>
+                        <ChatInputBar onSend = { this.props._onSendMessage } />
+                    </View>
                 </KeyboardAvoidingView>
             </SlidingView>
         );

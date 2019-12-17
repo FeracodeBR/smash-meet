@@ -53,6 +53,7 @@ export const ColorPalette = {
     primary: '#50D9C4',
     primaryLight: '#22D4EC',
     primaryLighter: '#27D3E8',
+    secondaryLight: '#00C1D4',
     primaryDark: '#02899B',
     primaryDarker: '#23D4EB',
     subtitle: '#3ED9C5',
@@ -62,5 +63,7 @@ export const ColorPalette = {
     sidebarLight: '#50D9C4',
     sidebarDark: '#22D4EC',
     headerLight: '#434850',
-    headerDark: '#292C31'
+    headerDark: '#292C31',
+    buttonDark: '#595E65',
+    buttonDarker: '#44484E'
 };

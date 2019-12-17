@@ -67,7 +67,7 @@ class WaitForOwnerDialog extends Component<Props> {
                 cancelKey = 'dialog.Cancel'
                 contentKey = {
                     {
-                        key: 'dialog.WaitForHostMsgWOk',
+                        key: 'dialog.WaitForHostMsgWithoutAuth',
                         params: { room }
                     }
                 }

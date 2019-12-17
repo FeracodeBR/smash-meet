@@ -35,6 +35,8 @@ import {
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { Icon, IconArrowBack } from '../../base/icons';
+
 /**
  * The native container rendering the welcome page.
  *
@@ -245,36 +247,13 @@ class WelcomePage extends AbstractWelcomePage {
                     behavior = 'padding'
                     style = { styles.roomContainer } >
                     <View style = { styles.header }>
-                        <View style = { styles.column }>
-                            <Image
-                                source = { logo }
-                                style = { styles.logo } />
-                        </View>
-                        <View style = { styles.column }>
-                            <View style = { styles.row }>
-                                <Text style = { styles.title }>smash</Text>
-                                <Text
-                                    style = {
-                                        Platform.OS === 'ios' ? styles.smallDot : styles.smallDot
-                                    }>
-                                    .
-                                </Text>
-                            </View>
-                            <View style = { styles.row }>
-                                <Text
-                                    style = {
-                                        Platform.OS === 'ios'
-                                            ? styles.subtitleIos
-                                            : styles.subtitleAndroid
-                                    }>
-                                    meet
-                                </Text>
-                            </View>
-                        </View>
+                        <Image
+                            source={ logo }
+                            style = { styles.logo } />
                     </View>
                     <KeyboardAvoidingView
                         behavior = 'padding'
-                        style = { styles.content }>
+                        style = { styles.body }>
                         <View style = { styles.joinControls } >
                             <TextInput
                                 accessibilityLabel = { t(roomnameAccLabel) }
@@ -296,20 +275,30 @@ class WelcomePage extends AbstractWelcomePage {
                                 value = { this.state.room } />
                         </View>
                         <View style = { styles.joinControls }>
-                            <LinearGradient
-                                colors = { [ ColorPalette.primaryLighter, ColorPalette.primaryDark ] }
-                                locations = { [ 0.2207, 0.9063 ] }
+                            <View
                                 style = { styles.gradientContainer }>
                                 <TouchableOpacity
                                     onPress = { this._onJoin }
                                     style = { styles.gradientButton }>
-                                    <Text style = { Platform.OS === 'ios' ? styles.textIos : styles.textAndroid }>
+                                    <Text style = { styles.gradientButtonText }>
                                         JOIN MEETING
                                     </Text>
                                 </TouchableOpacity>
-                            </LinearGradient>
+                            </View>
                         </View>
                     </KeyboardAvoidingView>
+                    <View style = { styles.footer }>
+                        <View style = { styles.backButton } >
+                            <TouchableOpacity style = { styles.touchableWrapper } onPress = { this._goBack } >
+                                <Icon
+                                    src = { IconArrowBack }
+                                    style = { styles.backButtonIcon } />
+                                <Text style = { styles.backButtonLabel }>
+                                    back
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </KeyboardAvoidingView>
             </View>
         );

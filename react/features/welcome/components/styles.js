@@ -1,8 +1,10 @@
 // @flow
 
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 import { BoxModel, ColorPalette } from '../../base/styles';
+
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 
 export const PLACEHOLDER_TEXT_COLOR = 'rgba(255, 255, 255, 0.3)';
 
@@ -18,6 +20,16 @@ export const SWITCH_UNDER_COLOR = 'rgba(0, 0, 0, 0.4)';
  * The default color of text on the WelcomePage.
  */
 const TEXT_COLOR = ColorPalette.white;
+
+const smallCapsOrUppercase = Platform.OS === 'ios'
+    ? {
+        fontVariant: [ 'small-caps' ],
+        textTransform: 'lowercase'
+    }
+    : {
+        textTransform: 'uppercase'
+    };
+
 
 /**
  * The styles of the React {@code Components} of the feature welcome including
@@ -170,7 +182,9 @@ export default {
      */
     roomContainer: {
         height: Dimensions.get('window').height,
-        backgroundColor: ColorPalette.screen
+        backgroundColor: ColorPalette.screen,
+        paddingHorizontal: 20,
+        alignItems: 'center'
     },
 
     /**
@@ -249,7 +263,8 @@ export default {
         fontSize: 16,
         height: 40,
         padding: 4,
-        textAlign: 'center'
+        paddingLeft: 15,
+        marginVertical: 10
     },
 
     /**
@@ -265,19 +280,30 @@ export default {
      */
 
     header: {
-        flexDirection: 'row',
-        marginTop: 80,
+        marginTop: getStatusBarHeight(true) + 30,
         alignItems: 'center',
         justifyContent: 'center'
     },
+    logo: {
+        width: 200,
+        height: 200
+    },
     content: {
         position: 'absolute',
-        top: '45%',
+        top: '25%',
         width: '100%'
     },
-    logo: {
-        alignSelf: 'center',
-        marginRight: 10
+    body: {
+        position: 'absolute',
+        top: '35%',
+        width: '100%'
+    },
+    footer: {
+        position: 'absolute',
+        bottom: '10%',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     row: {
         flexDirection: 'row'
@@ -317,25 +343,82 @@ export default {
     gradientContainer: {
         height: 40,
         width: '100%',
-        borderRadius: 20
+        borderRadius: 20,
+        backgroundColor: ColorPalette.secondaryLight
     },
-    textIos: {
-        fontSize: 16,
-        textTransform: 'lowercase',
+    gradientButtonText: {
+        fontSize: 17,
         color: ColorPalette.white,
-        fontVariant: [ 'small-caps' ],
-        letterSpacing: 0.5
-    },
-    textAndroid: {
-        fontSize: 16,
-        textTransform: 'uppercase',
-        color: ColorPalette.white,
-        letterSpacing: 0.5
+        letterSpacing: 0.5,
+        ...smallCapsOrUppercase
     },
     gradientButton: {
         width: '100%',
         height: 40,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+
+    errorContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: BoxModel.margin
+    },
+
+    forgotPassword: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    forgotPasswordLabel: {
+        color: ColorPalette.primaryDarker,
+        fontWeight: '300',
+        fontSize: 12
+    },
+
+    separator: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 20
+    },
+    separatorLabel: {
+        color: ColorPalette.lightGrey,
+        fontSize: 16,
+        fontVariant: [ 'small-caps' ],
+        ...smallCapsOrUppercase
+    },
+
+    backButton: {
+        width: 90,
+        height: 45,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: ColorPalette.buttonDarker
+    },
+    touchableWrapper: {
+        width: '100%',
+        height: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    backButtonLabel: {
+        color: ColorPalette.white,
+        paddingLeft: 5,
+        fontSize: 12,
+        letterSpacing: -0.0241176,
+        textShadowColor: 'rgba(0, 0, 0, 0.25)',
+        textShadowOffset: {
+            height: 0.774138,
+            width: 0
+        },
+        textShadowRadius: 0.774138,
+        ...smallCapsOrUppercase
+    },
+    backButtonIcon: {
+        color: ColorPalette.white,
+        fontSize: 20
     }
 };

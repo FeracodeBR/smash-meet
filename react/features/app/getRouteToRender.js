@@ -12,6 +12,7 @@ import { UnsupportedDesktopBrowser } from '../unsupported-browser';
 import {
     BlankPage,
     WelcomePage,
+    SignInPage,
     isWelcomePageAppEnabled,
     isWelcomePageUserEnabled
 } from '../welcome';

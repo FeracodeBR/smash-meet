@@ -8,6 +8,7 @@ import { createWelcomePageEvent, sendAnalytics } from '../../analytics';
 import { appNavigate } from '../../app';
 import { isCalendarEnabled } from '../../calendar-sync';
 import { isRoomValid } from '../../base/conference';
+import { signIn } from '../actions';
 
 /**
  * {@code AbstractWelcomePage}'s React {@code Component} prop types.
@@ -32,7 +33,9 @@ type Props = {
     /**
      * The Redux dispatch Function.
      */
-    dispatch: Dispatch<any>
+    dispatch: Dispatch<any>,
+
+    _error: boolean
 };
 
 /**
@@ -73,7 +76,10 @@ export class AbstractWelcomePage extends Component<Props, *> {
         joining: false,
         room: '',
         roomPlaceholder: '',
-        updateTimeoutId: undefined
+        updateTimeoutId: undefined,
+        username: '',
+        password: '',
+        error: undefined
     };
 
     /**
@@ -89,7 +95,13 @@ export class AbstractWelcomePage extends Component<Props, *> {
         this._animateRoomnameChanging
             = this._animateRoomnameChanging.bind(this);
         this._onJoin = this._onJoin.bind(this);
+        this._enterMeeting = this._enterMeeting.bind(this);
+        this._goBack = this._goBack.bind(this);
+        this._forgotPassword = this._forgotPassword.bind(this);
+        this._onSignIn = this._onSignIn.bind(this);
         this._onRoomChange = this._onRoomChange.bind(this);
+        this._onUsernameChange = this._onUsernameChange.bind(this);
+        this._onPasswordChange = this._onPasswordChange.bind(this);
         this._updateRoomname = this._updateRoomname.bind(this);
     }
 
@@ -197,7 +209,34 @@ export class AbstractWelcomePage extends Component<Props, *> {
         }
     }
 
+    _enterMeeting: () => void;
+
+    _enterMeeting() {
+        //dispatch navigation to welcome page
+    }
+
+    _goBack: () => void;
+
+    _goBack() {
+        //dispatch navigation to go back
+    }
+
+    _forgotPassword: () => void;
+
+    _forgotPassword() {
+        //dispatch navigation to forgot password
+    }
+
+    _onSignIn: () => void;
+
+    _onSignIn() {
+        const {username, password} = this.state;
+        if(username && password) this.props.dispatch(signIn(username, password))
+    }
+
     _onRoomChange: (string) => void;
+    _onUsernameChange: (string) => void;
+    _onPasswordChange: (string) => void;
 
     /**
      * Handles 'change' event for the room name text input field.
@@ -209,6 +248,14 @@ export class AbstractWelcomePage extends Component<Props, *> {
      */
     _onRoomChange(value: string) {
         this.setState({ room: value });
+    }
+
+    _onUsernameChange(value: string) {
+        this.setState({ username: value });
+    }
+
+    _onPasswordChange(value: string) {
+        this.setState({ password: value });
     }
 
     _updateRoomname: () => void;
@@ -252,6 +299,7 @@ export function _mapStateToProps(state: Object) {
     return {
         _calendarEnabled: isCalendarEnabled(state),
         _room: state['features/base/conference'].room,
-        _settings: state['features/base/settings']
+        _settings: state['features/base/settings'],
+        _error: state['features/welcome'].error
     };
 }

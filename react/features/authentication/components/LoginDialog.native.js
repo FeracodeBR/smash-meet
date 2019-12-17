@@ -21,9 +21,6 @@ import type { StyleType } from '../../base/styles';
 import { authenticateAndUpgradeRole, cancelLogin } from '../actions';
 import styles from './styles';
 
-// eslint-disable-next-line max-len
-const PUBLIC_TOKEN = 'bFdkZXJ1VGFsdUpyY2VicmxsaWFiYW9vbG9wZW9haWwkK0dpOGd2ZkJZVnFWR3ZnV1JRVmYyVmIvQUVlTHdSVW9VaTIybXZzemhSNG0rVytScWRqZHNjd0JwTzJjUlNxTGQ3TTN0MTNleWFWeDFVUGwxQ2xBREo2bGxXbkdtZzBXVWV6cnI5aytWQ2tIQ1dBY1E5VTVjTEpJY0tMVUtEYVdkTGFJWnhMbktaUVlLZTk4a3VVQktBdVNZMjBPMUt6aGxLYldySDg3Q1kwPQ==';
-
 /**
  * The type of the React {@link Component} props of {@link LoginDialog}.
  */
@@ -280,17 +277,19 @@ class LoginDialog extends Component<Props, State> {
         const { password, username } = this.state;
         const room = `https://${confID}`;
 
-        fetch('https://staging.smashinnovations.com/module/system/authenticate',
-            { method: 'POST',
-                headers: new Headers({
-                    Authorization: PUBLIC_TOKEN,
-                    'Content-Type': 'application/json'
-                }),
-                body: JSON.stringify({ password,
-                    username })
-            }
-        ).then(res => console.log(res))
-            .catch(err => console.log(err));
+        fetch('https://staging.smashinnovations.com/module/system/authenticate', {
+            method: 'POST',
+            headers: new Headers({
+                'authorization': 'bFdkZXJ1VGFsdUpyY2VicmxsaWFiYW9vbG9wZW9haWwkK0dpOGd2ZkJZVnFWR3ZnV1JRVmYyVmIvQUVlTHdSVW9VaTIybXZzemhSNG0rVytScWRqZHNjd0JwTzJjUlNxTGQ3TTN0MTNleWFWeDFVUGwxQ2xBREo2bGxXbkdtZzBXVWV6cnI5aytWQ2tIQ1dBY1E5VTVjTEpJY0tMVUtEYVdkTGFJWnhMbktaUVlLZTk4a3VVQktBdVNZMjBPMUt6aGxLYldySDg3Q1kwPQ==',
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({ password, username })
+        })
+        .then(res => {
+            console.log('res', res);
+
+        })
+        .catch(err => console.log(err));
 
 
         const jid = toJid(username, this.props._configHosts);
@@ -298,6 +297,7 @@ class LoginDialog extends Component<Props, State> {
 
         // If there's a conference it means that the connection has succeeded,
         // but authentication is required in order to join the room.
+
         if (conference) {
             r = dispatch(authenticateAndUpgradeRole(jid, password, conference));
         } else {

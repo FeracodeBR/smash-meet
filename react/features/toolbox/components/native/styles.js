@@ -52,7 +52,7 @@ const styles = {
         flexDirection: 'row',
         flexGrow: 0,
         justifyContent: 'space-evenly',
-        marginBottom: BoxModel.margin / 2,
+        marginBottom: BoxModel.margin + 5,
         paddingHorizontal: BoxModel.margin
     },
 

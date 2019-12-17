@@ -60,9 +60,14 @@ class BaseSubmitDialog<P: Props, S: *> extends BaseDialog<P, S> {
                 <View style = { brandedDialog.mainWrapper }>
                     { this._renderSubmittable() }
                 </View>
+
+
                 <View style = { brandedDialog.buttonWrapper }>
                     { additionalButtons }
-                    <TouchableOpacity
+
+                    {/* Submit button */}
+
+                    {/* <TouchableOpacity
                         disabled = { this.props.okDisabled }
                         onPress = { this._onSubmit }
                         style = { [
@@ -74,7 +79,7 @@ class BaseSubmitDialog<P: Props, S: *> extends BaseDialog<P, S> {
                         <Text style = { _dialogStyles.buttonLabel }>
                             { t(this._getSubmitButtonKey()) }
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
         );
