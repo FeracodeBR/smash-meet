@@ -2,37 +2,36 @@ import React from 'react';
 import {
     Animated,
     Keyboard,
-    SafeAreaView,
     TextInput,
     TouchableHighlight,
     View,
     KeyboardAvoidingView,
     TouchableOpacity,
-    Platform,
-    Image
+    Image,
+    ActivityIndicator
 } from 'react-native';
 
-import { getName } from '../../app';
+import {getName} from '../../app';
 import logo from '../../../../images/smash-meet-logo.png';
 
-import { ColorSchemeRegistry } from '../../base/color-scheme';
-import { translate } from '../../base/i18n';
-import { MEDIA_TYPE } from '../../base/media';
-import { LoadingIndicator, Text } from '../../base/react';
-import { connect } from '../../base/redux';
-import { ColorPalette } from '../../base/styles';
+import {ColorSchemeRegistry} from '../../base/color-scheme';
+import {translate} from '../../base/i18n';
+import {MEDIA_TYPE} from '../../base/media';
+import {LoadingIndicator, Text} from '../../base/react';
+import {connect} from '../../base/redux';
+import {ColorPalette} from '../../base/styles';
 import {
     createDesiredLocalTracks,
     destroyLocalTracks
 } from '../../base/tracks';
 
-import { setSideBarVisible } from '../actions';
+import {setSideBarVisible} from '../actions';
 
 import {
     AbstractWelcomePage,
     _mapStateToProps as _abstractMapStateToProps
 } from './AbstractWelcomePage';
-import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
+import styles, {PLACEHOLDER_TEXT_COLOR} from './styles';
 import LinearGradient from 'react-native-linear-gradient';
 
 /**
@@ -60,6 +59,9 @@ class SignInPage extends AbstractWelcomePage {
         // Specially bind functions to avoid function definition on render.
         this._onFieldBlur = this._onFieldFocusChange.bind(this, false);
         this._onFieldFocus = this._onFieldFocusChange.bind(this, true);
+
+        this.state.username = 'thiagoSTG99';
+        this.state.password = 'thiago123';
     }
 
     /**
@@ -73,7 +75,7 @@ class SignInPage extends AbstractWelcomePage {
     componentDidMount() {
         super.componentDidMount();
 
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
 
         if (this.props._settings.startAudioOnly) {
             dispatch(destroyLocalTracks());
@@ -81,9 +83,9 @@ class SignInPage extends AbstractWelcomePage {
             // Make sure we don't request the permission for the camera from
             // the start. We will, however, create a video track iff the user
             // already granted the permission.
-            navigator.permissions.query({ name: 'camera' }).then(response => {
+            navigator.permissions.query({name: 'camera'}).then(response => {
                 response === 'granted'
-                    && dispatch(createDesiredLocalTracks(MEDIA_TYPE.VIDEO));
+                && dispatch(createDesiredLocalTracks(MEDIA_TYPE.VIDEO));
             });
         }
     }
@@ -124,9 +126,9 @@ class SignInPage extends AbstractWelcomePage {
      */
     _onFieldFocusChange(focused) {
         focused
-            && this.setState({
-                _fieldFocused: true
-            });
+        && this.setState({
+            _fieldFocused: true
+        });
 
         Animated.timing(
             this.state.hintBoxAnimation,
@@ -136,10 +138,10 @@ class SignInPage extends AbstractWelcomePage {
             })
             .start(animationState =>
                 animationState.finished
-                    && !focused
-                    && this.setState({
-                        _fieldFocused: false
-                    }));
+                && !focused
+                && this.setState({
+                    _fieldFocused: false
+                }));
     }
 
     /**
@@ -161,17 +163,17 @@ class SignInPage extends AbstractWelcomePage {
      */
     _renderHintBox() {
         if (this.state._fieldFocused) {
-            const { t } = this.props;
+            const {t} = this.props;
 
             return (
-                <Animated.View style = { this._getHintBoxStyle() }>
-                    <View style = { styles.hintTextContainer } >
-                        <Text style = { styles.hintText }>
-                            { t('welcomepage.roomnameHint') }
+                <Animated.View style={this._getHintBoxStyle()}>
+                    <View style={styles.hintTextContainer}>
+                        <Text style={styles.hintText}>
+                            {t('welcomepage.roomnameHint')}
                         </Text>
                     </View>
-                    <View style = { styles.hintButtonContainer } >
-                        { this._renderJoinButton() }
+                    <View style={styles.hintButtonContainer}>
+                        {this._renderJoinButton()}
                     </View>
                 </Animated.View>
             );
@@ -187,7 +189,7 @@ class SignInPage extends AbstractWelcomePage {
      * @returns {ReactElement}
      */
     _renderJoinButton() {
-        const { t } = this.props;
+        const {t} = this.props;
         let children;
 
 
@@ -198,14 +200,14 @@ class SignInPage extends AbstractWelcomePage {
             children = (
                 <View>
                     <LoadingIndicator
-                        color = { styles.buttonText.color }
-                        size = 'small' />
+                        color={styles.buttonText.color}
+                        size='small'/>
                 </View>
             );
         } else {
             children = (
-                <Text style = { styles.buttonText }>
-                    { this.props.t('welcomepage.join') }
+                <Text style={styles.buttonText}>
+                    {this.props.t('welcomepage.join')}
                 </Text>
             );
         }
@@ -215,19 +217,21 @@ class SignInPage extends AbstractWelcomePage {
 
         return (
             <TouchableHighlight
-                accessibilityLabel =
-                    { t('welcomepage.accessibilityLabel.join') }
-                disabled = { buttonDisabled }
-                onPress = { this._onJoin }
-                style = { [
+                accessibilityLabel=
+                    {t('welcomepage.accessibilityLabel.join')}
+                disabled={buttonDisabled}
+                onPress={this._onJoin}
+                style={[
                     styles.button,
                     buttonDisabled ? styles.buttonDisabled : null
-                ] }
-                underlayColor = { ColorPalette.white }>
-                { children }
+                ]}
+                underlayColor={ColorPalette.white}>
+                {children}
             </TouchableHighlight>
         );
     }
+
+
 
     /**
      * Renders the full welcome page.
@@ -237,99 +241,103 @@ class SignInPage extends AbstractWelcomePage {
     _renderFullUI() {
         const usernameAccLabel = 'signinpage.accessibilityLabel.username';
         const passwordAccLabel = 'signinpage.accessibilityLabel.password';
-        const { _headerStyles, t, _error } = this.props;
+        const {_headerStyles, t, _error, _loading} = this.props;
 
         return (
             <View
-                style = { _headerStyles }>
+                style={_headerStyles}>
                 <KeyboardAvoidingView
-                    behavior = 'padding'
-                    style = { styles.roomContainer } >
-                    <View style = { styles.header }>
+                    behavior='padding'
+                    style={styles.roomContainer}>
+                    <View style={styles.header}>
                         <Image
-                            source={ logo }
-                            style = { styles.logo } />
+                            source={logo}
+                            style={styles.logo}/>
                     </View>
                     <View
-                        style = { styles.content }>
-                        <View style = { styles.joinControls } >
+                        style={styles.content}>
+                        <View style={styles.joinControls}>
                             <TextInput
-                                accessibilityLabel = { t(usernameAccLabel) }
-                                autoCapitalize = 'none'
-                                autoComplete = 'off'
-                                autoCorrect = { false }
-                                autoFocus = { false }
-                                onBlur = { this._onFieldBlur }
-                                onChangeText = { this._onUsernameChange }
-                                onFocus = { this._onFieldFocus }
-                                placeholder = { 'Username' }
-                                placeholderTextColor = {
+                                accessibilityLabel={t(usernameAccLabel)}
+                                autoCapitalize='none'
+                                autoComplete='off'
+                                autoCorrect={false}
+                                autoFocus={false}
+                                onBlur={this._onFieldBlur}
+                                onChangeText={this._onUsernameChange}
+                                onFocus={this._onFieldFocus}
+                                placeholder={'Username'}
+                                placeholderTextColor={
                                     PLACEHOLDER_TEXT_COLOR
                                 }
-                                returnKeyType = { 'go' }
-                                style = { styles.textInput }
-                                underlineColorAndroid = 'transparent'
-                                value = { this.state.username } />
+                                returnKeyType={'go'}
+                                style={styles.textInput}
+                                underlineColorAndroid='transparent'
+                                value={this.state.username}/>
                             <TextInput
-                                accessibilityLabel = { t(passwordAccLabel) }
-                                autoCapitalize = 'none'
-                                autoComplete = 'off'
-                                autoCorrect = { false }
-                                autoFocus = { false }
-                                onBlur = { this._onFieldBlur }
-                                onChangeText = { this._onPasswordChange }
-                                onFocus = { this._onFieldFocus }
-                                onSubmitEditing = { this._onSignIn }
-                                placeholder = { 'Password' }
-                                placeholderTextColor = {
+                                accessibilityLabel={t(passwordAccLabel)}
+                                autoCapitalize='none'
+                                autoComplete='off'
+                                autoCorrect={false}
+                                autoFocus={false}
+                                onBlur={this._onFieldBlur}
+                                onChangeText={this._onPasswordChange}
+                                onFocus={this._onFieldFocus}
+                                onSubmitEditing={this._onSignIn}
+                                placeholder={'Password'}
+                                placeholderTextColor={
                                     PLACEHOLDER_TEXT_COLOR
                                 }
-                                returnKeyType = { 'go' }
-                                style = { styles.textInput }
-                                underlineColorAndroid = 'transparent'
-                                value = { this.state.password }
-                                secureTextEntry />
+                                returnKeyType={'go'}
+                                style={styles.textInput}
+                                underlineColorAndroid='transparent'
+                                value={this.state.password}
+                                secureTextEntry/>
                             {/* <TouchableOpacity style = { styles.forgotPassword } onPress = { this._forgotPassword } >
                                 <Text style = { styles.forgotPasswordLabel }>
                                     Forgot Password
                                 </Text>
                             </TouchableOpacity> */}
                         </View>
-                        <View style = { styles.joinControls }>
+                        <View style={styles.joinControls}>
                             <LinearGradient
-                                colors = { [ ColorPalette.sidebarLight, ColorPalette.primaryLight ] }
-                                locations = { [ 0.2207, 0.9063 ] }
-                                start = {{ x: 0, y: 0 }}
-                                end = {{ x: 1, y: 1 }}
-                                style = { styles.gradientContainer }>
+                                colors={[ColorPalette.sidebarLight, ColorPalette.primaryLight]}
+                                locations={[0.2207, 0.9063]}
+                                start={{x: 0, y: 0}}
+                                end={{x: 1, y: 1}}
+                                style={styles.gradientContainer}>
                                 <TouchableOpacity
-                                    onPress = { this._onSignIn }
-                                    style = { styles.gradientButton }>
-                                    <Text style = { styles.gradientButtonText }>
-                                        SIGN IN
-                                    </Text>
+                                    onPress={this._onSignIn}
+                                    style={styles.gradientButton}>
+                                    {
+                                        _loading ?
+                                            <ActivityIndicator color={ColorPalette.white}/> :
+                                            <Text style = { styles.gradientButtonText }>
+                                                SIGN IN
+                                            </Text>
+                                    }
                                 </TouchableOpacity>
                             </LinearGradient>
                             {
                                 _error && (
-                                    <View style = { styles.errorContainer }>
-                                        <Text style = { { color: ColorPalette.red } }>
+                                    <View style={styles.errorContainer}>
+                                        <Text style={{color: ColorPalette.red}}>
                                             Invalid username or password
                                         </Text>
                                     </View>
                                 )
                             }
-                            <View style = { styles.separator }>
-                                <Text style = { styles.separatorLabel }>
+                            <View style={styles.separator}>
+                                <Text style={styles.separatorLabel}>
                                     or
                                 </Text>
                             </View>
                             <View
-                                style = { styles.gradientContainer }>
+                                style={styles.gradientContainer}>
                                 <TouchableOpacity
-                                    onPress = { this._enterMeeting }
-                                    style = { styles.gradientButton }>
-                                    <Text style = { styles.gradientButtonText }>
+                                    onPress={this._enterMeeting}
+                                    style={styles.gradientButton}>
+                                    <Text style={styles.gradientButtonText}>
                                         ENTER MEETING
                                     </Text>
                                 </TouchableOpacity>
@@ -347,12 +355,12 @@ class SignInPage extends AbstractWelcomePage {
      * @returns {ReactElement}
      */
     _renderReducedUI() {
-        const { t } = this.props;
+        const {t} = this.props;
 
         return (
-            <View style = { styles.reducedUIContainer }>
-                <Text style = { styles.reducedUIText }>
-                    { t('welcomepage.reducedUIText', { app: getName() }) }
+            <View style={styles.reducedUIContainer}>
+                <Text style={styles.reducedUIText}>
+                    {t('welcomepage.reducedUIText', {app: getName()})}
                 </Text>
             </View>
         );
@@ -368,7 +376,7 @@ class SignInPage extends AbstractWelcomePage {
 function _mapStateToProps(state) {
     return {
         ..._abstractMapStateToProps(state),
-        _headerStyles: ColorSchemeRegistry.get(state, 'Header')
+        _headerStyles: ColorSchemeRegistry.get(state, 'Header'),
     };
 }
 

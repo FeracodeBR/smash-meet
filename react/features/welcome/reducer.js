@@ -1,6 +1,6 @@
 // @flow
 
-import { ReducerRegistry, set } from '../base/redux';
+import { ReducerRegistry, set, assign } from '../base/redux';
 import { PersistenceRegistry } from '../base/storage';
 
 import {
@@ -34,7 +34,10 @@ ReducerRegistry.register(STORE_NAME, (state = {}, action) => {
         return set(state, 'defaultPage', action.pageIndex);
 
     case SIGN_IN_RESPONSE:
-        return set(state, 'error', action.error);
+        return assign(state, {
+            error: action.error,
+            loading: action.loading,
+        });
 
     }
 

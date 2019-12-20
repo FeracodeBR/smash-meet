@@ -2,6 +2,7 @@
 
 import { generateRoomWithoutSeparator } from 'js-utils/random';
 import type { Component } from 'react';
+import {AsyncStorage} from 'react-native';
 
 import { isRoomValid } from '../base/conference';
 import { toState } from '../base/redux';
@@ -55,17 +56,19 @@ export function _getRouteToRender(stateful: Function | Object): Promise<Route> {
  * @param {Object} state - The redux state.
  * @returns {Promise<Route>}
  */
-function _getMobileRoute(state): Promise<Route> {
+async function _getMobileRoute(state): Promise<Route> {
     const route = _getEmptyRoute();
 
     if (isRoomValid(state['features/base/conference'].room)) {
         route.component = Conference;
-    } else if (isWelcomePageAppEnabled(state) && !state['features/base/app'].route) {
+    } else if (state['features/base/app'].route === 'ProfileScreen') {
         route.component = ProfileScreen;
-    } else if (state['features/base/app'].route === 'TESTE') {
-        route.component = ProfileScreen;
+    } else if (state['features/base/app'].route === 'SignIn') {
+        route.component = SignInPage;
+    // } else if (!state['features/base/app'].route && (await AsyncStorage.getItem('accessToken'))) {
+    //     route.component = ProfileScreen;
     } else {
-        route.component = BlankPage;
+        route.component = SignInPage;
     }
 
     return Promise.resolve(route);

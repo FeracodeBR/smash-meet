@@ -9,7 +9,7 @@ import {
     FETCH_PROFILES_FRIENDS_GROUPS
 } from './actionTypes';
 
-// import {}
+import {navigateToScreen} from "../base/app";
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -47,6 +47,13 @@ export function setWelcomePageListsDefaultPage(pageIndex: number) {
 /* eslint-disable */
 export function signIn(username: string, password: string) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
+
+        dispatch({
+            type: SIGN_IN_RESPONSE,
+            error: undefined,
+            loading: true
+        });
+
         try {
             const headers = new Headers({
                 'authorization': 'bFdkZXJ1VGFsdUpyY2VicmxsaWFiYW9vbG9wZW9haWwkK0dpOGd2ZkJZVnFWR3ZnV1JRVmYyVmIvQUVlTHdSVW9VaTIybXZzemhSNG0rVytScWRqZHNjd0JwTzJjUlNxTGQ3TTN0MTNleWFWeDFVUGwxQ2xBREo2bGxXbkdtZzBXVWV6cnI5aytWQ2tIQ1dBY1E5VTVjTEpJY0tMVUtEYVdkTGFJWnhMbktaUVlLZTk4a3VVQktBdVNZMjBPMUt6aGxLYldySDg3Q1kwPQ==',
@@ -57,20 +64,20 @@ export function signIn(username: string, password: string) {
             { method: 'POST',
                 headers,
                 body: JSON.stringify({ password, username })
-            })
+            });
 
-            console.log('auth', auth)
+            console.log('auth', auth);
 
             if(auth.ok) {
                 auth.json().then(async res => {
                     const {defaultProfile, accessToken} = res;
 
-                    AsyncStorage.setItem('profile', defaultProfile.id)
-                    AsyncStorage.setItem('accessToken', accessToken)
+                    AsyncStorage.setItem('profile', defaultProfile.id);
+                    AsyncStorage.setItem('accessToken', accessToken);
 
                     headers.set('authorization', accessToken);
 
-                    const [profileListRes, friendListRes, groupListRes] = await Promise.all([
+                    const [profilesRes, friendsRes, groupsRes] = await Promise.all([
                         fetch('https://staging.smashinnovations.com/module/user/profile', {
                             method: 'GET',
                             headers
@@ -83,35 +90,38 @@ export function signIn(username: string, password: string) {
                             method: 'GET',
                             headers
                         })
-                    ])
+                    ]);
 
-                    if(profileListRes.ok && friendListRes.ok && groupListRes.ok) {
-                        const [profileList, friendList, groupList] = await Promise.all([
-                            profileListRes.json(),
-                            friendListRes.json(),
-                            groupListRes.json()
-                        ])
+                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok) {
+                        const [profiles, friends, groups] = await Promise.all([
+                            profilesRes.json(),
+                            friendsRes.json(),
+                            groupsRes.json()
+                        ]);
 
-                        console.log('profileList', profileList);
-                        console.log('friendList', friendList);
-                        console.log('groupList', groupList);
+                        const defaultProfile = profiles.filter(profile => profile.default)[0];
+                        const otherProfiles = profiles.filter(profile => !profile.default);
+                        const friendsWithoutMe = friends.friendsList.filter(friend => friend.profileRef !== friends.profileRef);
 
                         dispatch({
                             type: SIGN_IN_RESPONSE,
+                            loading: false,
                             error: undefined
                         });
 
                         dispatch({
                             type: FETCH_PROFILES_FRIENDS_GROUPS,
-                            profileList,
-                            friendList,
-                            groupList
+                            defaultProfile,
+                            profiles: otherProfiles,
+                            friends: friendsWithoutMe,
+                            groups
                         });
 
-                        //dispatch navigate to route
+                        dispatch(navigateToScreen('ProfileScreen'));
                     } else {
                         dispatch({
                             type: SIGN_IN_RESPONSE,
+                            loading: false,
                             error: true
                         });
                     }
@@ -119,6 +129,7 @@ export function signIn(username: string, password: string) {
             } else {
                 dispatch({
                     type: SIGN_IN_RESPONSE,
+                    loading: false,
                     error: true
                 });
             }
@@ -127,6 +138,7 @@ export function signIn(username: string, password: string) {
 
             dispatch({
                 type: SIGN_IN_RESPONSE,
+                loading: false,
                 error: true
             });
         }

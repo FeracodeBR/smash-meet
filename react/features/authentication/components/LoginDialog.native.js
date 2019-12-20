@@ -336,6 +336,8 @@ function _mapStateToProps(state) {
         error: connectionError
     } = state['features/base/connection'];
 
+    console.log('authRequired', authRequired);
+
     return {
         ..._abstractMapStateToProps(state),
         _conference: authRequired,

@@ -43,7 +43,8 @@ export default {
         textTransform: 'uppercase'
     },
     content: {
-        flex: 1
+        flex: 1,
+        // paddingHorizontal: 10
     },
     subheader: {
         paddingTop: 12,
@@ -52,18 +53,34 @@ export default {
         borderColor: '#40444B',
         borderBottomWidth: 2
     },
+    collapsible: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: ColorPalette.black,
+        // backgroundColor: ColorPalette.red,
+        // maxHeight: 500,
+    },
+    collapsed: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        // paddingHorizontal: 15,
+        paddingVertical: 15,
+        width: Dimensions.get('window').width,
+    },
     footer: {
+        height: 100,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 15,
-        position: 'absolute',
-        bottom: 0,
-        backgroundColor: ColorPalette.black,
-        opacity: 0.9,
-        width: Dimensions.get('window').width,
+        paddingTop: 15,
         paddingBottom: Platform.OS === 'ios' ? getBottomSpace() : 8,
-        paddingTop: 15
+        backgroundColor: ColorPalette.black,
+        width: Dimensions.get('window').width,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     avatar: {
         height: 42,
@@ -96,7 +113,7 @@ export default {
         backgroundColor: '#5A7BEF',
         borderRadius: 100,
         paddingHorizontal: 6,
-        paddingVertical: 2
+        paddingVertical: 2,
     },
     profileContainer: {
         flexDirection: 'row',
@@ -109,10 +126,12 @@ export default {
         fontSize: 12,
         fontWeight: 'bold'
     },
+    menuIconContainer: {
+        marginLeft: 5
+    },
     icon: {
         color: '#656565',
-        fontSize: 12,
-        marginLeft: 2
+        fontSize: 12
     },
     iconImage: {
         marginHorizontal: 12
@@ -121,7 +140,8 @@ export default {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 15,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
         width: Dimensions.get('window').width,
         borderColor: '#40444B',
         borderBottomWidth: 2
@@ -131,5 +151,34 @@ export default {
         fontSize: 11,
         fontWeight: '300',
         fontStyle: 'italic'
+    },
+    options: {
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        paddingHorizontal: 15,
+    },
+    optionsHeader: {
+        width: '100%',
+        borderColor: '#40444B',
+        borderBottomWidth: 2,
+        paddingBottom: 5,
+    },
+    optionsBody: {
+        paddingTop: 10,
+        paddingBottom: 20,
+    },
+    optionsHeaderText: {
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: 'white'
+    },
+    optionsBodyText: {
+        fontWeight: '500',
+        fontSize: 15,
+        color: 'white',
+        paddingVertical: 5,
+    },
+    profileList: {
+        maxHeight: Dimensions.get('window').height / 2
     }
 };

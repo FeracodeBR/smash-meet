@@ -9,6 +9,10 @@ import { appNavigate } from '../../app';
 import { isCalendarEnabled } from '../../calendar-sync';
 import { isRoomValid } from '../../base/conference';
 import { signIn } from '../actions';
+import {toJid} from "../../base/connection";
+import {authenticateAndUpgradeRole} from "../../authentication";
+import {connect} from "../../base/connection/actions.native";
+import {navigateToScreen} from "../../base/app";
 
 /**
  * {@code AbstractWelcomePage}'s React {@code Component} prop types.
@@ -35,7 +39,8 @@ type Props = {
      */
     dispatch: Dispatch<any>,
 
-    _error: boolean
+    _error: boolean,
+    _loading: boolean
 };
 
 /**
@@ -79,7 +84,8 @@ export class AbstractWelcomePage extends Component<Props, *> {
         updateTimeoutId: undefined,
         username: '',
         password: '',
-        error: undefined
+        error: undefined,
+        loading: false,
     };
 
     /**
@@ -212,7 +218,7 @@ export class AbstractWelcomePage extends Component<Props, *> {
     _enterMeeting: () => void;
 
     _enterMeeting() {
-        //dispatch navigation to welcome page
+        this.props.dispatch(navigateToScreen(''))
     }
 
     _goBack: () => void;
@@ -231,7 +237,17 @@ export class AbstractWelcomePage extends Component<Props, *> {
 
     _onSignIn() {
         const {username, password} = this.state;
-        if(username && password) this.props.dispatch(signIn(username, password))
+        const { _conference: conference, dispatch } = this.props;
+
+        const jid = toJid(username, this.props._configHosts);
+        // const res = dispatch(authenticateAndUpgradeRole(jid, password, conference));
+        // const res2 = dispatch(connect(jid, password));
+
+        // console.log('res2', res2);
+        // console.log('conference', conference);
+        // dispatch(authenticateAndUpgradeRole(jid, password, conference));
+
+        if(username && password) dispatch(signIn(username, password))
     }
 
     _onRoomChange: (string) => void;
@@ -296,10 +312,16 @@ export class AbstractWelcomePage extends Component<Props, *> {
  * }}
  */
 export function _mapStateToProps(state: Object) {
+    const { authRequired } = state['features/base/conference'];
+    const { hosts: configHosts } = state['features/base/config'];
+
     return {
         _calendarEnabled: isCalendarEnabled(state),
         _room: state['features/base/conference'].room,
         _settings: state['features/base/settings'],
-        _error: state['features/welcome'].error
+        _error: state['features/welcome'].error,
+        _loading: state['features/welcome'].loading,
+        _conference: authRequired,
+        _configHosts: configHosts,
     };
 }
