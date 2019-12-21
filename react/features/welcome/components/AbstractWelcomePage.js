@@ -10,9 +10,8 @@ import { isCalendarEnabled } from '../../calendar-sync';
 import { isRoomValid } from '../../base/conference';
 import { signIn } from '../actions';
 import {toJid} from "../../base/connection";
-import {authenticateAndUpgradeRole} from "../../authentication";
-import {connect} from "../../base/connection/actions.native";
 import {navigateToScreen} from "../../base/app";
+import AsyncStorage from "@react-native-community/async-storage";
 
 /**
  * {@code AbstractWelcomePage}'s React {@code Component} prop types.
@@ -218,13 +217,18 @@ export class AbstractWelcomePage extends Component<Props, *> {
     _enterMeeting: () => void;
 
     _enterMeeting() {
-        this.props.dispatch(navigateToScreen(''))
+        this.props.dispatch(navigateToScreen('WelcomePage'));
     }
 
     _goBack: () => void;
 
     _goBack() {
-        //dispatch navigation to go back
+        const {dispatch} = this.props;
+
+        AsyncStorage.getItem('accessToken')
+            .then(token => {
+                dispatch(navigateToScreen(token ? 'ProfileScreen' : 'SignIn'));
+            });
     }
 
     _forgotPassword: () => void;

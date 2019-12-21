@@ -1,41 +1,25 @@
 import React from 'react';
-import {
-    Animated,
-    Keyboard,
-    SafeAreaView,
-    TextInput,
-    TouchableHighlight,
-    View,
-    KeyboardAvoidingView,
-    TouchableOpacity,
-    Platform,
-    Image
-} from 'react-native';
-
 import { getName } from '../../app';
-import logo from '../../../../images/smash-meet-logo.png';
-
 import { ColorSchemeRegistry } from '../../base/color-scheme';
 import { translate } from '../../base/i18n';
 import { MEDIA_TYPE } from '../../base/media';
 import { LoadingIndicator, Text } from '../../base/react';
 import { connect } from '../../base/redux';
 import { ColorPalette } from '../../base/styles';
-import {
-    createDesiredLocalTracks,
-    destroyLocalTracks
-} from '../../base/tracks';
-
+import { createDesiredLocalTracks, destroyLocalTracks } from '../../base/tracks';
 import { setSideBarVisible } from '../actions';
-
-import {
-    AbstractWelcomePage,
-    _mapStateToProps as _abstractMapStateToProps
-} from './AbstractWelcomePage';
+import {AbstractWelcomePage, _mapStateToProps as _abstractMapStateToProps} from './AbstractWelcomePage';
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
-import LinearGradient from 'react-native-linear-gradient';
-
-import { Icon, IconArrowBack } from '../../base/icons';
+import {Icon, IconArrowBack, IconSmashMeetLogo} from '../../base/icons';
+import {
+    Animated,
+    Keyboard,
+    TextInput,
+    TouchableHighlight,
+    View,
+    KeyboardAvoidingView,
+    TouchableOpacity,
+} from 'react-native';
 
 /**
  * The native container rendering the welcome page.
@@ -247,9 +231,9 @@ class WelcomePage extends AbstractWelcomePage {
                     behavior = 'padding'
                     style = { styles.roomContainer } >
                     <View style = { styles.header }>
-                        <Image
-                            source={ logo }
-                            style = { styles.logo } />
+                        <Icon
+                            src = { IconSmashMeetLogo }
+                            size={160}/>
                     </View>
                     <KeyboardAvoidingView
                         behavior = 'padding'
@@ -265,7 +249,7 @@ class WelcomePage extends AbstractWelcomePage {
                                 onChangeText = { this._onRoomChange }
                                 onFocus = { this._onFieldFocus }
                                 onSubmitEditing = { this._onJoin }
-                                placeholder = { 'Enter Link or Room Name' }
+                                placeholder = { 'Enter link or room name' }
                                 placeholderTextColor = {
                                     PLACEHOLDER_TEXT_COLOR
                                 }

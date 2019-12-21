@@ -4,6 +4,15 @@ import { Dimensions, Platform } from 'react-native';
 import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { ColorPalette } from '../../base/styles/components/styles';
 
+const smallCapsOrUppercase = Platform.OS === 'ios'
+    ? {
+        fontVariant: [ 'small-caps' ],
+        textTransform: 'lowercase'
+    }
+    : {
+        textTransform: 'uppercase'
+    };
+
 export default {
     container: {
         flex: 1,
@@ -14,7 +23,8 @@ export default {
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 15,
-        paddingTop: Platform.OS === 'ios' ? getStatusBarHeight() : 0
+        paddingTop: getStatusBarHeight(),
+        backgroundColor: ColorPalette.black
     },
     logo: {
         height: 33.86,
@@ -24,7 +34,8 @@ export default {
     iconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingVertical: 10,
     },
     descriptionIos: {
         marginHorizontal: 7,
@@ -44,7 +55,6 @@ export default {
     },
     content: {
         flex: 1,
-        // paddingHorizontal: 10
     },
     subheader: {
         paddingTop: 12,
@@ -56,17 +66,15 @@ export default {
     collapsible: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: ColorPalette.black,
-        // backgroundColor: ColorPalette.red,
-        // maxHeight: 500,
+        backgroundColor: ColorPalette.black
     },
     collapsed: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        // paddingHorizontal: 15,
         paddingVertical: 15,
+        paddingBottom: 8,
         width: Dimensions.get('window').width,
     },
     footer: {
@@ -99,11 +107,13 @@ export default {
         textTransform: Platform.OS === 'ios' ? 'lowercase' : 'uppercase'
     },
     userInfo: {
+        flex: 3,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start'
     },
     profileInfo: {
+        flex: 1,
         marginLeft: 12
     },
     profile: {
@@ -116,6 +126,7 @@ export default {
         paddingVertical: 2,
     },
     profileContainer: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
@@ -131,12 +142,13 @@ export default {
     },
     icon: {
         color: '#656565',
-        fontSize: 12
+        fontSize: 12,
     },
     iconImage: {
         marginHorizontal: 12
     },
     friendItem: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -155,6 +167,7 @@ export default {
     options: {
         alignItems: 'flex-start',
         justifyContent: 'center',
+        width: Dimensions.get('window').width,
         paddingHorizontal: 15,
     },
     optionsHeader: {
@@ -175,10 +188,73 @@ export default {
     optionsBodyText: {
         fontWeight: '500',
         fontSize: 15,
-        color: 'white',
         paddingVertical: 5,
+        color: '#BFBFBF',
     },
     profileList: {
         maxHeight: Dimensions.get('window').height / 2
+    },
+    modal: {
+        // flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white'
+    },
+    textInput: {
+
+        backgroundColor: '#4E5054',
+        borderRadius: 50,
+        color: '#DFDFDF',
+        fontSize: 16,
+        height: 40,
+        padding: 4,
+        paddingLeft: 15,
+        marginVertical: 10
+    },
+    gradientContainer: {
+        height: 40,
+        width: '100%',
+        borderRadius: 20,
+        backgroundColor: ColorPalette.secondaryLight
+    },
+    gradientButton: {
+        width: '100%',
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    gradientButtonText: {
+        fontSize: 17,
+        color: ColorPalette.white,
+        letterSpacing: 0.5,
+        ...smallCapsOrUppercase
+    },
+    optionBodyItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: Dimensions.get('window').width,
+        paddingVertical: 5,
+    },
+    optionBodyHeader: {
+        flex: 3,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+    },
+    optionBodyTitle: {
+        flex: 1,
+        marginLeft: 12
+    },
+    optionBodyTitleText: {
+        color: '#BFBFBF',
+        fontSize: 15,
+        fontWeight: '500'
+    },
+    optionLoading: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 };

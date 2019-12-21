@@ -31,6 +31,8 @@ import logger from '../logger';
 import { AbstractApp } from './AbstractApp';
 import type { Props as AbstractAppProps } from './AbstractApp';
 
+// import io from 'socket.io-client';
+
 declare var __DEV__;
 
 /**

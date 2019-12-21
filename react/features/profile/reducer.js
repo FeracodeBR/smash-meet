@@ -10,7 +10,9 @@ import {
     SET_CONTACTS_EVENTS,
     SET_CONTACTS_INTEGRATION,
     SET_LOADING_CONTACTS_EVENTS,
-    SET_CONTACTS_AUTH_STATE, CHANGE_PROFILE,
+    SET_CONTACTS_AUTH_STATE,
+    CHANGE_PROFILE,
+    SYNC_CONTACTS
 } from './actionTypes';
 
 import {FETCH_PROFILES_FRIENDS_GROUPS} from "../welcome/actionTypes";
@@ -25,7 +27,9 @@ const DEFAULT_STATE = {
     contacts: [],
     integrationReady: false,
     integrationType: undefined,
-    msAuthState: undefined
+    msAuthState: undefined,
+    loading: {},
+    error: {}
 };
 
 /**
@@ -85,8 +89,26 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
 
     case CHANGE_PROFILE:
         return assign(state, {
-           loading: action.loading,
-           error: action.error,
+            loading: {
+                ...state.loading,
+                [action.type]: action.loading
+            },
+            error: {
+                ...state.error,
+                [action.type]: action.error
+            },
+        });
+
+    case SYNC_CONTACTS:
+        return assign(state, {
+            loading: {
+                ...state.loading,
+                [action.type]: action.loading
+            },
+            error: {
+                ...state.error,
+                [action.type]: action.error
+            },
         });
 
     case FETCH_PROFILES_FRIENDS_GROUPS:

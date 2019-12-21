@@ -2,7 +2,7 @@
 import { CONFIG_WHITELIST, parseURLParams } from '../config';
 import { toState } from '../redux';
 
-import { DEFAULT_SERVER_URL } from './constants';
+import { DEFAULT_MEET_URL } from './constants';
 
 /**
  * Returns the effective value of a configuration/preference/setting by applying
@@ -96,7 +96,7 @@ export function getPropertyValue(
 export function getServerURL(stateful: Object | Function) {
     const state = toState(stateful);
 
-    return state['features/base/settings'].serverURL || DEFAULT_SERVER_URL;
+    return state['features/base/settings'].serverURL || DEFAULT_MEET_URL;
 }
 
 /**

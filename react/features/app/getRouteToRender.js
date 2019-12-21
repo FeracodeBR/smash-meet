@@ -65,6 +65,8 @@ async function _getMobileRoute(state): Promise<Route> {
         route.component = ProfileScreen;
     } else if (state['features/base/app'].route === 'SignIn') {
         route.component = SignInPage;
+    } else if (state['features/base/app'].route === 'WelcomePage') {
+        route.component = WelcomePage;
     // } else if (!state['features/base/app'].route && (await AsyncStorage.getItem('accessToken'))) {
     //     route.component = ProfileScreen;
     } else {
