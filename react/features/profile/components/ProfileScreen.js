@@ -40,7 +40,19 @@ import AsyncStorage from '@react-native-community/async-storage';
 import io from 'socket.io-client';
 import { setCalendarIntegration } from "../../calendar-sync";
 
-function ProfileScreen({ dispatch, _contacts, _defaultProfile, _profiles, _friends, _groups, _loading = {}, _error}) {
+function ProfileScreen({
+                           dispatch,
+                           _contacts,
+                           _contactsAuthorization,
+                           _calendar,
+                           _calendarAuthorization,
+                           _defaultProfile,
+                           _profiles,
+                           _friends,
+                           _groups,
+                           _loading = {},
+                           _error
+}) {
     // let ws;
 
     // const ws =io('35.209.31.83:3000', { forceNew: true, secure: false, rejectUnauthorized: false })
@@ -274,7 +286,7 @@ function ProfileScreen({ dispatch, _contacts, _defaultProfile, _profiles, _frien
                                     <>
                                         <TouchableOpacity
                                             style={styles.optionBodyItem}
-                                            onPress={() => dispatch(syncCalendar(_contacts))}>
+                                            onPress={() => dispatch(syncCalendar(_calendar, _calendarAuthorization))}>
                                             <View style={styles.optionBodyHeader}>
                                                 <IconSyncCalendar style = { styles.icon }/>
                                                 <View style={styles.optionBodyTitle}>
@@ -374,15 +386,14 @@ function ProfileScreen({ dispatch, _contacts, _defaultProfile, _profiles, _frien
 }
 
 function _mapStateToProps(state: Object) {
-    const { authorization, contacts } = state['features/contacts-sync'];
-
     console.log('CONTACTS', state['features/contacts-sync']);
     console.log('CALENDAR', state['features/calendar-sync']);
 
     return {
-        _authorization: authorization,
-        _eventList: state['features/calendar-sync'].events,
-        _contacts: contacts,
+        _contactsAuthorization: state['features/contacts-sync'].authorization,
+        _calendarAuthorization: state['features/calendar-sync'].authorization,
+        _calendar: state['features/calendar-sync'].events,
+        _contacts: state['features/contacts-sync'].contacts,
         _defaultProfile: state['features/contacts-sync'].defaultProfile,
         _profiles: state['features/contacts-sync'].profiles,
         _friends: state['features/contacts-sync'].friends,

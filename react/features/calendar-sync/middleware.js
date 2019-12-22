@@ -59,11 +59,11 @@ MiddlewareRegistry.register(store => next => action => {
         return result;
     }
 
-        case SET_CALENDAR_INTEGRATION: {
-            const result = next(action);
+    case SET_CALENDAR_INTEGRATION: {
+        const result = next(action);
 
-            return result;
-        }
+        return result;
+    }
 
     }
 
