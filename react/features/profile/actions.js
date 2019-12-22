@@ -53,6 +53,139 @@ export function logout() {
 
 }
 
+export function syncCalendar(calendar) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        dispatch({
+            type: SYNC_CALENDAR,
+            error: undefined,
+            loading: true
+        });
+
+        const headers = new Headers({
+            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'Content-Type': 'application/json'
+        });
+
+        const res = await fetch(`${DEFAULT_SERVER_URL}/module/calendar/event`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                "@type": "calendar-event",
+                "owner": "admin",
+                "eventType": "event",
+                "privacy": "default",
+                "startTime": "13:00",
+                "endTime": "19:00",
+                "repeat": false,
+                "repeatOptions": {
+                    "times": 1,
+                    "every": {"title": "days"},
+                    "repeatEnd": "never",
+                    "endTimes": 1,
+                    "weekDays": {
+                        "su": true,
+                        "mo": true,
+                        "tu": true,
+                        "we": true,
+                        "th": true,
+                        "fr": true,
+                        "sa": true
+                    },
+                    "monthRepeat": {"title": "", "select": "day"},
+                    "exception": [],
+                    "endDate": "2019-12-26"
+                },
+                "uniqueSlot": false,
+                "slotDuration": 30,
+                "nPersons": 1,
+                "slots": [],
+                "slotOptions": [{
+                    "weekDay": "Monday",
+                    "startTime": "",
+                    "endTime": "",
+                    "selected": true
+                }, {
+                    "weekDay": "Tuesday",
+                    "startTime": "",
+                    "endTime": "",
+                    "selected": true
+                }, {
+                    "weekDay": "Wednesday",
+                    "startTime": "",
+                    "endTime": "",
+                    "selected": true
+                }, {
+                    "weekDay": "Thursday",
+                    "startTime": "",
+                    "endTime": "",
+                    "selected": true
+                }, {
+                    "weekDay": "Friday",
+                    "startTime": "",
+                    "endTime": "",
+                    "selected": true
+                }, {
+                    "weekDay": "Saturday",
+                    "startTime": "",
+                    "endTime": "",
+                    "selected": true
+                }, {
+                    "weekDay": "Sunday",
+                    "startTime": "",
+                    "endTime": "",
+                    "selected": true
+                }],
+                "slotExceptions": [],
+                "location": {
+                    "location": {
+                        "type": "Point",
+                        "coordinates": ["", ""]
+                    },
+                    "favorite": {},
+                    "inputSearch": "",
+                    "active": {},
+                    "initial": false,
+                    "edit": true,
+                    "visible": []
+                },
+                "shared": [],
+                "guests": [],
+                "guestList": false,
+                "busy": true,
+                "files": [],
+                "calendar": "5dfcd51c41272d00363bac4d",
+                "timezone": {
+                    "start": {
+                        "utc": "-03:00",
+                        "zone": "America/Sao_Paulo",
+                        "title": "-03:00 America/Sao_Paulo"
+                    },
+                    "end": {
+                        "utc": "-03:00",
+                        "zone": "America/Sao_Paulo",
+                        "title": "-03:00 America/Sao_Paulo"
+                    },
+                    "same": true
+                },
+                "startDate": "2019-12-26",
+                "endDate": "2019-12-26",
+                "description": "<p>Description via API</p>",
+                "title": "Title via API",
+                "startDateTime": "2019-12-26T03:00:00Z",
+                "endDateTime": "2019-12-26T15:00:00Z",
+                "startDateTimeOriginal": "2019-12-26T00:00:00-03:00",
+                "endDateTimeOriginal": "2019-12-26T12:00:00-03:00"
+            })
+        });
+
+        dispatch({
+            type: SYNC_CALENDAR,
+            error: !res.ok,
+            loading: false
+        });
+    }
+}
+
 export function syncContacts(contacts) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         dispatch({
@@ -129,7 +262,6 @@ export function syncContacts(contacts) {
             loading: false
         });
     }
-
 }
 
 export function enterPersonalRoom() {

@@ -126,8 +126,6 @@ export function appNavigate(uri: ?string) {
             return;
         }
 
-        console.log('locationURL', locationURL);
-
         dispatch(setLocationURL(locationURL));
         dispatch(setConfig(config));
         dispatch(setRoom(room));

@@ -12,8 +12,17 @@ import { addLinkToCalendarEntry } from './functions.native';
 import {
     UpdateCalendarEventDialog
 } from './components';
+import {REFRESH_CALENDAR, SET_CALENDAR_INTEGRATION} from "./actionTypes";
 
 export * from './actions.any';
+
+export function setCalendarIntegration() {
+    return {
+        type: REFRESH_CALENDAR,
+        isInteractive: true,
+        forcePermission: true
+    };
+}
 
 /**
  * Asks confirmation from the user to add a Jitsi link to the calendar event.

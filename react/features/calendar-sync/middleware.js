@@ -6,7 +6,11 @@ import { equals, MiddlewareRegistry } from '../base/redux';
 import { APP_STATE_CHANGED } from '../mobile/background/actionTypes';
 
 import { setCalendarAuthorization } from './actions';
-import { REFRESH_CALENDAR } from './actionTypes';
+import {
+    REFRESH_CALENDAR,
+    SET_CALENDAR_AUTHORIZATION,
+    SET_CALENDAR_INTEGRATION
+} from './actionTypes';
 import { _fetchCalendarEntries, isCalendarEnabled } from './functions';
 
 MiddlewareRegistry.register(store => next => action => {
@@ -54,6 +58,13 @@ MiddlewareRegistry.register(store => next => action => {
 
         return result;
     }
+
+        case SET_CALENDAR_INTEGRATION: {
+            const result = next(action);
+
+            return result;
+        }
+
     }
 
     return next(action);

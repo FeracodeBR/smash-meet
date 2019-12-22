@@ -15,9 +15,15 @@ import meetGroup from '../../../../images/meet-group.png';
 import myRoom from '../../../../images/my-room.png';
 import camera from '../../../../images/smash-camera.png';
 import phone from '../../../../images/smash-phone.png';
-import {setContactsIntegration, changeProfile, logout, enterPersonalRoom, syncContacts, callFriend} from '../actions';
+import {setContactsIntegration, changeProfile, logout, enterPersonalRoom, syncContacts, syncCalendar, callFriend} from '../actions';
 import styles from './styles';
-import { IconMenuUp, IconMenuDown, IconSyncContacts , IconLogout} from '../../base/icons/svg';
+import {
+    IconMenuUp,
+    IconMenuDown,
+    IconSyncContacts,
+    IconLogout,
+    IconSyncCalendar
+} from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
 import { connect } from '../../base/redux';
@@ -25,13 +31,14 @@ import Collapsible from 'react-native-collapsible';
 import {getBottomSpace} from "react-native-iphone-x-helper";
 import {ColorPalette} from "../../base/styles/components/styles";
 import {appNavigate} from "../../app";
-import {CHANGE_PROFILE, SYNC_CONTACTS} from "../actionTypes";
+import {CHANGE_PROFILE, SYNC_CALENDAR, SYNC_CONTACTS} from "../actionTypes";
 import {PLACEHOLDER_TEXT_COLOR} from "../../welcome/components/styles";
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
 import AsyncStorage from '@react-native-community/async-storage';
 // import Modal from "react-native-modal";
 import io from 'socket.io-client';
+import { setCalendarIntegration } from "../../calendar-sync";
 
 function ProfileScreen({ dispatch, _contacts, _defaultProfile, _profiles, _friends, _groups, _loading = {}, _error}) {
     // let ws;
@@ -100,6 +107,7 @@ function ProfileScreen({ dispatch, _contacts, _defaultProfile, _profiles, _frien
 
     useEffect(() => {
         dispatch(setContactsIntegration());
+        dispatch(setCalendarIntegration());
     }, []);
 
     const [isCollapsed, setCollapsed] = useState(true);
@@ -263,23 +271,42 @@ function ProfileScreen({ dispatch, _contacts, _defaultProfile, _profiles, _frien
                         <View style={styles.optionsBody}>
                             {
                                 Platform.OS === 'ios' && (
-                                    <TouchableOpacity
-                                        style={styles.optionBodyItem}
-                                        onPress={() => dispatch(syncContacts(_contacts))}>
-                                        <View style={styles.optionBodyHeader}>
-                                            <IconSyncContacts style = { styles.icon }/>
-                                            <View style={styles.optionBodyTitle}>
-                                                <Text style={styles.optionBodyTitleText}>
-                                                    Synchronize contacts
-                                                </Text>
+                                    <>
+                                        <TouchableOpacity
+                                            style={styles.optionBodyItem}
+                                            onPress={() => dispatch(syncCalendar(_contacts))}>
+                                            <View style={styles.optionBodyHeader}>
+                                                <IconSyncCalendar style = { styles.icon }/>
+                                                <View style={styles.optionBodyTitle}>
+                                                    <Text style={styles.optionBodyTitleText}>
+                                                        Synchronize calendar
+                                                    </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                        <View style={styles.optionLoading}>
-                                            {
-                                                _loading[SYNC_CONTACTS] && <ActivityIndicator color="white"/>
-                                            }
-                                        </View>
-                                    </TouchableOpacity>
+                                            <View style={styles.optionLoading}>
+                                                {
+                                                    _loading[SYNC_CALENDAR] && <ActivityIndicator color="white"/>
+                                                }
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.optionBodyItem}
+                                            onPress={() => dispatch(syncContacts(_contacts))}>
+                                            <View style={styles.optionBodyHeader}>
+                                                <IconSyncContacts style = { styles.icon }/>
+                                                <View style={styles.optionBodyTitle}>
+                                                    <Text style={styles.optionBodyTitleText}>
+                                                        Synchronize contacts
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={styles.optionLoading}>
+                                                {
+                                                    _loading[SYNC_CONTACTS] && <ActivityIndicator color="white"/>
+                                                }
+                                            </View>
+                                        </TouchableOpacity>
+                                    </>
                                 )
                             }
                             <TouchableOpacity
@@ -349,7 +376,8 @@ function ProfileScreen({ dispatch, _contacts, _defaultProfile, _profiles, _frien
 function _mapStateToProps(state: Object) {
     const { authorization, contacts } = state['features/contacts-sync'];
 
-    console.log('contactsync', state['features/contacts-sync']);
+    console.log('CONTACTS', state['features/contacts-sync']);
+    console.log('CALENDAR', state['features/calendar-sync']);
 
     return {
         _authorization: authorization,
