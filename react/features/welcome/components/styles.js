@@ -285,12 +285,13 @@ export default {
         justifyContent: 'center'
     },
     logo: {
-        width: 200,
-        height: 200
+        width: 100,
+        height: 100,
+        backgroundColor: 'red'
     },
     content: {
         position: 'absolute',
-        top: '25%',
+        top: '30%',
         width: '100%'
     },
     body: {

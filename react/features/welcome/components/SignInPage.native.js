@@ -33,6 +33,7 @@ import {
 } from './AbstractWelcomePage';
 import styles, {PLACEHOLDER_TEXT_COLOR} from './styles';
 import LinearGradient from 'react-native-linear-gradient';
+import {Icon, IconSmashMeetLogo} from "../../base/icons";
 
 /**
  * The native container rendering the welcome page.
@@ -60,7 +61,7 @@ class SignInPage extends AbstractWelcomePage {
         this._onFieldBlur = this._onFieldFocusChange.bind(this, false);
         this._onFieldFocus = this._onFieldFocusChange.bind(this, true);
 
-        this.state.username = 'thiagoSTG99';
+        this.state.username = 'thiagoDEV';
         this.state.password = 'thiago123';
     }
 
@@ -250,9 +251,9 @@ class SignInPage extends AbstractWelcomePage {
                     behavior='padding'
                     style={styles.roomContainer}>
                     <View style={styles.header}>
-                        <Image
-                            source={logo}
-                            style={styles.logo}/>
+                        <Icon
+                            src = { IconSmashMeetLogo }
+                            size={160}/>
                     </View>
                     <View
                         style={styles.content}>

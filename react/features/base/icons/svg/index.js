@@ -78,3 +78,7 @@ export { default as IconHangupHexagon } from './hangup-hexagon.svg';
 export { default as IconSmashCamera } from './smash-camera.svg';
 export { default as IconSmashParticipants } from './participants.svg';
 export { default as IconSmashCircularContainer } from './smash-circular-container.svg';
+export { default as IconSmashMeetLogo} from './smash-meet-logo.svg';
+export { default as IconSyncContacts} from './sync-contacts.svg';
+export { default as IconSyncCalendar} from './sync-calendar.svg';
+export { default as IconLogout} from './logout.svg';

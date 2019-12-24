@@ -20,6 +20,7 @@ import type { StyleType } from '../../base/styles';
 
 import { authenticateAndUpgradeRole, cancelLogin } from '../actions';
 import styles from './styles';
+import {DEFAULT_SERVER_URL} from "../../base/settings";
 
 /**
  * The type of the React {@link Component} props of {@link LoginDialog}.
@@ -277,7 +278,7 @@ class LoginDialog extends Component<Props, State> {
         const { password, username } = this.state;
         const room = `https://${confID}`;
 
-        fetch('https://staging.smashinnovations.com/module/system/authenticate', {
+        fetch(`${DEFAULT_SERVER_URL}/module/system/authenticate`, {
             method: 'POST',
             headers: new Headers({
                 'authorization': 'bFdkZXJ1VGFsdUpyY2VicmxsaWFiYW9vbG9wZW9haWwkK0dpOGd2ZkJZVnFWR3ZnV1JRVmYyVmIvQUVlTHdSVW9VaTIybXZzemhSNG0rVytScWRqZHNjd0JwTzJjUlNxTGQ3TTN0MTNleWFWeDFVUGwxQ2xBREo2bGxXbkdtZzBXVWV6cnI5aytWQ2tIQ1dBY1E5VTVjTEpJY0tMVUtEYVdkTGFJWnhMbktaUVlLZTk4a3VVQktBdVNZMjBPMUt6aGxLYldySDg3Q1kwPQ==',

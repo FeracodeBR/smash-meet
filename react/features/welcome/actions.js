@@ -10,6 +10,7 @@ import {
 } from './actionTypes';
 
 import {navigateToScreen} from "../base/app";
+import {DEFAULT_SERVER_URL} from "../base/settings";
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -60,33 +61,30 @@ export function signIn(username: string, password: string) {
                 'Content-Type': 'application/json'
             });
 
-            const auth = await fetch('https://staging.smashinnovations.com/module/system/authenticate',
+            const auth = await fetch(`${DEFAULT_SERVER_URL}/module/system/authenticate`,
             { method: 'POST',
                 headers,
                 body: JSON.stringify({ password, username })
             });
 
-            console.log('auth', auth);
-
             if(auth.ok) {
                 auth.json().then(async res => {
                     const {defaultProfile, accessToken} = res;
 
-                    AsyncStorage.setItem('profile', defaultProfile.id);
                     AsyncStorage.setItem('accessToken', accessToken);
 
                     headers.set('authorization', accessToken);
 
                     const [profilesRes, friendsRes, groupsRes] = await Promise.all([
-                        fetch('https://staging.smashinnovations.com/module/user/profile', {
+                        fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                             method: 'GET',
                             headers
                         }),
-                        fetch('https://staging.smashinnovations.com/module/user/friend', {
+                        fetch(`${DEFAULT_SERVER_URL}/module/user/friend`, {
                             method: 'GET',
                             headers
                         }),
-                        fetch('https://staging.smashinnovations.com/module/contact/group/group-list', {
+                        fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
                             method: 'GET',
                             headers
                         })
@@ -99,9 +97,11 @@ export function signIn(username: string, password: string) {
                             groupsRes.json()
                         ]);
 
+                        const profileIds = profiles.map(profile => profile.id);
+
                         const defaultProfile = profiles.filter(profile => profile.default)[0];
                         const otherProfiles = profiles.filter(profile => !profile.default);
-                        const friendsWithoutMe = friends.friendsList.filter(friend => friend.profileRef !== friends.profileRef);
+                        const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
 
                         dispatch({
                             type: SIGN_IN_RESPONSE,
