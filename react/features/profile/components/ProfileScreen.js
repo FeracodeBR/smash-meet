@@ -37,7 +37,7 @@ import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
 import AsyncStorage from '@react-native-community/async-storage';
 // import Modal from "react-native-modal";
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import { setCalendarIntegration } from "../../calendar-sync";
 
 function ProfileScreen({
