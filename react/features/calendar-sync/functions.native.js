@@ -94,8 +94,6 @@ export function _fetchCalendarEntries(
         && !getState()['features/calendar-sync'].authorization)
         || forcePermission;
 
-    console.log('promptForPermission', promptForPermission);
-
     _ensureCalendarAccess(promptForPermission, dispatch)
         .then(accessGranted => {
             if (accessGranted) {

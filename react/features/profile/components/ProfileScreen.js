@@ -286,7 +286,7 @@ function ProfileScreen({
                                     <>
                                         <TouchableOpacity
                                             style={styles.optionBodyItem}
-                                            onPress={() => dispatch(syncCalendar(_calendar, _calendarAuthorization))}>
+                                            onPress={() => dispatch(syncCalendar(_calendar))}>
                                             <View style={styles.optionBodyHeader}>
                                                 <IconSyncCalendar style = { styles.icon }/>
                                                 <View style={styles.optionBodyTitle}>

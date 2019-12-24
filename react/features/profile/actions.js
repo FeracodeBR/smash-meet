@@ -56,7 +56,7 @@ export function logout() {
 
 export function syncCalendar(calendar, authorization) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        if(authorization) {
+        if (calendar.length) {
             dispatch({
                 type: SYNC_CALENDAR,
                 error: undefined,
@@ -68,20 +68,29 @@ export function syncCalendar(calendar, authorization) {
                 'Content-Type': 'application/json'
             });
 
+            const now = new Date();
+            const startRange = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+            const endRange = `${now.getFullYear() + 1}-${now.getMonth() + 2 === 12 ? 0 : now.getMonth() + 2}-${now.getDate()}`;
+
+            const mainCalendarRes = await fetch(`${DEFAULT_SERVER_URL}/module/calendar/event/${startRange}/${endRange}`, {
+                method: 'GET',
+                headers
+            });
+            const mainCalendar = await mainCalendarRes.json();
+            const mainCalendarId = mainCalendar.calendars.filter(el => el.main)[0]._id;
+
             const promises = [];
 
-            for(const event in calendar) {
+            for (const event of calendar) {
                 const {allDay, endDate, startDate, title} = event;
 
                 const start = new Date(startDate);
                 const end = new Date(endDate);
 
-                const utc = start.match(/([A-Z]+[\+-][0-9]+)/)[1].substring(3);
-                const charsBefore = utc.indexOf('-') > 0 ? utc.substring(0, utc.length) : utc.substring(0, utc.length - 1);
-                const charsAfter = utc.substring(utc.length, utc.length + 2);
-                const formattedUTC = `${charsBefore}:${charsAfter}`;
-
-                // falta UTC ZONE e UTC TITLE
+                // const utc = start.toString().match(/([A-Z]+[\+-][0-9]+)/)[1].substring(3);
+                // const charsBefore = utc.indexOf('-') >= 0 ? utc.substring(0, 3) : utc.substring(0, 2);
+                // const charsAfter = utc.substring(utc.length - 2, utc.length);
+                // const formattedUTC = `${charsBefore}:${charsAfter}`;
 
                 promises.push(
                     fetch(`${DEFAULT_SERVER_URL}/module/calendar/event`, {
@@ -173,39 +182,39 @@ export function syncCalendar(calendar, authorization) {
                             "guestList": false,
                             "busy": true,
                             "files": [],
-                            "calendar": "5dfcd51c41272d00363bac4d",
-                            "timezone": {
-                                "start": {
-                                    "utc": formattedUTC,
-                                    "zone": "America/Sao_Paulo",
-                                    "title": "-03:00 America/Sao_Paulo"
-                                },
-                                "end": {
-                                    "utc": formattedUTC,
-                                    "zone": "America/Sao_Paulo",
-                                    "title": "-03:00 America/Sao_Paulo"
-                                },
-                                "same": true
-                            },
+                            "calendar": mainCalendarId,
+                            // "timezone": {
+                            //     "start": {
+                            //         "utc": formattedUTC,
+                            //         "zone": "America/Sao_Paulo",
+                            //         "title": "-03:00 America/Sao_Paulo"
+                            //     },
+                            //     "end": {
+                            //         "utc": formattedUTC,
+                            //         "zone": "America/Sao_Paulo",
+                            //         "title": "-03:00 America/Sao_Paulo"
+                            //     },
+                            //     "same": true
+                            // },
                             "startDate": `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`,
                             "endDate": `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`,
                             "description": "<p></p>",
-                            "startDateTime": "2019-12-26T03:00:00Z",
-                            "endDateTime": "2019-12-26T15:00:00Z",
-                            "startDateTimeOriginal": "2019-12-26T00:00:00-03:00",
-                            "endDateTimeOriginal": "2019-12-26T12:00:00-03:00"
+                            "startDateTime": `${start.toISOString()}`,
+                            "endDateTime": `${end.toISOString()}`,
+                            // "startDateTimeOriginal": "2019-12-26T00:00:00-03:00",
+                            // "endDateTimeOriginal": "2019-12-26T12:00:00-03:00"
                         })
                     })
-                )
+                );
             }
+
+            const resolvedPromises = await Promise.all(promises);
 
             dispatch({
                 type: SYNC_CALENDAR,
-                error: !res.ok,
+                error: undefined,
                 loading: false
             });
-        } else {
-
         }
     }
 }
