@@ -105,7 +105,7 @@ export function signIn(username: string, password: string) {
                         const profileIds = profiles.map(profile => profile.id);
 
                         const defaultProfile = profiles.filter(profile => profile.default)[0];
-                        const otherProfiles = profiles.filter(profile => !profile.default);
+                        const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
                         const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
 
                         dispatch({
@@ -188,7 +188,7 @@ export function reloadSession(accessToken: string) {
             const profileIds = profiles.map(profile => profile.id);
 
             const defaultProfile = profiles.filter(profile => profile.default)[0];
-            const otherProfiles = profiles.filter(profile => !profile.default);
+            const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
             const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
 
             dispatch({

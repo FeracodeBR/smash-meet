@@ -23,7 +23,9 @@ import {
     IconLogout,
     IconSyncCalendar,
     IconRoom,
-    IconRoomDisabled
+    IconRoomDisabled,
+    IconEnterMeet,
+    IconEnterMeetDisabled
 } from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
@@ -106,19 +108,19 @@ function ProfileScreen({
                             {item.name}
                         </Text>
                         <Text style = { styles.friendName }>
-                            {item.fullname}
+                            {item.fullname || `${item.members} members`}
                         </Text>
                     </View>
                 </View>
 
                 <View style = { styles.profileContainer }>
-                    <TouchableOpacity>
-                        <Image
-                            resizeMethod = 'resize'
-                            resizeMode = 'contain'
-                            source = { phone }
-                            style = { styles.iconImage } />
-                    </TouchableOpacity>
+                    {/*<TouchableOpacity>*/}
+                    {/*    <Image*/}
+                    {/*        resizeMethod = 'resize'*/}
+                    {/*        resizeMode = 'contain'*/}
+                    {/*        source = { phone }*/}
+                    {/*        style = { styles.iconImage } />*/}
+                    {/*</TouchableOpacity>*/}
                     <TouchableOpacity onPress={() => dispatch(callFriend(item.profileRef))}>
                         <Image
                             resizeMethod = 'resize'
@@ -139,17 +141,15 @@ function ProfileScreen({
         );
     }
 
-    const personalRoomDisabled = !_personalRoom.name;
+    const personalRoomDisabled = !_personalRoom?.name;
+    const friendsLength = _friends.length + _groups.length;
 
     return (
         <View style = { styles.container }>
             <View style = { styles.header }>
                 <TouchableOpacity style = { styles.iconContainer } onPress={() => dispatch(navigateToScreen('WelcomePage'))}>
-                    <Image
-                        resizeMethod = 'resize'
-                        resizeMode = 'contain'
-                        source = { meetGroup } />
-                    <Text style = { styles.descriptionIos }>
+                    <IconEnterMeet/>
+                    <Text style = {styles.descriptionIos}>
                         ENTER MEET
                     </Text>
                 </TouchableOpacity>
@@ -176,13 +176,21 @@ function ProfileScreen({
                         FRIENDS
                     </Text>
                 </View>
-                <FlatList
-                    data = { [
-                        ..._groups,
-                        ..._friends
-                    ] }
-                    keyExtractor = {item => item.profileRef || item._id}
-                    renderItem = { renderItem } />
+                {
+                    friendsLength > 0 ?
+                        <FlatList
+                            data = { [
+                                ..._groups,
+                                ..._friends
+                            ] }
+                            keyExtractor = {item => item.profileRef || item._id}
+                            renderItem = { renderItem } /> :
+                        <View style={{alignItems: 'center', justifyContent: 'center', paddingVertical: 10}}>
+                            <Text style={styles.optionsBodyText}>
+                                Friends list is empty
+                            </Text>
+                        </View>
+                }
             </View>
 
             {/*{renderCallModal()}*/}
@@ -194,7 +202,7 @@ function ProfileScreen({
                         friend= { _defaultProfile } />
                     <View style = { styles.profileInfo }>
                         <Text style = { styles.userName }>{_defaultProfile.name}</Text>
-                        <Text style = { styles.contactsInfo }>friends {_friends.length + _groups.length}</Text>
+                        <Text style = { styles.contactsInfo }>friends {friendsLength}</Text>
                     </View>
                 </View>
 
@@ -288,7 +296,7 @@ function ProfileScreen({
                         </View>
                         <View style={styles.optionsBody}>
                             {
-                                _profiles.length > 1 ?
+                                _profiles.length > 0 ?
                                     <FlatList
                                         style={styles.profileList}
                                         data = { _profiles.filter(profile => !profile.default) }

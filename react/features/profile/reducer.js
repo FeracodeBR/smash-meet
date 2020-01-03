@@ -28,6 +28,9 @@ const DEFAULT_STATE = {
     integrationReady: false,
     integrationType: undefined,
     msAuthState: undefined,
+    friends: [],
+    groups: [],
+    personalRoom: {},
     loading: {},
     error: {}
 };
@@ -129,7 +132,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             'profiles': action.profiles,
             'friends': action.friends,
             'groups': action.groups,
-            'personalRoom': action.personalRoom
+            'personalRoom': action.personalRoom || {}
         });
 
 

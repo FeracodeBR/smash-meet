@@ -60,9 +60,6 @@ class SignInPage extends AbstractWelcomePage {
         // Specially bind functions to avoid function definition on render.
         this._onFieldBlur = this._onFieldFocusChange.bind(this, false);
         this._onFieldFocus = this._onFieldFocusChange.bind(this, true);
-
-        // this.state.username = 'thiagoDEV';
-        // this.state.password = 'thiago123';
     }
 
     /**

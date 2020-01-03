@@ -264,7 +264,7 @@ export function syncContacts(contacts) {
                 const profileIds = profiles.map(profile => profile.id);
 
                 const defaultProfile = profiles.filter(profile => profile.default)[0];
-                const otherProfiles = profiles.filter(profile => !profile.default);
+                const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
                 const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
 
                 dispatch({
@@ -381,7 +381,7 @@ export function changeProfile(defaultProfile) {
 
                     headers.set('authorization', accessToken);
 
-                    const [profilesRes, friendsRes, groupsRes] = await Promise.all([
+                    const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
                         fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                             method: 'GET',
                             headers
@@ -393,20 +393,25 @@ export function changeProfile(defaultProfile) {
                         fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
                             method: 'GET',
                             headers
+                        }),
+                        fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
+                            method: 'GET',
+                            headers,
                         })
                     ]);
 
-                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok) {
-                        const [profiles, friends, groups] = await Promise.all([
+                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok) {
+                        const [profiles, friends, groups, personalRoom] = await Promise.all([
                             profilesRes.json(),
                             friendsRes.json(),
-                            groupsRes.json()
+                            groupsRes.json(),
+                            personalRoomRes.json()
                         ]);
 
                         const profileIds = profiles.map(profile => profile.id);
 
                         const defaultProfile = profiles.filter(profile => profile.default)[0];
-                        const otherProfiles = profiles.filter(profile => !profile.default);
+                        const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
                         const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
 
                         dispatch({
@@ -420,7 +425,8 @@ export function changeProfile(defaultProfile) {
                             defaultProfile,
                             profiles: otherProfiles,
                             friends: friendsWithoutMe,
-                            groups
+                            groups,
+                            personalRoom
                         });
                     } else {
                         dispatch({

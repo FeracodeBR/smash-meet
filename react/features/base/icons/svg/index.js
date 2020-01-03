@@ -84,3 +84,5 @@ export { default as IconSyncCalendar} from './sync-calendar.svg';
 export { default as IconLogout} from './logout.svg';
 export { default as IconRoom} from './room.svg';
 export { default as IconRoomDisabled} from './roomDisabled.svg';
+export { default as IconEnterMeet} from './enter-meet.svg';
+export { default as IconEnterMeetDisabled} from './enter-meet-disabled.svg';

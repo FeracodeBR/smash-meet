@@ -135,7 +135,7 @@ export default {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-end'
     },
     profileText: {
         color: ColorPalette.white,
