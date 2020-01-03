@@ -6,7 +6,7 @@ import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
     SIGN_IN_RESPONSE,
-    FETCH_PROFILES_FRIENDS_GROUPS
+    FETCH_PROFILES_FRIENDS_GROUPS,
 } from './actionTypes';
 
 import {navigateToScreen} from "../base/app";
@@ -141,6 +141,55 @@ export function signIn(username: string, password: string) {
                 loading: false,
                 error: true
             });
+        }
+    };
+}
+
+export function reloadSession(accessToken: string) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        try {
+            const headers = new Headers({
+                'authorization': accessToken,
+                'Content-Type': 'application/json'
+            });
+
+            const [profilesRes, friendsRes, groupsRes] = await Promise.all([
+                fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
+                    method: 'GET',
+                    headers
+                }),
+                fetch(`${DEFAULT_SERVER_URL}/module/user/friend`, {
+                    method: 'GET',
+                    headers
+                }),
+                fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
+                    method: 'GET',
+                    headers
+                })
+            ]);
+
+            const [profiles, friends, groups] = await Promise.all([
+                profilesRes.json(),
+                friendsRes.json(),
+                groupsRes.json()
+            ]);
+
+            const profileIds = profiles.map(profile => profile.id);
+
+            const defaultProfile = profiles.filter(profile => profile.default)[0];
+            const otherProfiles = profiles.filter(profile => !profile.default);
+            const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
+
+            dispatch({
+                type: FETCH_PROFILES_FRIENDS_GROUPS,
+                defaultProfile,
+                profiles: otherProfiles,
+                friends: friendsWithoutMe,
+                groups
+            });
+        } catch (err) {
+            AsyncStorage.clear();
+            dispatch(navigateToScreen('SignIn'));
         }
     };
 }

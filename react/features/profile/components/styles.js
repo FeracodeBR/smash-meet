@@ -14,6 +14,12 @@ const smallCapsOrUppercase = Platform.OS === 'ios'
     };
 
 export default {
+    loadingContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: ColorPalette.screen
+    },
     container: {
         flex: 1,
         backgroundColor: ColorPalette.screen

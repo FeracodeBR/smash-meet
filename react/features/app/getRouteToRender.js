@@ -18,6 +18,8 @@ import {
     isWelcomePageUserEnabled
 } from '../welcome';
 import ProfileScreen from '../profile/components/ProfileScreen';
+import {DEFAULT_SERVER_URL} from "../base/settings";
+import {FETCH_PROFILES_FRIENDS_GROUPS, SIGN_IN_RESPONSE} from "../welcome/actionTypes";
 
 /**
  * Object describing application route.
@@ -58,6 +60,7 @@ export function _getRouteToRender(stateful: Function | Object): Promise<Route> {
  */
 async function _getMobileRoute(state): Promise<Route> {
     const route = _getEmptyRoute();
+    const accessToken = await AsyncStorage.getItem('accessToken');
 
     if (isRoomValid(state['features/base/conference'].room)) {
         route.component = Conference;
@@ -67,8 +70,8 @@ async function _getMobileRoute(state): Promise<Route> {
         route.component = SignInPage;
     } else if (state['features/base/app'].route === 'WelcomePage') {
         route.component = WelcomePage;
-    // } else if (!state['features/base/app'].route && (await AsyncStorage.getItem('accessToken'))) {
-    //     route.component = ProfileScreen;
+    } else if (!state['features/base/app'].route && accessToken) {
+        route.component = ProfileScreen;
     } else {
         route.component = SignInPage;
     }

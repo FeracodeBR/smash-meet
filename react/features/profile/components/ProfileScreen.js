@@ -9,7 +9,6 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Platform,
-    KeyboardAvoidingView, TextInput, Dimensions
 } from 'react-native';
 import meetGroup from '../../../../images/meet-group.png';
 import myRoom from '../../../../images/my-room.png';
@@ -30,15 +29,11 @@ import { connect } from '../../base/redux';
 import Collapsible from 'react-native-collapsible';
 import {getBottomSpace} from "react-native-iphone-x-helper";
 import {ColorPalette} from "../../base/styles/components/styles";
-import {appNavigate} from "../../app";
 import {CHANGE_PROFILE, SYNC_CALENDAR, SYNC_CONTACTS} from "../actionTypes";
-import {PLACEHOLDER_TEXT_COLOR} from "../../welcome/components/styles";
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
-import AsyncStorage from '@react-native-community/async-storage';
-// import Modal from "react-native-modal";
-// import io from 'socket.io-client';
 import { setCalendarIntegration } from "../../calendar-sync";
+// import Modal from "react-native-modal";
 
 function ProfileScreen({
                            dispatch,
@@ -53,70 +48,6 @@ function ProfileScreen({
                            _loading = {},
                            _error
 }) {
-    // let ws;
-
-    // const ws =io('35.209.31.83:3000', { forceNew: true, secure: false, rejectUnauthorized: false })
-    // const ws =io('104.26.13.201/socket.io', { forceNew: true, secure: true, rejectUnauthorized: false })
-    // const socket = io('wss://websocket-server.smashinnovations.com', {
-    //     path: 'socket.io'
-    // });
-    //
-    //
-    // ws.on('connect', () => {
-    //
-    //     console.log('conectooo');
-    // });
-    //
-    // ws.on('connect_error', (err) => {
-    //     console.log('err', err);
-    //
-    // });
-
-    // ws.onopen = e => {
-    //     console.log('abriu');
-    //     console.log('e', e);
-    // };
-    //
-    // ws.onmessage = e => {
-    //     console.log('e', e);
-    // };
-    //
-    // ws.onerror = (e) => {
-    //     // an error occurred
-    //     console.log('err: ', e.message);
-    // };
-    //
-    // ws.onclose = (e) => {
-    //     // connection closed
-    //     console.log(e.code, e.reason);
-    // };
-
-        // const ws = new WebSocket('wss://104.26.13.201');
-    //     ws = new WebSocket('wss://104.26.13.201/socket.io');
-    //     ws = new WebSocket('wss://websocket-server.smashinnovations.com');
-
-    //     const ws = new WebSocket('wss://echo.websocket.org');
-    //
-    //     ws.onopen = e => {
-    //         console.log('open');
-    //         console.log('e', e);
-    //     };
-    //
-    //     ws.onmessage = e => {
-    //         console.log('message', e);
-    //     };
-    //
-    //     ws.onerror = (e) => {
-    //         // an error occurred
-    //         console.log('err: ', e.message);
-    //     };
-    //
-    //     ws.onclose = (e) => {
-    //         // connection closed
-    //         console.log('close: ', e);
-    //         console.log(e.code, e.reason);
-    //     };
-
     useEffect(() => {
         dispatch(setContactsIntegration());
         dispatch(setCalendarIntegration());
@@ -193,6 +124,14 @@ function ProfileScreen({
                             style = { styles.iconImage } />
                     </TouchableOpacity>
                 </View>
+            </View>
+        );
+    }
+
+    if(!_defaultProfile) {
+        return (
+            <View style = { styles.loadingContainer }>
+                <ActivityIndicator color={ColorPalette.white} />
             </View>
         );
     }

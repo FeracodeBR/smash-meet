@@ -30,6 +30,9 @@ import '../../mobile/watchos';
 import logger from '../logger';
 import { AbstractApp } from './AbstractApp';
 import type { Props as AbstractAppProps } from './AbstractApp';
+import {reloadSession} from "../../welcome/actions";
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 declare var __DEV__;
 
@@ -107,6 +110,13 @@ export class App extends AbstractApp {
             if (typeof callIntegrationEnabled !== 'undefined') {
                 dispatch(updateSettings({ disableCallIntegration: !callIntegrationEnabled }));
             }
+
+            AsyncStorage.getItem('accessToken')
+                .then(accessToken => {
+                    if(accessToken) {
+                        dispatch(reloadSession(accessToken))
+                    }
+                });
         });
     }
 

@@ -241,15 +241,7 @@ export class AbstractWelcomePage extends Component<Props, *> {
 
     _onSignIn() {
         const {username, password} = this.state;
-        const { _conference: conference, dispatch } = this.props;
-
-        const jid = toJid(username, this.props._configHosts);
-        // const res = dispatch(authenticateAndUpgradeRole(jid, password, conference));
-        // const res2 = dispatch(connect(jid, password));
-
-        // console.log('res2', res2);
-        // console.log('conference', conference);
-        // dispatch(authenticateAndUpgradeRole(jid, password, conference));
+        const { dispatch } = this.props;
 
         if(username && password) dispatch(signIn(username, password))
     }
