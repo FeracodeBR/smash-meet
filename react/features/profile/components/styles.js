@@ -45,7 +45,7 @@ export default {
     },
     descriptionIos: {
         marginHorizontal: 7,
-        fontSize: 12,
+        // fontSize: 12,
         color: '#BFBFBF',
         letterSpacing: 0.5,
         fontVariant: [ 'small-caps' ],
@@ -63,8 +63,8 @@ export default {
         flex: 1,
     },
     subheader: {
-        paddingTop: 12,
-        paddingBottom: 2,
+        paddingTop: 10,
+        paddingBottom: 4,
         paddingHorizontal: 15,
         borderColor: '#40444B',
         borderBottomWidth: 2
@@ -107,7 +107,7 @@ export default {
     },
     contactsInfo: {
         color: '#BFBFBF',
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: '300',
         fontVariant: [ 'small-caps' ],
         textTransform: Platform.OS === 'ios' ? 'lowercase' : 'uppercase'
@@ -166,7 +166,7 @@ export default {
     },
     friendName: {
         color: '#BFBFBF',
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: '300',
         fontStyle: 'italic'
     },
@@ -183,6 +183,7 @@ export default {
         paddingBottom: 5,
     },
     optionsBody: {
+        paddingLeft: 5,
         paddingTop: 10,
         paddingBottom: 20,
     },
@@ -194,8 +195,9 @@ export default {
     optionsBodyText: {
         fontWeight: '500',
         fontSize: 15,
-        paddingVertical: 5,
+        paddingVertical: 20,
         color: '#BFBFBF',
+        ...smallCapsOrUppercase
     },
     profileList: {
         maxHeight: Dimensions.get('window').height / 2
@@ -255,7 +257,10 @@ export default {
     optionBodyTitleText: {
         color: '#BFBFBF',
         fontSize: 15,
-        fontWeight: '500'
+        fontWeight: '500',
+        ...smallCapsOrUppercase,
+        paddingVertical: 5,
+        // backgroundColor: 'red'
     },
     permissionDeniedText: {
         color: '#656565',

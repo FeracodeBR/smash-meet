@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Platform,
-    AppState
+    AppState,
+    TouchableWithoutFeedback
 } from 'react-native';
 import camera from '../../../../images/smash-camera.png';
 import phone from '../../../../images/smash-phone.png';
@@ -116,6 +117,8 @@ function ProfileScreen({
     // }
 
     function renderItem({ item }) {
+        console.log('item', item);
+
         return (
             <View style = { styles.friendItem }>
                 <View style = { styles.userInfo }>
@@ -133,22 +136,25 @@ function ProfileScreen({
                     </View>
                 </View>
 
-                <View style = { styles.profileContainer }>
-                    {/*<TouchableOpacity>*/}
-                    {/*    <Image*/}
-                    {/*        resizeMethod = 'resize'*/}
-                    {/*        resizeMode = 'contain'*/}
-                    {/*        source = { phone }*/}
-                    {/*        style = { styles.iconImage } />*/}
-                    {/*</TouchableOpacity>*/}
-                    <TouchableOpacity onPress={() => dispatch(callFriend(item.profileRef))}>
-                        <Image
-                            resizeMethod = 'resize'
-                            resizeMode = 'contain'
-                            source = { camera }
-                            style = { styles.iconImage } />
-                    </TouchableOpacity>
-                </View>
+                {
+                    item.profileRef &&
+                        <View style = { styles.profileContainer }>
+                            {/*<TouchableOpacity>*/}
+                            {/*    <Image*/}
+                            {/*        resizeMethod = 'resize'*/}
+                            {/*        resizeMode = 'contain'*/}
+                            {/*        source = { phone }*/}
+                            {/*        style = { styles.iconImage } />*/}
+                            {/*</TouchableOpacity>*/}
+                            <TouchableOpacity onPress={() => dispatch(callFriend(item.profileRef))}>
+                                <Image
+                                    resizeMethod = 'resize'
+                                    resizeMode = 'contain'
+                                    source = { camera }
+                                    style = { styles.iconImage } />
+                            </TouchableOpacity>
+                        </View>
+                }
             </View>
         );
     }
@@ -215,36 +221,38 @@ function ProfileScreen({
 
             {/*{renderCallModal()}*/}
 
-            <View style = { styles.footer }>
-                <View style = { styles.userInfo }>
-                    <HexagononImage
-                        size = { 42 }
-                        friend= { _defaultProfile } />
-                    <View style = { styles.profileInfo }>
-                        <Text style = { styles.userName }>{_defaultProfile.name}</Text>
-                        <Text style = { styles.contactsInfo }>friends {friendsLength}</Text>
+            <TouchableWithoutFeedback onPress={() => setCollapsed(!isCollapsed)}>
+                <View style = { styles.footer }>
+                    <View style = { styles.userInfo }>
+                        <HexagononImage
+                            size = { 42 }
+                            friend= { _defaultProfile } />
+                        <View style = { styles.profileInfo }>
+                            <Text style = { styles.userName }>{_defaultProfile.name}</Text>
+                            <Text style = { styles.contactsInfo }>friends {friendsLength}</Text>
+                        </View>
+                    </View>
+
+                    <View style = { styles.profileContainer }>
+                        {
+                            _loading[CHANGE_PROFILE] ?
+                                <ActivityIndicator color={ColorPalette.white} /> :
+                                <View style = { [styles.profile, {backgroundColor: getProfileColor(_defaultProfile.color)}] }>
+                                    <Text style = { styles.profileText }>
+                                        {_defaultProfile.abbr}
+                                    </Text>
+                                </View>
+                        }
+                        <TouchableOpacity onPress={() => setCollapsed(!isCollapsed)} style={styles.menuIconContainer}>
+                            {
+                                isCollapsed ?
+                                    <IconMenuUp style = { styles.icon } /> :
+                                    <IconMenuDown style = { styles.icon } />
+                            }
+                        </TouchableOpacity>
                     </View>
                 </View>
-
-                <View style = { styles.profileContainer }>
-                    {
-                        _loading[CHANGE_PROFILE] ?
-                            <ActivityIndicator color={ColorPalette.white} /> :
-                            <View style = { [styles.profile, {backgroundColor: getProfileColor(_defaultProfile.color)}] }>
-                                <Text style = { styles.profileText }>
-                                    {_defaultProfile.abbr}
-                                </Text>
-                            </View>
-                    }
-                    <TouchableOpacity onPress={() => setCollapsed(!isCollapsed)} style={styles.menuIconContainer}>
-                        {
-                            isCollapsed ?
-                                <IconMenuUp style = { styles.icon } /> :
-                                <IconMenuDown style = { styles.icon } />
-                        }
-                    </TouchableOpacity>
-                </View>
-            </View>
+            </TouchableWithoutFeedback>
             <View style={styles.collapsible}>
                 <Collapsible collapsed={isCollapsed}>
                     <View style={styles.options}>
