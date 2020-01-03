@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Platform,
+    AppState
 } from 'react-native';
 import camera from '../../../../images/smash-camera.png';
 import phone from '../../../../images/smash-phone.png';
@@ -36,7 +37,7 @@ import {ColorPalette} from "../../base/styles/components/styles";
 import {CHANGE_PROFILE, SYNC_CALENDAR, SYNC_CONTACTS} from "../actionTypes";
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
-import { setCalendarIntegration } from "../../calendar-sync";
+import { setCalendarIntegration } from "../../calendar-sync/actions.native";
 // import Modal from "react-native-modal";
 
 function ProfileScreen({
@@ -56,13 +57,29 @@ function ProfileScreen({
     useEffect(() => {
         dispatch(setContactsIntegration());
         dispatch(setCalendarIntegration());
+        AppState.addEventListener('change', _handleAppStateChange);
+
+        return () => {
+            AppState.removeEventListener('change', _handleAppStateChange);
+        }
     }, []);
 
-    console.log('_contactsAuthorization', _contactsAuthorization);
-    console.log('_calendarAuthorization', _calendarAuthorization);
-
     const [isCollapsed, setCollapsed] = useState(true);
+    const [appState, setAppState] = useState(AppState.currentState);
     // const [isCallModalVisible, setCallModalVisible] = useState(false);
+
+    function _handleAppStateChange(nextAppState) {
+        if (
+            appState.match(/inactive|background/) &&
+            nextAppState === 'active'
+        ) {
+            console.log('voltou');
+            dispatch(setContactsIntegration());
+            dispatch(setCalendarIntegration());
+
+        }
+        setAppState(nextAppState);
+    }
 
     // function renderCallModal() {
     //     return (
@@ -242,7 +259,12 @@ function ProfileScreen({
                                     <>
                                         <TouchableOpacity
                                             style={styles.optionBodyItem}
-                                            onPress={() => dispatch(syncCalendar(_calendar))}
+                                            onPress={() => {
+                                                dispatch(syncCalendar(_calendar))
+
+                                                // dispatch(setCalendarIntegration());
+                                                // setTimeout(() => dispatch(syncCalendar(_calendar)), 2000);
+                                            }}
                                             disabled={_calendarAuthorization === 'denied'}>
                                             <View style={[styles.optionBodyHeader, {flex: _calendarAuthorization !== 'denied' ? 3 : 1}]}>
                                                 {

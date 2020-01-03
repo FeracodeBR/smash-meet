@@ -56,7 +56,7 @@ export default class BaseApp extends Component<*, State> {
 
         this.state = {
             route: {},
-            store: undefined
+            store: undefined,
         };
     }
 
@@ -89,6 +89,7 @@ export default class BaseApp extends Component<*, State> {
                 /* BaseApp should always initialize! */
                 logger.error(err);
             });
+
     }
 
     /**
