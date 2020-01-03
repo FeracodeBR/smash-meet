@@ -29,7 +29,7 @@ export default {
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 15,
-        paddingTop: getStatusBarHeight(),
+        paddingTop: getStatusBarHeight(true),
         backgroundColor: ColorPalette.black
     },
     logo: {

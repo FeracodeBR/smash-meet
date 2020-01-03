@@ -6,7 +6,7 @@ import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
     SIGN_IN_RESPONSE,
-    FETCH_PROFILES_FRIENDS_GROUPS,
+    FETCH_SESSION,
 } from './actionTypes';
 
 import {navigateToScreen} from "../base/app";
@@ -75,7 +75,7 @@ export function signIn(username: string, password: string) {
 
                     headers.set('authorization', accessToken);
 
-                    const [profilesRes, friendsRes, groupsRes] = await Promise.all([
+                    const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
                         fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                             method: 'GET',
                             headers
@@ -87,14 +87,19 @@ export function signIn(username: string, password: string) {
                         fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
                             method: 'GET',
                             headers
+                        }),
+                        fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
+                            method: 'GET',
+                            headers,
                         })
                     ]);
 
-                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok) {
-                        const [profiles, friends, groups] = await Promise.all([
+                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok) {
+                        const [profiles, friends, groups, personalRoom] = await Promise.all([
                             profilesRes.json(),
                             friendsRes.json(),
-                            groupsRes.json()
+                            groupsRes.json(),
+                            personalRoomRes.json()
                         ]);
 
                         const profileIds = profiles.map(profile => profile.id);
@@ -110,11 +115,12 @@ export function signIn(username: string, password: string) {
                         });
 
                         dispatch({
-                            type: FETCH_PROFILES_FRIENDS_GROUPS,
+                            type: FETCH_SESSION,
                             defaultProfile,
                             profiles: otherProfiles,
                             friends: friendsWithoutMe,
-                            groups
+                            groups,
+                            personalRoom
                         });
 
                         dispatch(navigateToScreen('ProfileScreen'));
@@ -153,7 +159,7 @@ export function reloadSession(accessToken: string) {
                 'Content-Type': 'application/json'
             });
 
-            const [profilesRes, friendsRes, groupsRes] = await Promise.all([
+            const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
                 fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                     method: 'GET',
                     headers
@@ -165,13 +171,18 @@ export function reloadSession(accessToken: string) {
                 fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
                     method: 'GET',
                     headers
+                }),
+                fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
+                    method: 'GET',
+                    headers,
                 })
             ]);
 
-            const [profiles, friends, groups] = await Promise.all([
+            const [profiles, friends, groups, personalRoom] = await Promise.all([
                 profilesRes.json(),
                 friendsRes.json(),
-                groupsRes.json()
+                groupsRes.json(),
+                personalRoomRes.json()
             ]);
 
             const profileIds = profiles.map(profile => profile.id);
@@ -181,11 +192,12 @@ export function reloadSession(accessToken: string) {
             const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
 
             dispatch({
-                type: FETCH_PROFILES_FRIENDS_GROUPS,
+                type: FETCH_SESSION,
                 defaultProfile,
                 profiles: otherProfiles,
                 friends: friendsWithoutMe,
-                groups
+                groups,
+                personalRoom
             });
         } catch (err) {
             AsyncStorage.clear();

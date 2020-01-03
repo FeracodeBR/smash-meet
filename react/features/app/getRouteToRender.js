@@ -14,12 +14,9 @@ import {
     BlankPage,
     WelcomePage,
     SignInPage,
-    isWelcomePageAppEnabled,
     isWelcomePageUserEnabled
 } from '../welcome';
 import ProfileScreen from '../profile/components/ProfileScreen';
-import {DEFAULT_SERVER_URL} from "../base/settings";
-import {FETCH_PROFILES_FRIENDS_GROUPS, SIGN_IN_RESPONSE} from "../welcome/actionTypes";
 
 /**
  * Object describing application route.

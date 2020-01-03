@@ -11,7 +11,7 @@ import {
 } from './actionTypes';
 import AsyncStorage from "@react-native-community/async-storage";
 import {navigateToScreen} from "../base/app";
-import {FETCH_PROFILES_FRIENDS_GROUPS} from "../welcome/actionTypes";
+import {FETCH_SESSION} from "../welcome/actionTypes";
 import {appNavigate} from "../app";
 import {DEFAULT_SERVER_URL} from "../base/settings";
 import {setCalendarIntegration} from "../calendar-sync";
@@ -274,7 +274,7 @@ export function syncContacts(contacts) {
                 });
 
                 dispatch({
-                    type: FETCH_PROFILES_FRIENDS_GROUPS,
+                    type: FETCH_SESSION,
                     defaultProfile,
                     profiles: otherProfiles,
                     friends: friendsWithoutMe,
@@ -297,31 +297,22 @@ export function syncContacts(contacts) {
     }
 }
 
-export function enterPersonalRoom() {
+export function enterPersonalRoom(room) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         const headers = new Headers({
             'authorization': (await AsyncStorage.getItem('accessToken')),
             'Content-Type': 'application/json'
         });
 
-        const roomRes = await fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
-            method: 'GET',
+        const tokenRes = await fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room/token`, {
+            method: 'POST',
             headers,
+            body: JSON.stringify(room)
         });
 
-        if(roomRes.ok) {
-            roomRes.json().then(async room => {
-                const tokenRes = await fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room/token`, {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify(room)
-                });
-
-                tokenRes.json().then(({jwt, roomId}) => {
-                    dispatch(appNavigate(`${roomId}?jwt=${jwt}`))
-                })
-            })
-        }
+        tokenRes.json().then(({jwt, roomId}) => {
+            dispatch(appNavigate(`${roomId}?jwt=${jwt}`))
+        })
     }
 }
 
@@ -425,7 +416,7 @@ export function changeProfile(defaultProfile) {
                         });
 
                         dispatch({
-                            type: FETCH_PROFILES_FRIENDS_GROUPS,
+                            type: FETCH_SESSION,
                             defaultProfile,
                             profiles: otherProfiles,
                             friends: friendsWithoutMe,

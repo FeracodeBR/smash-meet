@@ -15,7 +15,7 @@ import {
     SYNC_CONTACTS, SYNC_CALENDAR
 } from './actionTypes';
 
-import {FETCH_PROFILES_FRIENDS_GROUPS} from "../welcome/actionTypes";
+import {FETCH_SESSION} from "../welcome/actionTypes";
 
 /**
  * The default state of the calendar feature.
@@ -123,12 +123,13 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             },
         });
 
-    case FETCH_PROFILES_FRIENDS_GROUPS:
+    case FETCH_SESSION:
         return assign(state, {
             'defaultProfile': action.defaultProfile,
             'profiles': action.profiles,
             'friends': action.friends,
             'groups': action.groups,
+            'personalRoom': action.personalRoom
         });
 
 

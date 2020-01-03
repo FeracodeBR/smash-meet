@@ -21,7 +21,9 @@ import {
     IconMenuDown,
     IconSyncContacts,
     IconLogout,
-    IconSyncCalendar
+    IconSyncCalendar,
+    IconRoom,
+    IconRoomDisabled
 } from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
@@ -45,6 +47,7 @@ function ProfileScreen({
                            _profiles,
                            _friends,
                            _groups,
+                           _personalRoom,
                            _loading = {},
                            _error
 }) {
@@ -136,6 +139,8 @@ function ProfileScreen({
         );
     }
 
+    const personalRoomDisabled = !_personalRoom.name;
+
     return (
         <View style = { styles.container }>
             <View style = { styles.header }>
@@ -154,14 +159,15 @@ function ProfileScreen({
                 {/*    resizeMode = 'contain'*/}
                 {/*    source = { logo }*/}
                 {/*    style = { styles.logo } />*/}
-                <TouchableOpacity style = { styles.iconContainer } onPress={() => dispatch(enterPersonalRoom())}>
-                    <Text style = { styles.descriptionIos }>
+                <TouchableOpacity style = { styles.iconContainer } onPress={() => dispatch(enterPersonalRoom(_personalRoom))} disabled={personalRoomDisabled}>
+                    <Text style = { [styles.descriptionIos, {color: personalRoomDisabled ? '#656565' : '#BFBFBF'}] }>
                         MY ROOM
                     </Text>
-                    <Image
-                        resizeMethod = 'resize'
-                        resizeMode = 'contain'
-                        source = { myRoom } />
+                    {
+                        personalRoomDisabled ?
+                            <IconRoomDisabled/> :
+                            <IconRoom/>
+                    }
                 </TouchableOpacity>
             </View>
             <View style = { styles.content }>
@@ -312,9 +318,11 @@ function ProfileScreen({
                                             </TouchableOpacity>
                                         )} />
                                         :
-                                    <Text style={styles.optionsBodyText}>
-                                        No other profiles available
-                                    </Text>
+                                    <View style={{paddingBottom: getBottomSpace()}}>
+                                        <Text style={styles.optionsBodyText}>
+                                            No other profiles available
+                                        </Text>
+                                    </View>
                             }
                         </View>
                     </View>
@@ -337,6 +345,7 @@ function _mapStateToProps(state: Object) {
         _profiles: state['features/contacts-sync'].profiles,
         _friends: state['features/contacts-sync'].friends,
         _groups: state['features/contacts-sync'].groups,
+        _personalRoom: state['features/contacts-sync'].personalRoom,
         _loading: state['features/contacts-sync'].loading,
         _error: state['features/contacts-sync'].error,
     };

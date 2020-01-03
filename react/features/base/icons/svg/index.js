@@ -82,3 +82,5 @@ export { default as IconSmashMeetLogo} from './smash-meet-logo.svg';
 export { default as IconSyncContacts} from './sync-contacts.svg';
 export { default as IconSyncCalendar} from './sync-calendar.svg';
 export { default as IconLogout} from './logout.svg';
+export { default as IconRoom} from './room.svg';
+export { default as IconRoomDisabled} from './roomDisabled.svg';
