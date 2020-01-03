@@ -10,8 +10,6 @@ import {
     ActivityIndicator,
     Platform,
 } from 'react-native';
-import meetGroup from '../../../../images/meet-group.png';
-import myRoom from '../../../../images/my-room.png';
 import camera from '../../../../images/smash-camera.png';
 import phone from '../../../../images/smash-phone.png';
 import {setContactsIntegration, changeProfile, logout, enterPersonalRoom, syncContacts, syncCalendar, callFriend} from '../actions';
@@ -20,8 +18,10 @@ import {
     IconMenuUp,
     IconMenuDown,
     IconSyncContacts,
+    IconSyncContactsDisabled,
     IconLogout,
     IconSyncCalendar,
+    IconSyncCalendarDisabled,
     IconRoom,
     IconRoomDisabled,
     IconEnterMeet,
@@ -57,6 +57,9 @@ function ProfileScreen({
         dispatch(setContactsIntegration());
         dispatch(setCalendarIntegration());
     }, []);
+
+    console.log('_contactsAuthorization', _contactsAuthorization);
+    console.log('_calendarAuthorization', _calendarAuthorization);
 
     const [isCollapsed, setCollapsed] = useState(true);
     // const [isCallModalVisible, setCallModalVisible] = useState(false);
@@ -239,35 +242,53 @@ function ProfileScreen({
                                     <>
                                         <TouchableOpacity
                                             style={styles.optionBodyItem}
-                                            onPress={() => dispatch(syncCalendar(_calendar))}>
-                                            <View style={styles.optionBodyHeader}>
-                                                <IconSyncCalendar style = { styles.icon }/>
+                                            onPress={() => dispatch(syncCalendar(_calendar))}
+                                            disabled={_calendarAuthorization === 'denied'}>
+                                            <View style={[styles.optionBodyHeader, {flex: _calendarAuthorization !== 'denied' ? 3 : 1}]}>
+                                                {
+                                                    _calendarAuthorization !== 'denied' ?
+                                                        <IconSyncCalendar />:
+                                                        <IconSyncCalendarDisabled />
+                                                }
                                                 <View style={styles.optionBodyTitle}>
-                                                    <Text style={styles.optionBodyTitleText}>
+                                                    <Text style={[styles.optionBodyTitleText, {color: _calendarAuthorization !== 'denied' ? '#BFBFBF' : '#656565'}]}>
                                                         Synchronize calendar
                                                     </Text>
                                                 </View>
                                             </View>
                                             <View style={styles.optionLoading}>
                                                 {
-                                                    _loading[SYNC_CALENDAR] && <ActivityIndicator color="white"/>
+                                                    _calendarAuthorization !== 'denied' ?
+                                                        _loading[SYNC_CALENDAR] && <ActivityIndicator color="white"/> :
+                                                        <Text style={styles.permissionDeniedText}>
+                                                            permission denied
+                                                        </Text>
                                                 }
                                             </View>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={styles.optionBodyItem}
-                                            onPress={() => dispatch(syncContacts(_contacts))}>
-                                            <View style={styles.optionBodyHeader}>
-                                                <IconSyncContacts style = { styles.icon }/>
+                                            onPress={() => dispatch(syncContacts(_contacts))}
+                                            disabled={!_contactsAuthorization}>
+                                            <View style={[styles.optionBodyHeader, {flex: _contactsAuthorization ? 3 : 1}]}>
+                                                {
+                                                    _contactsAuthorization ?
+                                                        <IconSyncContacts /> :
+                                                        <IconSyncContactsDisabled />
+                                                }
                                                 <View style={styles.optionBodyTitle}>
-                                                    <Text style={styles.optionBodyTitleText}>
+                                                    <Text style={[styles.optionBodyTitleText, {color: _contactsAuthorization ? '#BFBFBF' : '#656565'}]}>
                                                         Synchronize contacts
                                                     </Text>
                                                 </View>
                                             </View>
                                             <View style={styles.optionLoading}>
                                                 {
-                                                    _loading[SYNC_CONTACTS] && <ActivityIndicator color="white"/>
+                                                    _contactsAuthorization ?
+                                                        _loading[SYNC_CONTACTS] && <ActivityIndicator color="white"/> :
+                                                        <Text style={styles.permissionDeniedText}>
+                                                            permission denied
+                                                        </Text>
                                                 }
                                             </View>
                                         </TouchableOpacity>

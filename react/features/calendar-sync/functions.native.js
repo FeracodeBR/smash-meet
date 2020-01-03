@@ -131,6 +131,7 @@ function _ensureCalendarAccess(promptForPermission, dispatch) {
         RNCalendarEvents.authorizationStatus()
             .then(status => {
                 if (status === 'authorized') {
+                    dispatch(setCalendarAuthorization(true));
                     resolve(true);
                 } else if (promptForPermission) {
                     RNCalendarEvents.authorizeEventStore()

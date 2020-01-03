@@ -207,7 +207,6 @@ export default {
         backgroundColor: 'white'
     },
     textInput: {
-
         backgroundColor: '#4E5054',
         borderRadius: 50,
         color: '#DFDFDF',
@@ -243,19 +242,26 @@ export default {
         paddingVertical: 5,
     },
     optionBodyHeader: {
-        flex: 3,
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start'
     },
     optionBodyTitle: {
         flex: 1,
-        marginLeft: 12
+        flexDirection: 'row',
+        marginLeft: 12,
     },
     optionBodyTitleText: {
         color: '#BFBFBF',
         fontSize: 15,
         fontWeight: '500'
+    },
+    permissionDeniedText: {
+        color: '#656565',
+        fontStyle: 'italic',
+        fontSize: 12,
+        // paddingHorizontal: 10,
     },
     optionLoading: {
         flex: 1,

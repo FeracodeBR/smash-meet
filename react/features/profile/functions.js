@@ -56,7 +56,6 @@ function _ensureContactsAccess(dispatch) {
 }
 
 export function getProfileColor(color) {
-    // console.log('renderizou');
     switch(color) {
         case 'linear-gradient(180deg, #FFCD02 0%, #D79B00 100%)': return '#edb702';
         case 'linear-gradient(180deg, #8AFFBB 0%, #3FA369 100%)': return 'rgb(105, 214, 151)';

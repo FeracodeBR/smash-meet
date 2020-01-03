@@ -56,7 +56,7 @@ export function logout() {
 
 export function syncCalendar(calendar, authorization) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        if (calendar.length) {
+        if (calendar?.length) {
             dispatch({
                 type: SYNC_CALENDAR,
                 error: undefined,
