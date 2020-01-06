@@ -81,4 +81,5 @@ export const CHANGE_PROFILE = 'CHANGE_PROFILE';
 export const SYNC_CALENDAR = 'SYNC_CALENDAR';
 export const SYNC_CONTACTS = 'SYNC_CONTACTS';
 export const CALL_FRIEND = 'CALL_FRIEND';
+export const STORE_CALL_DATA = 'STORE_CALL_DATA';
 

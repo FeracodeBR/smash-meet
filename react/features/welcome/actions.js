@@ -69,9 +69,12 @@ export function signIn(username: string, password: string) {
 
             if(auth.ok) {
                 auth.json().then(async res => {
-                    const {defaultProfile, accessToken} = res;
+                    console.log('res', res);
+
+                    const {accessToken, userId} = res;
 
                     AsyncStorage.setItem('accessToken', accessToken);
+                    AsyncStorage.setItem('userId', userId);
 
                     headers.set('authorization', accessToken);
 

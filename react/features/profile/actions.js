@@ -7,7 +7,7 @@ import {
     SET_CONTACTS_INTEGRATION,
     CHANGE_PROFILE,
     SYNC_CALENDAR,
-    SYNC_CONTACTS, CALL_FRIEND
+    SYNC_CONTACTS, CALL_FRIEND, STORE_CALL_DATA
 } from './actionTypes';
 import AsyncStorage from "@react-native-community/async-storage";
 import {navigateToScreen} from "../base/app";
@@ -15,6 +15,7 @@ import {FETCH_SESSION} from "../welcome/actionTypes";
 import {appNavigate} from "../app";
 import {DEFAULT_SERVER_URL} from "../base/settings";
 import {setCalendarIntegration} from "../calendar-sync";
+import {exportPublic, generateKeys} from "../welcome";
 
 export function fetchContacts(contacts) {
     return {
@@ -316,7 +317,7 @@ export function enterPersonalRoom(room) {
     }
 }
 
-export function callFriend(profileId) {
+export function callFriend(friend) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         dispatch({
             type: CALL_FRIEND,
@@ -332,14 +333,23 @@ export function callFriend(profileId) {
         const callRes = await fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/token`, {
             method: 'POST',
             headers,
-            body: JSON.stringify({profileId})
+            body: JSON.stringify({profileId: friend.profileRef})
         });
 
         if(callRes.ok) {
             callRes.json().then(call => {
                 const {jwt, roomId, dateTime, sender, receiver} = call;
 
-                dispatch(appNavigate(`${roomId}?jwt=${jwt}`))
+                dispatch({
+                    type: STORE_CALL_DATA,
+                    call: {
+                        roomId,
+                        jwt,
+                        friend
+                    }
+                });
+
+                dispatch(navigateToScreen('CallScreen'));
             })
         } else {
             dispatch({
@@ -350,7 +360,6 @@ export function callFriend(profileId) {
         }
     }
 }
-
 
 export function changeProfile(defaultProfile) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
@@ -452,5 +461,38 @@ export function changeProfile(defaultProfile) {
                 error: true
             });
         }
+    };
+}
+
+export function addClient(socketId, profileId) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        const [[, accessToken], [, userId]] = await AsyncStorage.multiGet(['accessToken', 'userId']);
+
+        const headers = new Headers({
+            'authorization': accessToken,
+            'Content-Type': 'application/json'
+        });
+
+        const {publicKey, privateKey} = await generateKeys();
+
+        const res = await fetch(`${DEFAULT_SERVER_URL}/module/system/add-client`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                token: accessToken,
+                userId: userId,
+                url: DEFAULT_SERVER_URL,
+                profile: profileId,
+                master: false,
+                SameSite: 'None',
+                connectionId: socketId,
+                publicKey: await exportPublic(publicKey)
+            })
+        });
+
+        if(!res.ok) {
+            console.log('add client error', res);
+        }
+
     };
 }

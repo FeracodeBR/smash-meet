@@ -11,7 +11,7 @@
 import './features/base/lib-jitsi-meet/native/polyfills-bundler';
 
 import React, { PureComponent } from 'react';
-import { AppRegistry, StatusBar } from 'react-native';
+import { AppRegistry, StatusBar, YellowBox } from 'react-native';
 
 import { App } from './features/app';
 import { IncomingCallApp } from './features/mobile/incoming-call';
@@ -44,6 +44,13 @@ class Root extends PureComponent<Props> {
     constructor() {
         super();
         StatusBar.setBarStyle('light-content');
+
+        //TODO: Tratar warnings
+        YellowBox.ignoreWarnings([
+            'Unrecognized WebSocket',
+            'Module WatchBridge',
+            'Require cycle'
+        ])
     }
 
     /**

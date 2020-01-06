@@ -14,7 +14,16 @@ import {
 } from 'react-native';
 import camera from '../../../../images/smash-camera.png';
 import phone from '../../../../images/smash-phone.png';
-import {setContactsIntegration, changeProfile, logout, enterPersonalRoom, syncContacts, syncCalendar, callFriend} from '../actions';
+import {
+    setContactsIntegration,
+    changeProfile,
+    logout,
+    enterPersonalRoom,
+    syncContacts,
+    syncCalendar,
+    callFriend,
+    addClient
+} from '../actions';
 import styles from './styles';
 import {
     IconMenuUp,
@@ -27,7 +36,6 @@ import {
     IconRoom,
     IconRoomDisabled,
     IconEnterMeet,
-    IconEnterMeetDisabled
 } from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
@@ -39,7 +47,9 @@ import {CHANGE_PROFILE, SYNC_CALENDAR, SYNC_CONTACTS} from "../actionTypes";
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
 import { setCalendarIntegration } from "../../calendar-sync/actions.native";
-// import Modal from "react-native-modal";
+import AsyncStorage from '@react-native-community/async-storage';
+import io from 'socket.io-client';
+import {DEFAULT_WEBSOCKET_URL} from "../../base/settings";
 
 function ProfileScreen({
                            dispatch,
@@ -58,45 +68,51 @@ function ProfileScreen({
     useEffect(() => {
         dispatch(setContactsIntegration());
         dispatch(setCalendarIntegration());
+
         AppState.addEventListener('change', _handleAppStateChange);
-
-        const ws = new WebSocket(`wss://websocket-server.smashinnovations.com/socket.io/?location=%7B%22latitude%22%3A-27.59667%2C%22longitude%22%3A-48.54917%2C%22countryCode%22%3A%22BR%22%2C%22id%22%3A%228edfcb8025acdfe98f46%22%7D&token=YzljMDM5MGM4YzkzMDNjMDMwODk1MDllYmUzZjBiNTAkNURaS0RIYXZBek5UeXAxa0JySWk1UGV6Wm1yRnRUcm9yT25FbHQ1RWtBNkFwWGFEeTRHS3JqQjFnVS92ekNaUThxVEVzbVlKQWNrblozTW5jYWJVcjRPbXp5UW9SY3FDRzhQeUZPMHY4ZWpVYURsOUdodnJWTVRIRnF0RHVCek8wMjBoclJYM0t6aEFDd1plQnFaWVd5OUJHVG1LMng1b0czNFZzektuQ0hxOUZzTjE1RHZlQkFUNVhXSXZNcDRaSzBaZkh2alhUK3NCbThTcDZxYkszMWlQZ3lLNXg0d3J4Tm0yOEZONm1BRUxNYXpxemNaZVRiRFdkbGtvT3NMdGpaTCtleDdnNWFpTDRiQzZNL1BSUUp4NXZrRThxcmUzd2QydVhKbE1WL1JXS0tIZUNXS05OM1I1VDdxOVRDbnN4MGVGQzZzOCtmL0V2L1VTVlFrMjEzN1pYOHZpaDVVdjBpQkZ6WGw2SUZlejNmdWlLWE1BcU1qdGNKbzdUYmtrVjk5Y3FYTzlvQTVodzZFZm5veStmWHFodWkzTklhcDFOVmJSRVpubWQ5Ujg1b3g1aE9FTlYwMDZybW9hVjROZTNNSXZpdnA0Rng2SUYvVzBxeDhLZllqTTJaeVZtSHRDbUJMTnF6Z3ExUDlZblpqWVpYa0NibjV6emw3M0pjNkRONGlWMWI5dVpoYTM0dGpRbndkTVBGUjVYbno4TFV0dzcwdFFJWE05Y3FwblN0R3VlZ09KQkRmNk5xZzNZZ2tVS1BGMVdXbE84KzVoR2RpZ3drZndKYWlPVDJROXN1QjVRVWtOUzhOWU1ISTBOdGcvVzRKN3JlZVRlOHhUQVR5QnBPRnlSQ2xtMTJGVjRaU2o0cUkrSkd2UjFjMlJtYnNyVElWRWZ3cXBETUc4azRtL2tidkhpMnpoZk1VWGN2aUxZYm5KM25VZXN5ZFpNQ2ZMb2RlZUFwLzN2R0MxQVBWZDJ5a2VyTmRIaWhRaVJFZlhXbng2aktYMzRXN3UwanQ0MHFkaEZzU0pwbklRMTY2Yy9SU29TUmhaMHp3bC80Z0NNK0Q4QWhib3plWlZnY0wzTnVUT0IwZlFMMVhyV3NLanRZSndrYjZsYkVBcEsvSkZCbWJqV2x6dG90a3BCaHpucjdROGFXSm5reDB6dVRzSHdlY3lwbC9oMHVnVFdzNXZGcGFoYXhOTHFGMTRKdFZMWFRtT1V0K3V5RzdsdFpiK01OTmFVdkdCdVFuaEg2WVdwRTVoaXBNZ0JLNk5INDZQa0J2NlFteXJQV042dzlPazZ4ZWcvNWI0RExhdEVzSUhrWjc2MDM4Tk5QM1djSDFCN1BlWFpvMXoyTk5uaFJ1eGZhRnJ1VWZranF1T1V4NDh1bmVkbXc9PQ%3D%3D&EIO=3&transport=websocket&sid=28N_CZhrgqUS5A1iACSD`);
-
-        ws.onopen = () => {
-
-            console.log('open');
-
-            // connection opened
-            // ws.send('something'); // send a message
-        };
-
-        ws.onmessage = (e) => {
-            console.log('message');
-
-            // a message was received
-            // console.log(e.data);
-        };
-
-        ws.onerror = (e) => {
-            console.log('error');
-
-            // an error occurred
-            console.log(e.message);
-        };
-
-        ws.onclose = (e) => {
-            // connection closed
-            console.log('close', e.code, e.reason);
-        };
 
         return () => {
             AppState.removeEventListener('change', _handleAppStateChange);
         }
     }, []);
 
+    useEffect(() => {
+        if(_defaultProfile) startWS();
+    }, [_defaultProfile]);
+
     const [isCollapsed, setCollapsed] = useState(true);
     const [appState, setAppState] = useState(AppState.currentState);
-    // const [isCallModalVisible, setCallModalVisible] = useState(false);
+    const [socket, setSocket] = useState(null);
+
+    async function startWS() {
+        const token = encodeURIComponent(await AsyncStorage.getItem('accessToken'));
+        let socket = io(DEFAULT_WEBSOCKET_URL, {
+            query: {
+                token,
+                EIO: 3,
+                transport: 'websocket'
+            }
+        });
+        setSocket(socket);
+
+        socket.on('connect', () => {
+            dispatch(addClient(socket.id, _defaultProfile.id));
+        });
+
+        socket.on('/chat/conference', event => {
+            switch(event.action) {
+                case 'invite':
+
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        socket.on('error', (e) => {
+            console.log('socket error', e);
+        });
+    }
 
     function _handleAppStateChange(nextAppState) {
         if (
@@ -110,40 +126,6 @@ function ProfileScreen({
         }
         setAppState(nextAppState);
     }
-
-    // function renderCallModal() {
-    //     return (
-    //         <Modal isVisible={isCallModalVisible}
-    //                onBackdropPress={() => setVisible(false)}
-    //                onSwipeComplete={() => setVisible(false)}
-    //                swipeDirection="up">
-    //             <KeyboardAvoidingView
-    //                 behavior = 'padding'
-    //                 style = { styles.modal }>
-    //                 <TextInput
-    //                     autoCapitalize = 'none'
-    //                     autoComplete = 'off'
-    //                     autoCorrect = { false }
-    //                     autoFocus = { true }
-    //                     onChangeText = { setRoom }
-    //                     placeholder = { 'Enter link or room name' }
-    //                     placeholderTextColor = {PLACEHOLDER_TEXT_COLOR}
-    //                     returnKeyType = { 'go' }
-    //                     style = { styles.textInput }
-    //                     underlineColorAndroid = 'transparent'
-    //                     value = { room } />
-    //                 <View style = { styles.gradientContainer }>
-    //                     <TouchableOpacity
-    //                         style = { styles.gradientButton }>
-    //                         <Text style = { styles.gradientButtonText }>
-    //                             JOIN MEETING
-    //                         </Text>
-    //                     </TouchableOpacity>
-    //                 </View>
-    //             </KeyboardAvoidingView>
-    //         </Modal>
-    //     )
-    // }
 
     function renderItem({ item }) {
         return (
@@ -173,7 +155,9 @@ function ProfileScreen({
                             {/*        source = { phone }*/}
                             {/*        style = { styles.iconImage } />*/}
                             {/*</TouchableOpacity>*/}
-                            <TouchableOpacity onPress={() => dispatch(callFriend(item.profileRef))}>
+                            <TouchableOpacity onPress={() => {
+                                dispatch(callFriend(item))
+                            }}>
                                 <Image
                                     resizeMethod = 'resize'
                                     resizeMode = 'contain'
@@ -206,12 +190,6 @@ function ProfileScreen({
                         ENTER MEET
                     </Text>
                 </TouchableOpacity>
-
-                {/*<Image*/}
-                {/*    resizeMethod = 'resize'*/}
-                {/*    resizeMode = 'contain'*/}
-                {/*    source = { logo }*/}
-                {/*    style = { styles.logo } />*/}
                 <TouchableOpacity style = { styles.iconContainer } onPress={() => dispatch(enterPersonalRoom(_personalRoom))} disabled={personalRoomDisabled}>
                     <Text style = { [styles.descriptionIos, {color: personalRoomDisabled ? '#656565' : '#BFBFBF'}] }>
                         MY ROOM
@@ -245,9 +223,6 @@ function ProfileScreen({
                         </View>
                 }
             </View>
-
-            {/*{renderCallModal()}*/}
-
             <TouchableWithoutFeedback onPress={() => setCollapsed(!isCollapsed)}>
                 <View style = { styles.footer }>
                     <View style = { styles.userInfo }>
@@ -419,9 +394,6 @@ function ProfileScreen({
 }
 
 function _mapStateToProps(state: Object) {
-    console.log('CONTACTS', state['features/contacts-sync']);
-    console.log('CALENDAR', state['features/calendar-sync']);
-
     return {
         _contactsAuthorization: state['features/contacts-sync'].authorization,
         _calendarAuthorization: state['features/calendar-sync'].authorization,

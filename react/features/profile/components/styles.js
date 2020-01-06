@@ -260,18 +260,21 @@ export default {
         fontWeight: '500',
         ...smallCapsOrUppercase,
         paddingVertical: 5,
-        // backgroundColor: 'red'
     },
     permissionDeniedText: {
         color: '#656565',
         fontStyle: 'italic',
         fontSize: 12,
-        // paddingHorizontal: 10,
     },
     optionLoading: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
+    callContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
 };

@@ -12,7 +12,7 @@ import {
     SET_LOADING_CONTACTS_EVENTS,
     SET_CONTACTS_AUTH_STATE,
     CHANGE_PROFILE,
-    SYNC_CONTACTS, SYNC_CALENDAR
+    SYNC_CONTACTS, SYNC_CALENDAR, STORE_CALL_DATA
 } from './actionTypes';
 
 import {FETCH_SESSION} from "../welcome/actionTypes";
@@ -135,6 +135,8 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             'personalRoom': action.personalRoom || {}
         });
 
+    case STORE_CALL_DATA:
+        return set(state, 'call', action.call);
 
     }
 
