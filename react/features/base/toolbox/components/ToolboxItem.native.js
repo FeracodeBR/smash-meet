@@ -44,7 +44,7 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
                 <View style = { hexagonIconStyles.container }>
                     <Icon
                         src = { this.props.containerIcon }
-                        style = { hexagonIconStyles.hexagon } />
+                        style = { styles.hexagonIconStyles } />
                     <Icon
                         src = { this.props.icon }
                         style = { styles && styles.iconStyle && hexagonIconStyles.icon } />

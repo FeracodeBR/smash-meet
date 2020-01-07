@@ -1,46 +1,53 @@
 // @flow
 
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
     View,
-    Image,
     ImageBackground,
     Text,
-    TouchableOpacity,
 } from 'react-native';
-import {
-
-} from '../actions';
 import styles from './styles';
-import {
-    IconMenuUp,
-} from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
 import { connect } from '../../base/redux';
+import {HangupButton, AcceptButton} from "../../toolbox/components";
+import {ColorSchemeRegistry} from "../../base/color-scheme";
+import {navigateToScreen} from "../../base/app";
+import {hangup, accept} from "../actions";
 
-function CallScreen({dispatch, _loading = {}, _error, _call}) {
-    const {roomId, jwt, friend} = _call;
+function CallScreen({dispatch, _loading = {}, _error, _call, _styles}) {
+    const {roomId, jwt, friend, isCaller} = _call;
+    const {callScreenButtonStyles} = _styles;
+
+    function onHangup() {
+        dispatch(hangup(isCaller, friend.profileRef, roomId));
+        dispatch(navigateToScreen('ProfileScreen'));
+    }
+
+    function onAccept() {
+        dispatch(accept(friend.profileRef, roomId));
+    }
 
     return (
         <ImageBackground style = {styles.callContainer} source={{uri: friend.picture}} blurRadius={10}>
             <View style={styles.callHeader}>
-                <View>
-                    <HexagononImage />
-                </View>
-                <View>
-                    <Text>
-                        Lucas Baumgart Costa
+                <HexagononImage friend={ friend } big />
+                <View style={styles.callHeaderText}>
+                    <Text style={styles.callHeaderNameText}>
+                        {friend.name}
                     </Text>
-                    <Text>
-                        Calling...
+                    <Text style={styles.callHeaderSubtitleText}>
+                        {
+                            isCaller ? 'waiting...' : 'calling...'
+                        }
                     </Text>
                 </View>
             </View>
             <View style={styles.callBody}>
-                <View>
-                {/*buttons*/}
-                </View>
+                <HangupButton styles={callScreenButtonStyles} onPress={() => onHangup()}/>
+                {
+                    !isCaller && <AcceptButton styles={callScreenButtonStyles} onPress={() => onAccept()}/>
+                }
             </View>
         </ImageBackground>
     );
@@ -51,6 +58,7 @@ function _mapStateToProps(state: Object) {
         _loading: state['features/contacts-sync'].loading,
         _error: state['features/contacts-sync'].error,
         _call: state['features/contacts-sync'].call,
+        _styles: ColorSchemeRegistry.get(state, 'Toolbox'),
     };
 }
 

@@ -13,7 +13,6 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import camera from '../../../../images/smash-camera.png';
-import phone from '../../../../images/smash-phone.png';
 import {
     setContactsIntegration,
     changeProfile,
@@ -22,7 +21,7 @@ import {
     syncContacts,
     syncCalendar,
     callFriend,
-    addClient
+    addClient, toggleStatus
 } from '../actions';
 import styles from './styles';
 import {
@@ -43,7 +42,7 @@ import { connect } from '../../base/redux';
 import Collapsible from 'react-native-collapsible';
 import {getBottomSpace} from "react-native-iphone-x-helper";
 import {ColorPalette} from "../../base/styles/components/styles";
-import {CHANGE_PROFILE, SYNC_CALENDAR, SYNC_CONTACTS} from "../actionTypes";
+import {CHANGE_PROFILE, STORE_CALL_DATA, SYNC_CALENDAR, SYNC_CONTACTS, TOGGLE_STATUS} from "../actionTypes";
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
 import { setCalendarIntegration } from "../../calendar-sync/actions.native";
@@ -62,6 +61,7 @@ function ProfileScreen({
                            _friends,
                            _groups,
                            _personalRoom,
+                           _config,
                            _loading = {},
                            _error
 }) {
@@ -100,9 +100,24 @@ function ProfileScreen({
         });
 
         socket.on('/chat/conference', event => {
+            console.log('event', event);
+
+            const {roomId, dateTime, sender, receiver} = event.object;
+
             switch(event.action) {
                 case 'invite':
+                    const friend = _friends.filter(friend => friend.profileRef === sender)[0];
 
+                    dispatch({
+                        type: STORE_CALL_DATA,
+                        call: {
+                            roomId,
+                            friend,
+                            isCaller: false,
+                        }
+                    });
+
+                    dispatch(navigateToScreen('CallScreen'));
                     break;
                 default:
                     break;
@@ -131,9 +146,7 @@ function ProfileScreen({
         return (
             <View style = { styles.friendItem }>
                 <View style = { styles.userInfo }>
-                    <HexagononImage
-                        size = { 42 }
-                        friend={ item } />
+                    <HexagononImage friend={ item } />
                     <View style = { styles.profileInfo }>
                         <Text style = { styles.userName }
                               numberOfLines={1}>
@@ -180,6 +193,7 @@ function ProfileScreen({
 
     const personalRoomDisabled = !_personalRoom?.name;
     const friendsLength = _friends.length + _groups.length;
+    const {userStatus} = _config;
 
     return (
         <View style = { styles.container }>
@@ -226,9 +240,7 @@ function ProfileScreen({
             <TouchableWithoutFeedback onPress={() => setCollapsed(!isCollapsed)}>
                 <View style = { styles.footer }>
                     <View style = { styles.userInfo }>
-                        <HexagononImage
-                            size = { 42 }
-                            friend= { _defaultProfile } />
+                        <HexagononImage friend= { _defaultProfile } />
                         <View style = { styles.profileInfo }>
                             <Text style = { styles.userName }>{_defaultProfile.name}</Text>
                             <Text style = { styles.contactsInfo }>friends {friendsLength}</Text>
@@ -264,6 +276,25 @@ function ProfileScreen({
                             </Text>
                         </View>
                         <View style={styles.optionsBody}>
+                            <TouchableOpacity
+                                style={styles.optionBodyItem}
+                                onPress={() => dispatch(toggleStatus(userStatus))}>
+                                <View style={[styles.optionBodyHeader, {flex: _calendarAuthorization !== 'denied' ? 3 : 1}]}>
+                                    <View style={styles.statusContainer}>
+                                        <View style={[styles.statusCircle, {backgroundColor: userStatus === 'online' ? 'lime' : 'grey'}]}/>
+                                    </View>
+                                    <View style={styles.optionBodyTitle}>
+                                        <Text style={styles.optionBodyTitleText}>
+                                            Toggle status
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.optionLoading}>
+                                    {
+                                        _loading[TOGGLE_STATUS] && <ActivityIndicator color="white"/>
+                                    }
+                                </View>
+                            </TouchableOpacity>
                             {
                                 Platform.OS === 'ios' && (
                                     <>
@@ -360,9 +391,7 @@ function ProfileScreen({
                                                 style={styles.collapsed}
                                                 onPress={() => dispatch(changeProfile(item))}>
                                                 <View style={styles.userInfo}>
-                                                    <HexagononImage
-                                                        size={42}
-                                                        friend={item}/>
+                                                    <HexagononImage friend={item}/>
                                                     <View style={styles.profileInfo}>
                                                         <Text style={styles.userName}>
                                                             {item.name}
@@ -404,6 +433,7 @@ function _mapStateToProps(state: Object) {
         _friends: state['features/contacts-sync'].friends,
         _groups: state['features/contacts-sync'].groups,
         _personalRoom: state['features/contacts-sync'].personalRoom,
+        _config: state['features/contacts-sync'].config,
         _loading: state['features/contacts-sync'].loading,
         _error: state['features/contacts-sync'].error,
     };

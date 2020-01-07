@@ -7,14 +7,16 @@ import {
     SET_CONTACTS_INTEGRATION,
     CHANGE_PROFILE,
     SYNC_CALENDAR,
-    SYNC_CONTACTS, CALL_FRIEND, STORE_CALL_DATA
+    SYNC_CONTACTS,
+    CALL_FRIEND,
+    STORE_CALL_DATA,
+    TOGGLE_STATUS, STORE_CONFIG
 } from './actionTypes';
 import AsyncStorage from "@react-native-community/async-storage";
 import {navigateToScreen} from "../base/app";
 import {FETCH_SESSION} from "../welcome/actionTypes";
 import {appNavigate} from "../app";
 import {DEFAULT_SERVER_URL} from "../base/settings";
-import {setCalendarIntegration} from "../calendar-sync";
 import {exportPublic, generateKeys} from "../welcome";
 
 export function fetchContacts(contacts) {
@@ -51,6 +53,51 @@ export function logout() {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         AsyncStorage.clear();
         dispatch(navigateToScreen('SignIn'))
+    }
+
+}
+
+export function toggleStatus(status) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        dispatch({
+            type: TOGGLE_STATUS,
+            error: undefined,
+            loading: true
+        });
+
+        const headers = new Headers({
+            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'Content-Type': 'application/json'
+        });
+
+        const res = await fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+                userStatus: status === 'online' ? 'invisible' : 'online'
+            })
+        });
+
+        if(res.ok) {
+            res.json().then(config => {
+                dispatch({
+                    type: STORE_CONFIG,
+                    config
+                });
+
+                dispatch({
+                    type: TOGGLE_STATUS,
+                    error: undefined,
+                    loading: false
+                });
+            })
+        } else {
+            dispatch({
+                type: TOGGLE_STATUS,
+                error: true,
+                loading: false
+            });
+        }
     }
 
 }
@@ -318,6 +365,8 @@ export function enterPersonalRoom(room) {
 }
 
 export function callFriend(friend) {
+    console.log('friend', friend);
+
     return async (dispatch: Dispatch<any>, getState: Function) => {
         dispatch({
             type: CALL_FRIEND,
@@ -338,6 +387,8 @@ export function callFriend(friend) {
 
         if(callRes.ok) {
             callRes.json().then(call => {
+                console.log('call', call);
+
                 const {jwt, roomId, dateTime, sender, receiver} = call;
 
                 dispatch({
@@ -345,13 +396,16 @@ export function callFriend(friend) {
                     call: {
                         roomId,
                         jwt,
-                        friend
+                        friend,
+                        isCaller: true,
                     }
                 });
 
                 dispatch(navigateToScreen('CallScreen'));
             })
         } else {
+            console.log('callRes', callRes);
+
             dispatch({
                 type: CALL_FRIEND,
                 loading: false,
@@ -390,7 +444,7 @@ export function changeProfile(defaultProfile) {
 
                     headers.set('authorization', accessToken);
 
-                    const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
+                    const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
                         fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                             method: 'GET',
                             headers
@@ -406,15 +460,20 @@ export function changeProfile(defaultProfile) {
                         fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
                             method: 'GET',
                             headers,
+                        }),
+                        fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+                            method: 'GET',
+                            headers,
                         })
                     ]);
 
-                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok) {
-                        const [profiles, friends, groups, personalRoom] = await Promise.all([
+                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
+                        const [profiles, friends, groups, personalRoom, config] = await Promise.all([
                             profilesRes.json(),
                             friendsRes.json(),
                             groupsRes.json(),
-                            personalRoomRes.json()
+                            personalRoomRes.json(),
+                            configRes.json(),
                         ]);
 
                         const profileIds = profiles.map(profile => profile.id);
@@ -435,7 +494,8 @@ export function changeProfile(defaultProfile) {
                             profiles: otherProfiles,
                             friends: friendsWithoutMe,
                             groups,
-                            personalRoom
+                            personalRoom,
+                            config
                         });
                     } else {
                         dispatch({
@@ -494,5 +554,51 @@ export function addClient(socketId, profileId) {
             console.log('add client error', res);
         }
 
+    };
+}
+
+export function hangup(isCaller, profileId, roomId) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        const headers = new Headers({
+            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'Content-Type': 'application/json'
+        });
+
+        const res = await fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/${isCaller ? 'cancel' : 'deny'}`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                profileId,
+                roomId
+            })
+        });
+
+        if(!res.ok) {
+            console.log('hangup error', res);
+        }
+    };
+}
+
+export function accept(profileId, roomId) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        const headers = new Headers({
+            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'Content-Type': 'application/json'
+        });
+
+        const res = await fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/accept`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                profileId,
+                roomId
+            })
+        });
+
+        if(res.ok) {
+            dispatch(appNavigate(roomId));
+        } else {
+            console.log('accept error');
+        }
     };
 }

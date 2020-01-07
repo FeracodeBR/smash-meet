@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Image, Text } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
-import { IconSmashHexagon } from '../../../icons/svg';
+import { IconSmashHexagon, IconSmashHexagonBig } from '../../../icons/svg';
 import {getProfileColor} from '../../../../profile/functions';
 
-export default function({ size, friend }) {
+export default function({ big, friend }) {
+
+    const size = big ? 120 : 42;
 
     function renderEmptyAvatar() {
         const initialLetter = (friend.name).substr(0, 1).toUpperCase();
@@ -30,7 +32,7 @@ export default function({ size, friend }) {
 
         return (
             <View style = {{ height: size, width: size, alignItems: 'center', justifyContent: 'center', backgroundColor: getProfileColor(friend.color)}}>
-                <Text style={{color: 'white', fontSize: 22, fontWeight: '500'}}>
+                <Text style={{color: 'white', fontSize: big ? 42 : 22, fontWeight: '500'}}>
                     {initialLetter}
                 </Text>
             </View>
@@ -48,7 +50,11 @@ export default function({ size, friend }) {
                         alignItems: 'center'
                     }}>
 
-                    <IconSmashHexagon />
+                    {
+                        big ?
+                            <IconSmashHexagonBig /> :
+                            <IconSmashHexagon/>
+                    }
 
                 </View>
             }>

@@ -12,7 +12,11 @@ import {
     SET_LOADING_CONTACTS_EVENTS,
     SET_CONTACTS_AUTH_STATE,
     CHANGE_PROFILE,
-    SYNC_CONTACTS, SYNC_CALENDAR, STORE_CALL_DATA
+    SYNC_CONTACTS,
+    SYNC_CALENDAR,
+    STORE_CALL_DATA,
+    TOGGLE_STATUS,
+    STORE_CONFIG
 } from './actionTypes';
 
 import {FETCH_SESSION} from "../welcome/actionTypes";
@@ -31,6 +35,12 @@ const DEFAULT_STATE = {
     friends: [],
     groups: [],
     personalRoom: {},
+    call: {
+        roomId: '',
+        jwt: '',
+        friend: {}
+    },
+    config: {},
     loading: {},
     error: {}
 };
@@ -126,17 +136,33 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             },
         });
 
+    case TOGGLE_STATUS:
+        return assign(state, {
+            loading: {
+                ...state.loading,
+                [action.type]: action.loading
+            },
+            error: {
+                ...state.error,
+                [action.type]: action.error
+            },
+        });
+
     case FETCH_SESSION:
         return assign(state, {
             'defaultProfile': action.defaultProfile,
             'profiles': action.profiles,
             'friends': action.friends,
             'groups': action.groups,
-            'personalRoom': action.personalRoom || {}
+            'personalRoom': action.personalRoom || {},
+            'config': action.config,
         });
 
     case STORE_CALL_DATA:
         return set(state, 'call', action.call);
+
+    case STORE_CONFIG:
+        return set(state, 'config', action.config);
 
     }
 

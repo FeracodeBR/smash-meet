@@ -45,7 +45,6 @@ export function setWelcomePageListsDefaultPage(pageIndex: number) {
     };
 }
 
-/* eslint-disable */
 export function signIn(username: string, password: string) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
 
@@ -61,16 +60,14 @@ export function signIn(username: string, password: string) {
                 'Content-Type': 'application/json'
             });
 
-            const auth = await fetch(`${DEFAULT_SERVER_URL}/module/system/authenticate`,
-            { method: 'POST',
+            const auth = await fetch(`${DEFAULT_SERVER_URL}/module/system/authenticate`, {
+                method: 'POST',
                 headers,
                 body: JSON.stringify({ password, username })
             });
 
             if(auth.ok) {
                 auth.json().then(async res => {
-                    console.log('res', res);
-
                     const {accessToken, userId} = res;
 
                     AsyncStorage.setItem('accessToken', accessToken);
@@ -78,7 +75,7 @@ export function signIn(username: string, password: string) {
 
                     headers.set('authorization', accessToken);
 
-                    const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
+                    const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
                         fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                             method: 'GET',
                             headers
@@ -94,15 +91,20 @@ export function signIn(username: string, password: string) {
                         fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
                             method: 'GET',
                             headers,
+                        }),
+                        fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+                            method: 'GET',
+                            headers,
                         })
                     ]);
 
-                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok) {
-                        const [profiles, friends, groups, personalRoom] = await Promise.all([
+                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
+                        const [profiles, friends, groups, personalRoom, config] = await Promise.all([
                             profilesRes.json(),
                             friendsRes.json(),
                             groupsRes.json(),
-                            personalRoomRes.json()
+                            personalRoomRes.json(),
+                            configRes.json(),
                         ]);
 
                         const profileIds = profiles.map(profile => profile.id);
@@ -123,7 +125,8 @@ export function signIn(username: string, password: string) {
                             profiles: otherProfiles,
                             friends: friendsWithoutMe,
                             groups,
-                            personalRoom
+                            personalRoom,
+                            config
                         });
 
                         dispatch(navigateToScreen('ProfileScreen'));
@@ -162,7 +165,7 @@ export function reloadSession(accessToken: string) {
                 'Content-Type': 'application/json'
             });
 
-            const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
+            const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
                 fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                     method: 'GET',
                     headers
@@ -178,14 +181,19 @@ export function reloadSession(accessToken: string) {
                 fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
                     method: 'GET',
                     headers,
+                }),
+                fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+                    method: 'GET',
+                    headers,
                 })
             ]);
 
-            const [profiles, friends, groups, personalRoom] = await Promise.all([
+            const [profiles, friends, groups, personalRoom, config] = await Promise.all([
                 profilesRes.json(),
                 friendsRes.json(),
                 groupsRes.json(),
-                personalRoomRes.json()
+                personalRoomRes.json(),
+                configRes.json()
             ]);
 
             const profileIds = profiles.map(profile => profile.id);
@@ -200,7 +208,8 @@ export function reloadSession(accessToken: string) {
                 profiles: otherProfiles,
                 friends: friendsWithoutMe,
                 groups,
-                personalRoom
+                personalRoom,
+                config
             });
         } catch (err) {
             AsyncStorage.clear();

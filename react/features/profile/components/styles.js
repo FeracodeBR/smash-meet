@@ -274,7 +274,45 @@ export default {
     },
     callContainer: {
         flex: 1,
+        justifyContent: 'center',
+    },
+    callHeader: {
+        flex: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    callHeaderText: {
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    callHeaderNameText: {
+        paddingVertical: 5,
+        fontSize: 25,
+        color: ColorPalette.white
+    },
+    callHeaderSubtitleText: {
+        paddingVertical: 5,
+        fontSize: 18,
+        fontWeight: '300',
+        color: ColorPalette.white
+    },
+    callBody: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        marginHorizontal: 50,
+    },
+    statusContainer: {
+        height: 22,
+        width: 22,
         alignItems: 'center',
         justifyContent: 'center'
     },
+    statusCircle: {
+        height: 10,
+        width: 10,
+        borderRadius: 5
+    }
 };

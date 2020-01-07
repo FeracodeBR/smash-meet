@@ -108,6 +108,8 @@ class Toolbox extends PureComponent<Props> {
         const { _chatEnabled, _styles } = this.props;
         const { buttonStyles, buttonStylesBorderless, hangupButtonStyles, toggledButtonStyles } = _styles;
 
+        console.log('toggledButtonStyles', toggledButtonStyles);
+
         return (
             <View
                 pointerEvents = 'box-none'
