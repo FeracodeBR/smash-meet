@@ -7,10 +7,13 @@ import {
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
     SIGN_IN_RESPONSE,
     FETCH_SESSION,
+    STORE_SOCKET,
 } from './actionTypes';
 
 import {navigateToScreen} from "../base/app";
-import {DEFAULT_SERVER_URL} from "../base/settings";
+import {DEFAULT_SERVER_URL, DEFAULT_WEBSOCKET_URL} from "../base/settings";
+import io from "socket.io-client";
+import {addClient} from "../profile/actions";
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -129,6 +132,27 @@ export function signIn(username: string, password: string) {
                             config
                         });
 
+                        const socket = io(DEFAULT_WEBSOCKET_URL, {
+                            query: {
+                                token: encodeURIComponent(accessToken),
+                                EIO: 3,
+                                transport: 'websocket'
+                            }
+                        });
+
+                        dispatch({
+                            type: STORE_SOCKET,
+                            socket
+                        });
+
+                        socket.on('connect', () => {
+                            dispatch(addClient(socket.id, defaultProfile.id));
+                        });
+
+                        socket.on('error', (e) => {
+                            console.log('socket error', e);
+                        });
+
                         dispatch(navigateToScreen('ProfileScreen'));
                     } else {
                         dispatch({
@@ -210,6 +234,27 @@ export function reloadSession(accessToken: string) {
                 groups,
                 personalRoom,
                 config
+            });
+
+            const socket = io(DEFAULT_WEBSOCKET_URL, {
+                query: {
+                    token: encodeURIComponent(accessToken),
+                    EIO: 3,
+                    transport: 'websocket'
+                }
+            });
+
+            dispatch({
+                type: STORE_SOCKET,
+                socket
+            });
+
+            socket.on('connect', () => {
+                dispatch(addClient(socket.id, defaultProfile.id));
+            });
+
+            socket.on('error', (e) => {
+                console.log('socket error', e);
             });
         } catch (err) {
             AsyncStorage.clear();

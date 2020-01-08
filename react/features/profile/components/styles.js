@@ -275,6 +275,14 @@ export default {
     callContainer: {
         flex: 1,
         justifyContent: 'center',
+        backgroundColor: ColorPalette.screen
+    },
+    overlay: {
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
     callHeader: {
         flex: 2,

@@ -10,7 +10,8 @@ import {
     SYNC_CONTACTS,
     CALL_FRIEND,
     STORE_CALL_DATA,
-    TOGGLE_STATUS, STORE_CONFIG
+    TOGGLE_STATUS,
+    STORE_CONFIG
 } from './actionTypes';
 import AsyncStorage from "@react-native-community/async-storage";
 import {navigateToScreen} from "../base/app";
@@ -365,8 +366,6 @@ export function enterPersonalRoom(room) {
 }
 
 export function callFriend(friend) {
-    console.log('friend', friend);
-
     return async (dispatch: Dispatch<any>, getState: Function) => {
         dispatch({
             type: CALL_FRIEND,
@@ -387,9 +386,9 @@ export function callFriend(friend) {
 
         if(callRes.ok) {
             callRes.json().then(call => {
-                console.log('call', call);
-
                 const {jwt, roomId, dateTime, sender, receiver} = call;
+
+                console.log('call', call);
 
                 dispatch({
                     type: STORE_CALL_DATA,
@@ -397,6 +396,7 @@ export function callFriend(friend) {
                         roomId,
                         jwt,
                         friend,
+                        status: 'waiting...',
                         isCaller: true,
                     }
                 });
@@ -404,8 +404,6 @@ export function callFriend(friend) {
                 dispatch(navigateToScreen('CallScreen'));
             })
         } else {
-            console.log('callRes', callRes);
-
             dispatch({
                 type: CALL_FRIEND,
                 loading: false,
@@ -579,7 +577,7 @@ export function hangup(isCaller, profileId, roomId) {
     };
 }
 
-export function accept(profileId, roomId) {
+export function accept({roomId, dateTime, sender, receiver, friend}, socketId) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         const headers = new Headers({
             'authorization': (await AsyncStorage.getItem('accessToken')),
@@ -590,14 +588,21 @@ export function accept(profileId, roomId) {
             method: 'POST',
             headers,
             body: JSON.stringify({
-                profileId,
-                roomId
+                call: {
+                    roomId,
+                    dateTime,
+                    sender,
+                    receiver,
+                    friend
+                },
+                receiverConnectionId: socketId
             })
         });
 
         if(res.ok) {
             dispatch(appNavigate(roomId));
         } else {
+            res.json().then(res => console.log('res', res))
             console.log('accept error');
         }
     };

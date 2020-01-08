@@ -6,7 +6,8 @@ import { PersistenceRegistry } from '../base/storage';
 import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
-    SIGN_IN_RESPONSE
+    SIGN_IN_RESPONSE,
+    STORE_SOCKET
 } from './actionTypes';
 
 /**
@@ -19,7 +20,7 @@ const STORE_NAME = 'features/welcome';
  * Sets up the persistence of the feature {@code welcome}.
  */
 PersistenceRegistry.register(STORE_NAME, {
-    defaultPage: true
+    defaultPage: true,
 });
 
 /**
@@ -38,6 +39,9 @@ ReducerRegistry.register(STORE_NAME, (state = {}, action) => {
             error: action.error,
             loading: action.loading,
         });
+
+    case STORE_SOCKET:
+        return set(state, 'socket', action.socket);
 
     }
 

@@ -21,7 +21,8 @@ import {
     syncContacts,
     syncCalendar,
     callFriend,
-    addClient, toggleStatus
+    addClient,
+    toggleStatus
 } from '../actions';
 import styles from './styles';
 import {
@@ -46,9 +47,7 @@ import {CHANGE_PROFILE, STORE_CALL_DATA, SYNC_CALENDAR, SYNC_CONTACTS, TOGGLE_ST
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
 import { setCalendarIntegration } from "../../calendar-sync/actions.native";
-import AsyncStorage from '@react-native-community/async-storage';
-import io from 'socket.io-client';
-import {DEFAULT_WEBSOCKET_URL} from "../../base/settings";
+import {appNavigate} from "../../app";
 
 function ProfileScreen({
                            dispatch,
@@ -61,9 +60,11 @@ function ProfileScreen({
                            _friends,
                            _groups,
                            _personalRoom,
+                           _call,
                            _config,
                            _loading = {},
-                           _error
+                           _error,
+                           _socket
 }) {
     useEffect(() => {
         dispatch(setContactsIntegration());
@@ -77,57 +78,71 @@ function ProfileScreen({
     }, []);
 
     useEffect(() => {
-        if(_defaultProfile) startWS();
+        if(_defaultProfile && _socket) dispatch(addClient(_socket.id, _defaultProfile.id));
     }, [_defaultProfile]);
+
+    useEffect(() => {
+        if(_socket) {
+            _socket.on('/user/friend-status', event => {
+
+            });
+
+            _socket.on('/chat/conference', event => {
+                const {roomId, dateTime, sender, receiver} = event.object;
+                const friend = _friends.filter(friend => friend.profileRef === sender)[0];
+
+                console.log('event', event);
+
+                switch(event.action) {
+                    case 'invite':
+                        dispatch({
+                            type: STORE_CALL_DATA,
+                            call: {
+                                roomId,
+                                dateTime,
+                                sender,
+                                receiver,
+                                friend,
+                                status: 'calling...',
+                                isCaller: false,
+                            }
+                        });
+
+                        dispatch(navigateToScreen('CallScreen'));
+                        break;
+                    case 'accept':
+                        console.log('log', {
+                            socket: _socket.id,
+                            action: event.action,
+                            _call
+                        });
+
+                        dispatch(appNavigate(`${roomId}?jwt=${_call.jwt}`));
+                        break;
+                    case 'deny':
+                        dispatch({
+                            type: STORE_CALL_DATA,
+                            call: {
+                                roomId,
+                                friend,
+                                status: 'denied',
+                                isCaller: true,
+                            }
+                        });
+
+                        setTimeout(() => {
+                            dispatch(navigateToScreen('ProfileScreen'));
+                        }, 2000);
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    }, [_socket]);
 
     const [isCollapsed, setCollapsed] = useState(true);
     const [appState, setAppState] = useState(AppState.currentState);
-    const [socket, setSocket] = useState(null);
-
-    async function startWS() {
-        const token = encodeURIComponent(await AsyncStorage.getItem('accessToken'));
-        let socket = io(DEFAULT_WEBSOCKET_URL, {
-            query: {
-                token,
-                EIO: 3,
-                transport: 'websocket'
-            }
-        });
-        setSocket(socket);
-
-        socket.on('connect', () => {
-            dispatch(addClient(socket.id, _defaultProfile.id));
-        });
-
-        socket.on('/chat/conference', event => {
-            console.log('event', event);
-
-            const {roomId, dateTime, sender, receiver} = event.object;
-
-            switch(event.action) {
-                case 'invite':
-                    const friend = _friends.filter(friend => friend.profileRef === sender)[0];
-
-                    dispatch({
-                        type: STORE_CALL_DATA,
-                        call: {
-                            roomId,
-                            friend,
-                            isCaller: false,
-                        }
-                    });
-
-                    dispatch(navigateToScreen('CallScreen'));
-                    break;
-                default:
-                    break;
-            }
-        });
-
-        socket.on('error', (e) => {
-            console.log('socket error', e);
-        });
-    }
 
     function _handleAppStateChange(nextAppState) {
         if (
@@ -433,9 +448,11 @@ function _mapStateToProps(state: Object) {
         _friends: state['features/contacts-sync'].friends,
         _groups: state['features/contacts-sync'].groups,
         _personalRoom: state['features/contacts-sync'].personalRoom,
+        _call: state['features/contacts-sync'].call,
         _config: state['features/contacts-sync'].config,
         _loading: state['features/contacts-sync'].loading,
         _error: state['features/contacts-sync'].error,
+        _socket: state['features/welcome'].socket,
     };
 }
 
