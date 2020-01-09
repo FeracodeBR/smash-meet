@@ -171,9 +171,11 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             if(friend.profileRef === profileRef) {
                 friend.status = status;
             }
+
+            return friend;
         });
 
-        return set(state, 'friends', friends)
+        return set(state, 'friends', friends);
 
     }
 

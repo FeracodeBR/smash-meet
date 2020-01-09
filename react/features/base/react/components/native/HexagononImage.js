@@ -46,14 +46,14 @@ export default function({ big, friend, showStatus }) {
                 friend.profileRef && showStatus && (
                     <View style={{
                         position: 'absolute',
-                        top: 2,
-                        right: 2,
+                        top: 1,
+                        right: 1,
                         borderWidth: 1,
                         borderColor: ColorPalette.screen,
                         backgroundColor: friend.status === 'online' ? 'lime' : '#BFBFBF',
-                        width: 10,
-                        height: 10,
-                        borderRadius: 5,
+                        width: 12,
+                        height: 12,
+                        borderRadius: 6,
                         zIndex: 999
                     }}/>
                 )

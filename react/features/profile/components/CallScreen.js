@@ -1,6 +1,6 @@
 // @flow
 
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
     View,
     ImageBackground,
@@ -14,34 +14,15 @@ import {HangupButton, AcceptButton} from "../../toolbox/components";
 import {ColorSchemeRegistry} from "../../base/color-scheme";
 import {navigateToScreen} from "../../base/app";
 import {hangup, accept} from "../actions";
-import Sound from 'react-native-sound';
-// const callingSoundMp3 = require('../../../../sounds/conference.mp3');
-// const waitingSoundMp3 = require('../../../../sounds/waiting.mp3');
+import {playSound} from "../../base/sounds";
+import {CONFERENCE_SOUND_ID} from "../../invite/constants";
 
 function CallScreen({dispatch, _loading = {}, _error, _call, _styles, _socket}) {
     const {roomId, dateTime, sender, receiver, jwt, friend, status, isCaller} = _call;
     const {callScreenButtonStyles} = _styles;
 
-    const [callingSound, setCallingSound] = useState(null);
-    const [waitingSound, setWaitingSound] = useState(null);
-
-    // console.log('callingSoundMp3', callingSoundMp3);
-
     useEffect(() => {
-        // setCallingSound();
-
-        const sound = new Sound('http://www.noiseaddicts.com/samples_1w72b820/4923.mp3', null, (error) => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-        });
-
-        sound.play(success => {
-            console.log('success', success);
-        })
-
-
+        dispatch(playSound(CONFERENCE_SOUND_ID));
     }, []);
 
     function onHangup() {

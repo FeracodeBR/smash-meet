@@ -1,6 +1,6 @@
 // @flow
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
     View,
     Image,
@@ -13,6 +13,7 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import camera from '../../../../images/smash-camera.png';
+import cameraDisabled from '../../../../images/smash-camera-disabled.png';
 import {
     setContactsIntegration,
     changeProfile,
@@ -36,6 +37,7 @@ import {
     IconRoom,
     IconRoomDisabled,
     IconEnterMeet,
+    IconSmashCameraDisabled
 } from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
@@ -88,67 +90,84 @@ function ProfileScreen({
         if(_defaultProfile && _socket) dispatch(addClient(_socket.id, _defaultProfile.id));
     }, [_defaultProfile]);
 
+    // useLayoutEffect(() => {
+    //     console.log('_socket', _socket);
+    //     console.log('x', x);
+    // }, [_socket, x]);
+
     useEffect(() => {
         if(_socket) {
-            _socket.on('/user/friend-status', event => {
-                console.log('event', event);
+            _socket.on('/user/friend-status', handleFriendStatusEvents);
+            _socket.on('/chat/conference', handleConferenceEvents);
+        }
 
-                const {profileRef, status} = event;
-                dispatch({
-                    type: UPDATE_FRIENDS_STATUS,
-                    profileRef,
-                    status
-                });
-            });
-
-            _socket.on('/chat/conference', event => {
-                const {roomId, dateTime, sender, receiver} = event.object;
-                const friend = _friends.filter(friend => friend.profileRef === sender)[0];
-
-                switch(event.action) {
-                    case 'invite':
-                        dispatch({
-                            type: STORE_CALL_DATA,
-                            call: {
-                                roomId,
-                                dateTime,
-                                sender,
-                                receiver,
-                                friend,
-                                status: 'calling...',
-                                isCaller: false,
-                            }
-                        });
-
-                        dispatch(navigateToScreen('CallScreen'));
-                        break;
-                    case 'accept':
-                        dispatch(appNavigate(`${roomId}?jwt=${_call.jwt}`));
-                        break;
-                    case 'deny':
-                        dispatch({
-                            type: STORE_CALL_DATA,
-                            call: {
-                                roomId,
-                                friend,
-                                status: 'denied',
-                                isCaller: true,
-                            }
-                        });
-
-                        setTimeout(() => {
-                            dispatch(navigateToScreen('ProfileScreen'));
-                        }, 2000);
-                        break;
-                    default:
-                        break;
-                }
-            });
+        return () => {
+            if(_socket) {
+                _socket.removeListener('/user/friend-status', handleFriendStatusEvents);
+                _socket.removeListener('/chat/conference', handleConferenceEvents);
+            }
         }
     }, [_socket]);
 
     const [isCollapsed, setCollapsed] = useState(true);
     const [appState, setAppState] = useState(AppState.currentState);
+
+    function handleFriendStatusEvents(event) {
+        const {profileRef, status} = event;
+
+        dispatch({
+            type: UPDATE_FRIENDS_STATUS,
+            profileRef,
+            status
+        });
+    }
+
+    function handleConferenceEvents(event) {
+        const {roomId, dateTime, sender, receiver} = event.object;
+        const friend = _friends.filter(friend => friend.profileRef === sender)[0];
+
+        switch(event.action) {
+            case 'invite':
+                dispatch({
+                    type: STORE_CALL_DATA,
+                    call: {
+                        roomId,
+                        dateTime,
+                        sender,
+                        receiver,
+                        friend,
+                        status: 'calling...',
+                        isCaller: false,
+                    }
+                });
+
+                dispatch(navigateToScreen('CallScreen'));
+                break;
+            case 'accept':
+                console.log('_call', _call);
+
+                dispatch(navigateToScreen('ProfileScreen'));
+                // dispatch(appNavigate(`${roomId}?jwt=${_call.jwt}`));
+                break;
+            case 'deny':
+                dispatch({
+                    type: STORE_CALL_DATA,
+                    call: {
+                        roomId,
+                        friend,
+                        status: 'denied',
+                        isCaller: true,
+                    }
+                });
+
+                setTimeout(() => {
+                    dispatch(navigateToScreen('ProfileScreen'));
+                }, 2000);
+                break;
+            default:
+                break;
+        }
+    }
 
     function _handleAppStateChange(nextAppState) {
         if (
@@ -189,13 +208,11 @@ function ProfileScreen({
                             {/*        source = { phone }*/}
                             {/*        style = { styles.iconImage } />*/}
                             {/*</TouchableOpacity>*/}
-                            <TouchableOpacity onPress={() => {
-                                dispatch(callFriend(item))
-                            }}>
+                            <TouchableOpacity onPress={() => dispatch(callFriend(item))} disabled={item.status !== 'online'}>
                                 <Image
                                     resizeMethod = 'resize'
                                     resizeMode = 'contain'
-                                    source = { camera }
+                                    source = { item.status === 'online' ? camera : cameraDisabled}
                                     style = { styles.iconImage } />
                             </TouchableOpacity>
                         </View>

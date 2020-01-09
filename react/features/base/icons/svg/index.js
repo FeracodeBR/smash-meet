@@ -79,6 +79,7 @@ export { default as IconSmashHexagonDisabled } from './disabled-hexagon.svg';
 export { default as IconHangupHexagon } from './hangup-hexagon.svg';
 export { default as IconAcceptHexagon } from './accept-hexagon.svg';
 export { default as IconSmashCamera } from './smash-camera.svg';
+export { default as IconSmashCameraDisabled } from './smash-camera.svg';
 export { default as IconSmashParticipants } from './participants.svg';
 export { default as IconSmashCircularContainer } from './smash-circular-container.svg';
 export { default as IconSmashMeetLogo} from './smash-meet-logo.svg';

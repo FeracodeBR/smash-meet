@@ -25,3 +25,6 @@ export const RECORDING_OFF_SOUND_FILE = 'recordingOff.mp3';
  * @type {string}
  */
 export const RECORDING_ON_SOUND_FILE = 'recordingOn.mp3';
+
+export const CONFERENCE_SOUND_FILE = 'conference.mp3';
+export const WAITING_SOUND_FILE = 'waiting.mp3';

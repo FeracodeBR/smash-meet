@@ -69,6 +69,8 @@ export function _removeAudioElement(soundId: string) {
  * }}
  */
 export function playSound(soundId: string): Object {
+    console.log('soundId', soundId);
+
     return {
         type: PLAY_SOUND,
         soundId

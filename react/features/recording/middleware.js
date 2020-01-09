@@ -31,17 +31,19 @@ import {
 } from './actions';
 import { RECORDING_SESSION_UPDATED } from './actionTypes';
 import {
+    CONFERENCE_SOUND_ID,
     LIVE_STREAMING_OFF_SOUND_ID,
     LIVE_STREAMING_ON_SOUND_ID,
     RECORDING_OFF_SOUND_ID,
-    RECORDING_ON_SOUND_ID
+    RECORDING_ON_SOUND_ID, WAITING_SOUND_ID
 } from './constants';
 import { getSessionById } from './functions';
 import {
+    CONFERENCE_SOUND_FILE,
     LIVE_STREAMING_OFF_SOUND_FILE,
     LIVE_STREAMING_ON_SOUND_FILE,
     RECORDING_OFF_SOUND_FILE,
-    RECORDING_ON_SOUND_FILE
+    RECORDING_ON_SOUND_FILE, WAITING_SOUND_FILE
 } from './sounds';
 
 /**

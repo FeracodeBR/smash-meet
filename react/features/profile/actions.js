@@ -387,8 +387,6 @@ export function callFriend(friend) {
             callRes.json().then(call => {
                 const {jwt, roomId, dateTime, sender, receiver} = call;
 
-                console.log('call', call);
-
                 dispatch({
                     type: STORE_CALL_DATA,
                     call: {
