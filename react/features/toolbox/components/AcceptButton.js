@@ -7,8 +7,8 @@ import { appNavigate } from '../../app';
 import { disconnect } from '../../base/connection';
 import { translate } from '../../base/i18n';
 import { connect } from '../../base/redux';
-import { AbstractHangupButton } from '../../base/toolbox';
 import type { AbstractButtonProps } from '../../base/toolbox';
+import AbstractAcceptButton from "../../base/toolbox/components/AbstractAcceptButton";
 
 /**
  * The type of the React {@code Component} props of {@link HangupButton}.
@@ -24,17 +24,17 @@ type Props = AbstractButtonProps & {
 /**
  * Component that renders a toolbar button for leaving the current conference.
  *
- * @extends AbstractHangupButton
+ * @extends AbstractAcceptButton
  */
-class HangupButton extends AbstractHangupButton<Props, *> {
-    _hangup: Function;
+class AcceptButton extends AbstractAcceptButton<Props, *> {
+    _accept: Function;
 
-    accessibilityLabel = 'toolbar.accessibilityLabel.hangup';
-    label = 'toolbar.hangup';
-    tooltip = 'toolbar.hangup';
+    accessibilityLabel = 'toolbar.accessibilityLabel.accept';
+    label = 'toolbar.accept';
+    tooltip = 'toolbar.accept';
 
     /**
-     * Initializes a new HangupButton instance.
+     * Initializes a new AcceptBUTTON instance.
      *
      * @param {Props} props - The read-only properties with which the new
      * instance is to be initialized.
@@ -42,10 +42,10 @@ class HangupButton extends AbstractHangupButton<Props, *> {
     constructor(props: Props) {
         super(props);
 
-        this._hangup = props.onPress ?
+        this._accept = props.onPress ?
             () => props.onPress() :
             _.once(() => {
-                sendAnalytics(createToolbarEvent('hangup'));
+                sendAnalytics(createToolbarEvent('accept'));
 
                 // FIXME: these should be unified.
                 if (navigator.product === 'ReactNative') {
@@ -57,15 +57,15 @@ class HangupButton extends AbstractHangupButton<Props, *> {
     }
 
     /**
-     * Helper function to perform the actual hangup action.
+     * Helper function to perform the actual accept action.
      *
      * @override
      * @protected
      * @returns {void}
      */
-    _doHangup() {
-        this._hangup();
+    _doAccept() {
+        this._accept();
     }
 }
 
-export default translate(connect()(HangupButton));
+export default translate(connect()(AcceptButton));

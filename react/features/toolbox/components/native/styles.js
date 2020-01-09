@@ -76,6 +76,9 @@ ColorSchemeRegistry.register('Toolbox', {
      */
     buttonStyles: {
         iconStyle: toolbarButtonIcon,
+        hexagonIconStyles: {
+            fontSize: 50,
+        },
         style: toolbarButton
     },
 
@@ -97,8 +100,25 @@ ColorSchemeRegistry.register('Toolbox', {
         }
     },
 
+    callScreenButtonStyles: {
+        iconStyle: {
+            ...whiteToolbarButtonIcon,
+            fontSize: 50
+        },
+        hexagonIconStyles: {
+            fontSize: 60,
+        },
+        style: {
+            ...toolbarButton
+        },
+        underlayColor: ColorPalette.buttonUnderlay
+    },
+
     hangupButtonStyles: {
         iconStyle: whiteToolbarButtonIcon,
+        hexagonIconStyles: {
+            fontSize: 50,
+        },
         style: {
             ...toolbarButton
         },
@@ -110,6 +130,9 @@ ColorSchemeRegistry.register('Toolbox', {
      */
     toggledButtonStyles: {
         iconStyle: whiteToolbarButtonIcon,
+        hexagonIconStyles: {
+            fontSize: 50,
+        },
         style: {
             ...whiteToolbarButton,
             borderColor: schemeColor('buttonToggledBorder')

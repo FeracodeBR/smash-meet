@@ -2,7 +2,7 @@
 
 import { generateRoomWithoutSeparator } from 'js-utils/random';
 import type { Component } from 'react';
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { isRoomValid } from '../base/conference';
 import { toState } from '../base/redux';
@@ -17,6 +17,7 @@ import {
     isWelcomePageUserEnabled
 } from '../welcome';
 import ProfileScreen from '../profile/components/ProfileScreen';
+import CallScreen from "../profile/components/CallScreen";
 
 /**
  * Object describing application route.
@@ -67,6 +68,8 @@ async function _getMobileRoute(state): Promise<Route> {
         route.component = SignInPage;
     } else if (state['features/base/app'].route === 'WelcomePage') {
         route.component = WelcomePage;
+    } else if (state['features/base/app'].route === 'CallScreen') {
+        route.component = CallScreen;
     } else if (!state['features/base/app'].route && accessToken) {
         route.component = ProfileScreen;
     } else {

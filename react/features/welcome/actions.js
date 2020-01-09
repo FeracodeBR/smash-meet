@@ -7,10 +7,13 @@ import {
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
     SIGN_IN_RESPONSE,
     FETCH_SESSION,
+    STORE_SOCKET,
 } from './actionTypes';
 
 import {navigateToScreen} from "../base/app";
-import {DEFAULT_SERVER_URL} from "../base/settings";
+import {DEFAULT_SERVER_URL, DEFAULT_WEBSOCKET_URL} from "../base/settings";
+import io from "socket.io-client";
+import {addClient} from "../profile/actions";
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -45,7 +48,6 @@ export function setWelcomePageListsDefaultPage(pageIndex: number) {
     };
 }
 
-/* eslint-disable */
 export function signIn(username: string, password: string) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
 
@@ -61,21 +63,22 @@ export function signIn(username: string, password: string) {
                 'Content-Type': 'application/json'
             });
 
-            const auth = await fetch(`${DEFAULT_SERVER_URL}/module/system/authenticate`,
-            { method: 'POST',
+            const auth = await fetch(`${DEFAULT_SERVER_URL}/module/system/authenticate`, {
+                method: 'POST',
                 headers,
                 body: JSON.stringify({ password, username })
             });
 
             if(auth.ok) {
                 auth.json().then(async res => {
-                    const {defaultProfile, accessToken} = res;
+                    const {accessToken, userId} = res;
 
                     AsyncStorage.setItem('accessToken', accessToken);
+                    AsyncStorage.setItem('userId', userId);
 
                     headers.set('authorization', accessToken);
 
-                    const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
+                    const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
                         fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                             method: 'GET',
                             headers
@@ -91,15 +94,20 @@ export function signIn(username: string, password: string) {
                         fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
                             method: 'GET',
                             headers,
+                        }),
+                        fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+                            method: 'GET',
+                            headers,
                         })
                     ]);
 
-                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok) {
-                        const [profiles, friends, groups, personalRoom] = await Promise.all([
+                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
+                        const [profiles, friends, groups, personalRoom, config] = await Promise.all([
                             profilesRes.json(),
                             friendsRes.json(),
                             groupsRes.json(),
-                            personalRoomRes.json()
+                            personalRoomRes.json(),
+                            configRes.json(),
                         ]);
 
                         const profileIds = profiles.map(profile => profile.id);
@@ -120,7 +128,29 @@ export function signIn(username: string, password: string) {
                             profiles: otherProfiles,
                             friends: friendsWithoutMe,
                             groups,
-                            personalRoom
+                            personalRoom,
+                            config
+                        });
+
+                        const socket = io(DEFAULT_WEBSOCKET_URL, {
+                            query: {
+                                token: encodeURIComponent(accessToken),
+                                EIO: 3,
+                                transport: 'websocket'
+                            }
+                        });
+
+                        dispatch({
+                            type: STORE_SOCKET,
+                            socket
+                        });
+
+                        socket.on('connect', () => {
+                            dispatch(addClient(socket.id, defaultProfile.id));
+                        });
+
+                        socket.on('error', (e) => {
+                            console.log('socket error', e);
                         });
 
                         dispatch(navigateToScreen('ProfileScreen'));
@@ -159,7 +189,7 @@ export function reloadSession(accessToken: string) {
                 'Content-Type': 'application/json'
             });
 
-            const [profilesRes, friendsRes, groupsRes, personalRoomRes] = await Promise.all([
+            const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
                 fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                     method: 'GET',
                     headers
@@ -175,14 +205,19 @@ export function reloadSession(accessToken: string) {
                 fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
                     method: 'GET',
                     headers,
+                }),
+                fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+                    method: 'GET',
+                    headers,
                 })
             ]);
 
-            const [profiles, friends, groups, personalRoom] = await Promise.all([
+            const [profiles, friends, groups, personalRoom, config] = await Promise.all([
                 profilesRes.json(),
                 friendsRes.json(),
                 groupsRes.json(),
-                personalRoomRes.json()
+                personalRoomRes.json(),
+                configRes.json()
             ]);
 
             const profileIds = profiles.map(profile => profile.id);
@@ -197,7 +232,29 @@ export function reloadSession(accessToken: string) {
                 profiles: otherProfiles,
                 friends: friendsWithoutMe,
                 groups,
-                personalRoom
+                personalRoom,
+                config
+            });
+
+            const socket = io(DEFAULT_WEBSOCKET_URL, {
+                query: {
+                    token: encodeURIComponent(accessToken),
+                    EIO: 3,
+                    transport: 'websocket'
+                }
+            });
+
+            dispatch({
+                type: STORE_SOCKET,
+                socket
+            });
+
+            socket.on('connect', () => {
+                dispatch(addClient(socket.id, defaultProfile.id));
+            });
+
+            socket.on('error', (e) => {
+                console.log('socket error', e);
             });
         } catch (err) {
             AsyncStorage.clear();

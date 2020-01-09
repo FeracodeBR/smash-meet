@@ -260,18 +260,67 @@ export default {
         fontWeight: '500',
         ...smallCapsOrUppercase,
         paddingVertical: 5,
-        // backgroundColor: 'red'
     },
     permissionDeniedText: {
         color: '#656565',
         fontStyle: 'italic',
         fontSize: 12,
-        // paddingHorizontal: 10,
     },
     optionLoading: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    callContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: ColorPalette.screen
+    },
+    overlay: {
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    callHeader: {
+        flex: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    callHeaderText: {
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    callHeaderNameText: {
+        paddingVertical: 5,
+        fontSize: 25,
+        color: ColorPalette.white
+    },
+    callHeaderSubtitleText: {
+        paddingVertical: 5,
+        fontSize: 18,
+        fontWeight: '300',
+        color: ColorPalette.white
+    },
+    callBody: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        marginHorizontal: 50,
+    },
+    statusContainer: {
+        height: 22,
+        width: 22,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    statusCircle: {
+        height: 10,
+        width: 10,
+        borderRadius: 5
     }
 };

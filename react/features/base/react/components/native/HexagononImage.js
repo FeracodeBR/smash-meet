@@ -1,10 +1,13 @@
 import React from 'react';
 import { View, Image, Text } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
-import { IconSmashHexagon } from '../../../icons/svg';
+import { IconSmashHexagon, IconSmashHexagonBig } from '../../../icons/svg';
 import {getProfileColor} from '../../../../profile/functions';
+import {ColorPalette} from "../../../styles/components/styles";
 
-export default function({ size, friend }) {
+export default function({ big, friend, showStatus }) {
+
+    const size = big ? 120 : 42;
 
     function renderEmptyAvatar() {
         const initialLetter = (friend.name).substr(0, 1).toUpperCase();
@@ -30,7 +33,7 @@ export default function({ size, friend }) {
 
         return (
             <View style = {{ height: size, width: size, alignItems: 'center', justifyContent: 'center', backgroundColor: getProfileColor(friend.color)}}>
-                <Text style={{color: 'white', fontSize: 22, fontWeight: '500'}}>
+                <Text style={{color: 'white', fontSize: big ? 42 : 22, fontWeight: '500'}}>
                     {initialLetter}
                 </Text>
             </View>
@@ -38,31 +41,51 @@ export default function({ size, friend }) {
     }
 
     return (
-        <MaskedView
-            maskElement = {
-                <View
-                    style = {{
-                        height: size,
-                        width: size,
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-
-                    <IconSmashHexagon />
-
-                </View>
-            }>
-
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
             {
-                friend.picture ?
-                    <Image
-                        resizeMethod = 'resize'
-                        resizeMode = 'cover'
-                        source = {{ uri: friend.picture }}
-                        style = {{ height: size, width: size }} />
-                        :
-                    renderEmptyAvatar()
+                friend.profileRef && showStatus && (
+                    <View style={{
+                        position: 'absolute',
+                        top: 1,
+                        right: 1,
+                        borderWidth: 1,
+                        borderColor: ColorPalette.screen,
+                        backgroundColor: friend.status === 'online' ? 'lime' : '#BFBFBF',
+                        width: 12,
+                        height: 12,
+                        borderRadius: 6,
+                        zIndex: 999
+                    }}/>
+                )
             }
-        </MaskedView>
+            <MaskedView
+                maskElement = {
+                    <View
+                        style = {{
+                            height: size,
+                            width: size,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                        {
+                            big ?
+                                <IconSmashHexagonBig /> :
+                                <IconSmashHexagon/>
+                        }
+                    </View>
+                }>
+
+                {
+                    friend.picture ?
+                        <Image
+                            resizeMethod = 'resize'
+                            resizeMode = 'cover'
+                            source = {{ uri: friend.picture }}
+                            style = {{ height: size, width: size }} />
+                        :
+                        renderEmptyAvatar()
+                }
+            </MaskedView>
+        </View>
     );
 }

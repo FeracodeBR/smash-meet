@@ -17,6 +17,8 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1D1D3D0B23C65584007C0999 /* waiting.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1D1D3D0923C65583007C0999 /* waiting.mp3 */; };
+		1D1D3D0C23C65584007C0999 /* conference.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1D1D3D0A23C65584007C0999 /* conference.mp3 */; };
 		8EBA4FF2FFC82B61000C45FD /* libPods-smash-meet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F94010823DA1CFE2146AE0 /* libPods-smash-meet.a */; };
 		DE4C456121DE1E4E00EA0709 /* FIRUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4C455F21DE1E4E00EA0709 /* FIRUtilities.m */; };
 /* End PBXBuildFile section */
@@ -61,6 +63,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1D1D3D0923C65583007C0999 /* waiting.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = waiting.mp3; path = ../../sdk/waiting.mp3; sourceTree = "<group>"; };
+		1D1D3D0A23C65584007C0999 /* conference.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = conference.mp3; path = ../../sdk/conference.mp3; sourceTree = "<group>"; };
 		2C484AD0AD2F170867CFF70A /* Pods-smash-meet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-smash-meet.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-smash-meet/Pods-smash-meet.debug.xcconfig"; sourceTree = "<group>"; };
 		4670A512A688E2DC34528282 /* Pods-jitsi-meet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jitsi-meet.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-jitsi-meet/Pods-jitsi-meet.debug.xcconfig"; sourceTree = "<group>"; };
 		5568F17E2613FF0B78A0A3A4 /* Pods-smash-meet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-smash-meet.release.xcconfig"; path = "../Pods/Target Support Files/Pods-smash-meet/Pods-smash-meet.release.xcconfig"; sourceTree = "<group>"; };
@@ -97,6 +101,8 @@
 		13B07FAE1A68108700A75B9A /* src */ = {
 			isa = PBXGroup;
 			children = (
+				1D1D3D0A23C65584007C0999 /* conference.mp3 */,
+				1D1D3D0923C65583007C0999 /* waiting.mp3 */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				DE4C456021DE1E4E00EA0709 /* FIRUtilities.h */,
@@ -221,7 +227,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D1D3D0B23C65584007C0999 /* waiting.mp3 in Resources */,
 				0B412F211EDEE95300B1A0A6 /* Main.storyboard in Resources */,
+				1D1D3D0C23C65584007C0999 /* conference.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -419,7 +427,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -456,7 +464,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 3.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

@@ -30,10 +30,9 @@ import '../../mobile/watchos';
 import logger from '../logger';
 import { AbstractApp } from './AbstractApp';
 import type { Props as AbstractAppProps } from './AbstractApp';
-import {reloadSession} from "../../welcome/actions";
 
 import AsyncStorage from '@react-native-community/async-storage';
-// import {AppState} from 'react-native';
+import {reloadSession} from "../../welcome/actions";
 
 declare var __DEV__;
 
@@ -85,10 +84,6 @@ export class App extends AbstractApp {
         // This will effectively kill the app. In accord with the Web, do not
         // kill the app.
         this._maybeDisableExceptionsManager();
-
-        // this.state = {
-        //     appState: AppState.currentState,
-        // }
     }
 
 
@@ -123,24 +118,8 @@ export class App extends AbstractApp {
                         dispatch(reloadSession(accessToken))
                     }
                 });
-
-            // AppState.addEventListener('change', this._handleAppStateChange);
         });
     }
-
-    // componentWillUnmount() {
-    //     AppState.removeEventListener('change', this._handleAppStateChange);
-    // }
-
-    // _handleAppStateChange = (nextAppState) => {
-    //     if (
-    //         this.state.appState.match(/inactive|background/) &&
-    //         nextAppState === 'active'
-    //     ) {
-    //         console.log('App has come to the foreground!');
-    //     }
-    //     this.setState({appState: nextAppState});
-    // };
 
     /**
      * Injects {@link AspectRatioDetector} in order to detect the aspect ratio

@@ -1,6 +1,6 @@
 // @flow
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
     View,
     Image,
@@ -13,8 +13,18 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 import camera from '../../../../images/smash-camera.png';
-import phone from '../../../../images/smash-phone.png';
-import {setContactsIntegration, changeProfile, logout, enterPersonalRoom, syncContacts, syncCalendar, callFriend} from '../actions';
+import cameraDisabled from '../../../../images/smash-camera-disabled.png';
+import {
+    setContactsIntegration,
+    changeProfile,
+    logout,
+    enterPersonalRoom,
+    syncContacts,
+    syncCalendar,
+    callFriend,
+    addClient,
+    toggleStatus
+} from '../actions';
 import styles from './styles';
 import {
     IconMenuUp,
@@ -27,7 +37,7 @@ import {
     IconRoom,
     IconRoomDisabled,
     IconEnterMeet,
-    IconEnterMeetDisabled
+    IconSmashCameraDisabled
 } from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
@@ -35,11 +45,18 @@ import { connect } from '../../base/redux';
 import Collapsible from 'react-native-collapsible';
 import {getBottomSpace} from "react-native-iphone-x-helper";
 import {ColorPalette} from "../../base/styles/components/styles";
-import {CHANGE_PROFILE, SYNC_CALENDAR, SYNC_CONTACTS} from "../actionTypes";
+import {
+    CHANGE_PROFILE,
+    STORE_CALL_DATA,
+    SYNC_CALENDAR,
+    SYNC_CONTACTS,
+    TOGGLE_STATUS,
+    UPDATE_FRIENDS_STATUS
+} from "../actionTypes";
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
 import { setCalendarIntegration } from "../../calendar-sync/actions.native";
-// import Modal from "react-native-modal";
+import {appNavigate} from "../../app";
 
 function ProfileScreen({
                            dispatch,
@@ -52,12 +69,16 @@ function ProfileScreen({
                            _friends,
                            _groups,
                            _personalRoom,
+                           _call,
+                           _config,
                            _loading = {},
-                           _error
+                           _error,
+                           _socket
 }) {
     useEffect(() => {
         dispatch(setContactsIntegration());
         dispatch(setCalendarIntegration());
+
         AppState.addEventListener('change', _handleAppStateChange);
 
         return () => {
@@ -65,9 +86,88 @@ function ProfileScreen({
         }
     }, []);
 
+    useEffect(() => {
+        if(_defaultProfile && _socket) dispatch(addClient(_socket.id, _defaultProfile.id));
+    }, [_defaultProfile]);
+
+    useEffect(() => {
+        if(_socket) {
+            _socket.on('/user/friend-status', event => handleFriendStatusEvents(event));
+
+            if(_call) {
+                _socket.on('/chat/conference', event => handleConferenceEvents(event, _call));
+            }
+        }
+
+        return () => {
+            if(_socket) {
+                _socket.removeListener('/user/friend-status', handleFriendStatusEvents);
+                _socket.removeListener('/chat/conference', handleConferenceEvents);
+            }
+        }
+    }, [_socket, _call]);
+
     const [isCollapsed, setCollapsed] = useState(true);
     const [appState, setAppState] = useState(AppState.currentState);
-    // const [isCallModalVisible, setCallModalVisible] = useState(false);
+
+    function handleFriendStatusEvents(event) {
+        const {profileRef, status} = event;
+
+        dispatch({
+            type: UPDATE_FRIENDS_STATUS,
+            profileRef,
+            status
+        });
+    }
+
+    function handleConferenceEvents(event, call) {
+        const {roomId, dateTime, sender, receiver} = event.object;
+        const friend = _friends.filter(friend => friend.profileRef === sender)[0];
+
+        // console.log('event', event);
+
+        switch(event.action) {
+            case 'invite':
+                dispatch({
+                    type: STORE_CALL_DATA,
+                    call: {
+                        roomId,
+                        dateTime,
+                        sender,
+                        receiver,
+                        friend,
+                        status: 'calling...',
+                        isCaller: false,
+                    }
+                });
+
+                dispatch(navigateToScreen('CallScreen'));
+                break;
+            case 'accept':
+                console.log('call', call);
+
+                dispatch(navigateToScreen('ProfileScreen'));
+                dispatch(appNavigate(`${roomId}?jwt=${call.jwt}`));
+                break;
+            case 'deny':
+                dispatch({
+                    type: STORE_CALL_DATA,
+                    call: {
+                        roomId,
+                        friend,
+                        status: 'denied',
+                        isCaller: true,
+                    }
+                });
+
+                setTimeout(() => {
+                    dispatch(navigateToScreen('ProfileScreen'));
+                }, 2000);
+                break;
+            default:
+                break;
+        }
+    }
 
     function _handleAppStateChange(nextAppState) {
         if (
@@ -82,49 +182,11 @@ function ProfileScreen({
         setAppState(nextAppState);
     }
 
-    // function renderCallModal() {
-    //     return (
-    //         <Modal isVisible={isCallModalVisible}
-    //                onBackdropPress={() => setVisible(false)}
-    //                onSwipeComplete={() => setVisible(false)}
-    //                swipeDirection="up">
-    //             <KeyboardAvoidingView
-    //                 behavior = 'padding'
-    //                 style = { styles.modal }>
-    //                 <TextInput
-    //                     autoCapitalize = 'none'
-    //                     autoComplete = 'off'
-    //                     autoCorrect = { false }
-    //                     autoFocus = { true }
-    //                     onChangeText = { setRoom }
-    //                     placeholder = { 'Enter link or room name' }
-    //                     placeholderTextColor = {PLACEHOLDER_TEXT_COLOR}
-    //                     returnKeyType = { 'go' }
-    //                     style = { styles.textInput }
-    //                     underlineColorAndroid = 'transparent'
-    //                     value = { room } />
-    //                 <View style = { styles.gradientContainer }>
-    //                     <TouchableOpacity
-    //                         style = { styles.gradientButton }>
-    //                         <Text style = { styles.gradientButtonText }>
-    //                             JOIN MEETING
-    //                         </Text>
-    //                     </TouchableOpacity>
-    //                 </View>
-    //             </KeyboardAvoidingView>
-    //         </Modal>
-    //     )
-    // }
-
     function renderItem({ item }) {
-        console.log('item', item);
-
         return (
             <View style = { styles.friendItem }>
                 <View style = { styles.userInfo }>
-                    <HexagononImage
-                        size = { 42 }
-                        friend={ item } />
+                    <HexagononImage friend={ item } showStatus/>
                     <View style = { styles.profileInfo }>
                         <Text style = { styles.userName }
                               numberOfLines={1}>
@@ -146,11 +208,11 @@ function ProfileScreen({
                             {/*        source = { phone }*/}
                             {/*        style = { styles.iconImage } />*/}
                             {/*</TouchableOpacity>*/}
-                            <TouchableOpacity onPress={() => dispatch(callFriend(item.profileRef))}>
+                            <TouchableOpacity onPress={() => dispatch(callFriend(item))} disabled={item.status !== 'online'}>
                                 <Image
                                     resizeMethod = 'resize'
                                     resizeMode = 'contain'
-                                    source = { camera }
+                                    source = { item.status === 'online' ? camera : cameraDisabled}
                                     style = { styles.iconImage } />
                             </TouchableOpacity>
                         </View>
@@ -169,6 +231,7 @@ function ProfileScreen({
 
     const personalRoomDisabled = !_personalRoom?.name;
     const friendsLength = _friends.length + _groups.length;
+    const {userStatus} = _config;
 
     return (
         <View style = { styles.container }>
@@ -179,12 +242,6 @@ function ProfileScreen({
                         ENTER MEET
                     </Text>
                 </TouchableOpacity>
-
-                {/*<Image*/}
-                {/*    resizeMethod = 'resize'*/}
-                {/*    resizeMode = 'contain'*/}
-                {/*    source = { logo }*/}
-                {/*    style = { styles.logo } />*/}
                 <TouchableOpacity style = { styles.iconContainer } onPress={() => dispatch(enterPersonalRoom(_personalRoom))} disabled={personalRoomDisabled}>
                     <Text style = { [styles.descriptionIos, {color: personalRoomDisabled ? '#656565' : '#BFBFBF'}] }>
                         MY ROOM
@@ -218,15 +275,10 @@ function ProfileScreen({
                         </View>
                 }
             </View>
-
-            {/*{renderCallModal()}*/}
-
             <TouchableWithoutFeedback onPress={() => setCollapsed(!isCollapsed)}>
                 <View style = { styles.footer }>
                     <View style = { styles.userInfo }>
-                        <HexagononImage
-                            size = { 42 }
-                            friend= { _defaultProfile } />
+                        <HexagononImage friend= { _defaultProfile } showStatus/>
                         <View style = { styles.profileInfo }>
                             <Text style = { styles.userName }>{_defaultProfile.name}</Text>
                             <Text style = { styles.contactsInfo }>friends {friendsLength}</Text>
@@ -262,6 +314,25 @@ function ProfileScreen({
                             </Text>
                         </View>
                         <View style={styles.optionsBody}>
+                            <TouchableOpacity
+                                style={styles.optionBodyItem}
+                                onPress={() => dispatch(toggleStatus(userStatus))}>
+                                <View style={[styles.optionBodyHeader, {flex: _calendarAuthorization !== 'denied' ? 3 : 1}]}>
+                                    <View style={styles.statusContainer}>
+                                        <View style={[styles.statusCircle, {backgroundColor: userStatus === 'online' ? 'lime' : 'grey'}]}/>
+                                    </View>
+                                    <View style={styles.optionBodyTitle}>
+                                        <Text style={styles.optionBodyTitleText}>
+                                            Toggle status
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={styles.optionLoading}>
+                                    {
+                                        _loading[TOGGLE_STATUS] && <ActivityIndicator color="white"/>
+                                    }
+                                </View>
+                            </TouchableOpacity>
                             {
                                 Platform.OS === 'ios' && (
                                     <>
@@ -358,9 +429,7 @@ function ProfileScreen({
                                                 style={styles.collapsed}
                                                 onPress={() => dispatch(changeProfile(item))}>
                                                 <View style={styles.userInfo}>
-                                                    <HexagononImage
-                                                        size={42}
-                                                        friend={item}/>
+                                                    <HexagononImage friend={item}/>
                                                     <View style={styles.profileInfo}>
                                                         <Text style={styles.userName}>
                                                             {item.name}
@@ -392,9 +461,6 @@ function ProfileScreen({
 }
 
 function _mapStateToProps(state: Object) {
-    console.log('CONTACTS', state['features/contacts-sync']);
-    console.log('CALENDAR', state['features/calendar-sync']);
-
     return {
         _contactsAuthorization: state['features/contacts-sync'].authorization,
         _calendarAuthorization: state['features/calendar-sync'].authorization,
@@ -405,8 +471,11 @@ function _mapStateToProps(state: Object) {
         _friends: state['features/contacts-sync'].friends,
         _groups: state['features/contacts-sync'].groups,
         _personalRoom: state['features/contacts-sync'].personalRoom,
+        _call: state['features/contacts-sync'].call,
+        _config: state['features/contacts-sync'].config,
         _loading: state['features/contacts-sync'].loading,
         _error: state['features/contacts-sync'].error,
+        _socket: state['features/welcome'].socket,
     };
 }
 

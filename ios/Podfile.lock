@@ -270,7 +270,7 @@ PODS:
     - React
   - react-native-calendar-events (1.7.3):
     - React
-  - react-native-contacts (5.0.5):
+  - react-native-contacts (5.0.6):
     - React
   - react-native-keep-awake (4.0.0):
     - React
@@ -541,7 +541,7 @@ SPEC CHECKSUMS:
   React-jsinspector: a8939cc6909607eb5e8a5ecfff7c6226984e174d
   react-native-background-timer: 0d34748e53a972507c66963490c775321a88f6f2
   react-native-calendar-events: 2fe35a9294af05de0ed819d3a1b5dac048d2c010
-  react-native-contacts: ca2b2f505265fe75b6fa571537ddc11e889d932d
+  react-native-contacts: 9c89131a1f63af0618d54af5ca1cd88b06d41a05
   react-native-keep-awake: eba3137546b10003361b37c761f6c429b59814ae
   react-native-netinfo: 8d8db463bcc5db66a8ac5c48a7d86beb3b92f61a
   react-native-webrtc: c5e3d631179a933548a8e49bddbd8fad02586095
