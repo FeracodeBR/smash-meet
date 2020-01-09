@@ -90,15 +90,13 @@ function ProfileScreen({
         if(_defaultProfile && _socket) dispatch(addClient(_socket.id, _defaultProfile.id));
     }, [_defaultProfile]);
 
-    // useLayoutEffect(() => {
-    //     console.log('_socket', _socket);
-    //     console.log('x', x);
-    // }, [_socket, x]);
-
     useEffect(() => {
         if(_socket) {
-            _socket.on('/user/friend-status', handleFriendStatusEvents);
-            _socket.on('/chat/conference', handleConferenceEvents);
+            _socket.on('/user/friend-status', event => handleFriendStatusEvents(event));
+
+            if(_call) {
+                _socket.on('/chat/conference', event => handleConferenceEvents(event, _call));
+            }
         }
 
         return () => {
@@ -107,7 +105,7 @@ function ProfileScreen({
                 _socket.removeListener('/chat/conference', handleConferenceEvents);
             }
         }
-    }, [_socket]);
+    }, [_socket, _call]);
 
     const [isCollapsed, setCollapsed] = useState(true);
     const [appState, setAppState] = useState(AppState.currentState);
@@ -122,9 +120,11 @@ function ProfileScreen({
         });
     }
 
-    function handleConferenceEvents(event) {
+    function handleConferenceEvents(event, call) {
         const {roomId, dateTime, sender, receiver} = event.object;
         const friend = _friends.filter(friend => friend.profileRef === sender)[0];
+
+        // console.log('event', event);
 
         switch(event.action) {
             case 'invite':
@@ -144,10 +144,10 @@ function ProfileScreen({
                 dispatch(navigateToScreen('CallScreen'));
                 break;
             case 'accept':
-                console.log('_call', _call);
+                console.log('call', call);
 
                 dispatch(navigateToScreen('ProfileScreen'));
-                // dispatch(appNavigate(`${roomId}?jwt=${_call.jwt}`));
+                dispatch(appNavigate(`${roomId}?jwt=${call.jwt}`));
                 break;
             case 'deny':
                 dispatch({
