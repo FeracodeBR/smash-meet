@@ -16,7 +16,7 @@ import {
     SYNC_CALENDAR,
     STORE_CALL_DATA,
     TOGGLE_STATUS,
-    STORE_CONFIG
+    STORE_CONFIG, UPDATE_FRIENDS_STATUS
 } from './actionTypes';
 
 import {FETCH_SESSION} from "../welcome/actionTypes";
@@ -163,6 +163,17 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
 
     case STORE_CONFIG:
         return set(state, 'config', action.config);
+
+    case UPDATE_FRIENDS_STATUS:
+        const {profileRef, status} = action;
+
+        const friends = state.friends.map(friend => {
+            if(friend.profileRef === profileRef) {
+                friend.status = status;
+            }
+        });
+
+        return set(state, 'friends', friends)
 
     }
 

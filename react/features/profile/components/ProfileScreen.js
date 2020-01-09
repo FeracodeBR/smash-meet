@@ -43,7 +43,14 @@ import { connect } from '../../base/redux';
 import Collapsible from 'react-native-collapsible';
 import {getBottomSpace} from "react-native-iphone-x-helper";
 import {ColorPalette} from "../../base/styles/components/styles";
-import {CHANGE_PROFILE, STORE_CALL_DATA, SYNC_CALENDAR, SYNC_CONTACTS, TOGGLE_STATUS} from "../actionTypes";
+import {
+    CHANGE_PROFILE,
+    STORE_CALL_DATA,
+    SYNC_CALENDAR,
+    SYNC_CONTACTS,
+    TOGGLE_STATUS,
+    UPDATE_FRIENDS_STATUS
+} from "../actionTypes";
 import {navigateToScreen} from "../../base/app";
 import {getProfileColor} from "../functions";
 import { setCalendarIntegration } from "../../calendar-sync/actions.native";
@@ -84,14 +91,19 @@ function ProfileScreen({
     useEffect(() => {
         if(_socket) {
             _socket.on('/user/friend-status', event => {
+                console.log('event', event);
 
+                const {profileRef, status} = event;
+                dispatch({
+                    type: UPDATE_FRIENDS_STATUS,
+                    profileRef,
+                    status
+                });
             });
 
             _socket.on('/chat/conference', event => {
                 const {roomId, dateTime, sender, receiver} = event.object;
                 const friend = _friends.filter(friend => friend.profileRef === sender)[0];
-
-                console.log('event', event);
 
                 switch(event.action) {
                     case 'invite':
@@ -111,12 +123,6 @@ function ProfileScreen({
                         dispatch(navigateToScreen('CallScreen'));
                         break;
                     case 'accept':
-                        console.log('log', {
-                            socket: _socket.id,
-                            action: event.action,
-                            _call
-                        });
-
                         dispatch(appNavigate(`${roomId}?jwt=${_call.jwt}`));
                         break;
                     case 'deny':
@@ -161,7 +167,7 @@ function ProfileScreen({
         return (
             <View style = { styles.friendItem }>
                 <View style = { styles.userInfo }>
-                    <HexagononImage friend={ item } />
+                    <HexagononImage friend={ item } showStatus/>
                     <View style = { styles.profileInfo }>
                         <Text style = { styles.userName }
                               numberOfLines={1}>
@@ -255,7 +261,7 @@ function ProfileScreen({
             <TouchableWithoutFeedback onPress={() => setCollapsed(!isCollapsed)}>
                 <View style = { styles.footer }>
                     <View style = { styles.userInfo }>
-                        <HexagononImage friend= { _defaultProfile } />
+                        <HexagononImage friend= { _defaultProfile } showStatus/>
                         <View style = { styles.profileInfo }>
                             <Text style = { styles.userName }>{_defaultProfile.name}</Text>
                             <Text style = { styles.contactsInfo }>friends {friendsLength}</Text>

@@ -55,7 +55,6 @@ export function logout() {
         AsyncStorage.clear();
         dispatch(navigateToScreen('SignIn'))
     }
-
 }
 
 export function toggleStatus(status) {

@@ -3,8 +3,9 @@ import { View, Image, Text } from 'react-native';
 import MaskedView from '@react-native-community/masked-view';
 import { IconSmashHexagon, IconSmashHexagonBig } from '../../../icons/svg';
 import {getProfileColor} from '../../../../profile/functions';
+import {ColorPalette} from "../../../styles/components/styles";
 
-export default function({ big, friend }) {
+export default function({ big, friend, showStatus }) {
 
     const size = big ? 120 : 42;
 
@@ -40,35 +41,51 @@ export default function({ big, friend }) {
     }
 
     return (
-        <MaskedView
-            maskElement = {
-                <View
-                    style = {{
-                        height: size,
-                        width: size,
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-
-                    {
-                        big ?
-                            <IconSmashHexagonBig /> :
-                            <IconSmashHexagon/>
-                    }
-
-                </View>
-            }>
-
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
             {
-                friend.picture ?
-                    <Image
-                        resizeMethod = 'resize'
-                        resizeMode = 'cover'
-                        source = {{ uri: friend.picture }}
-                        style = {{ height: size, width: size }} />
-                        :
-                    renderEmptyAvatar()
+                friend.profileRef && showStatus && (
+                    <View style={{
+                        position: 'absolute',
+                        top: 2,
+                        right: 2,
+                        borderWidth: 1,
+                        borderColor: ColorPalette.screen,
+                        backgroundColor: friend.status === 'online' ? 'lime' : '#BFBFBF',
+                        width: 10,
+                        height: 10,
+                        borderRadius: 5,
+                        zIndex: 999
+                    }}/>
+                )
             }
-        </MaskedView>
+            <MaskedView
+                maskElement = {
+                    <View
+                        style = {{
+                            height: size,
+                            width: size,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                        {
+                            big ?
+                                <IconSmashHexagonBig /> :
+                                <IconSmashHexagon/>
+                        }
+                    </View>
+                }>
+
+                {
+                    friend.picture ?
+                        <Image
+                            resizeMethod = 'resize'
+                            resizeMode = 'cover'
+                            source = {{ uri: friend.picture }}
+                            style = {{ height: size, width: size }} />
+                        :
+                        renderEmptyAvatar()
+                }
+            </MaskedView>
+        </View>
     );
 }
