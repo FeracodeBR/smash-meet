@@ -150,6 +150,7 @@
     "validate": "npm ls",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "android": "react-native run-android",
+    "android-release": "react-native run-android --variant=release",
     "ios": "react-native run-ios",
     "test": "jest"
   },

@@ -280,7 +280,7 @@ export default {
      */
 
     header: {
-        marginTop: getStatusBarHeight(true) + 30,
+        marginTop: getStatusBarHeight(true),
         alignItems: 'center',
         justifyContent: 'center'
     },
