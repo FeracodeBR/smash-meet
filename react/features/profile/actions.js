@@ -13,12 +13,12 @@ import {
     TOGGLE_STATUS,
     STORE_CONFIG
 } from './actionTypes';
-import AsyncStorage from "@react-native-community/async-storage";
-import {navigateToScreen} from "../base/app";
-import {FETCH_SESSION} from "../welcome/actionTypes";
-import {appNavigate} from "../app";
-import {DEFAULT_SERVER_URL} from "../base/settings";
-import {exportPublic, generateKeys} from "../welcome";
+import AsyncStorage from '@react-native-community/async-storage';
+import { navigateToScreen } from '../base/app';
+import { FETCH_SESSION } from '../welcome/actionTypes';
+import { appNavigate } from '../app';
+import { DEFAULT_SERVER_URL } from '../base/settings';
+import { exportPublic, generateKeys } from '../welcome';
 
 export function fetchContacts(contacts) {
     return {
@@ -53,8 +53,8 @@ export function setContactsIntegration() {
 export function logout() {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         AsyncStorage.clear();
-        dispatch(navigateToScreen('SignIn'))
-    }
+        dispatch(navigateToScreen('SignIn'));
+    };
 }
 
 export function toggleStatus(status) {
@@ -66,7 +66,7 @@ export function toggleStatus(status) {
         });
 
         const headers = new Headers({
-            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'authorization': await AsyncStorage.getItem('accessToken'),
             'Content-Type': 'application/json'
         });
 
@@ -78,7 +78,7 @@ export function toggleStatus(status) {
             })
         });
 
-        if(res.ok) {
+        if (res.ok) {
             res.json().then(config => {
                 dispatch({
                     type: STORE_CONFIG,
@@ -90,7 +90,7 @@ export function toggleStatus(status) {
                     error: undefined,
                     loading: false
                 });
-            })
+            });
         } else {
             dispatch({
                 type: TOGGLE_STATUS,
@@ -98,7 +98,7 @@ export function toggleStatus(status) {
                 loading: false
             });
         }
-    }
+    };
 
 }
 
@@ -112,7 +112,7 @@ export function syncCalendar(calendar, authorization) {
             });
 
             const headers = new Headers({
-                'authorization': (await AsyncStorage.getItem('accessToken')),
+                'authorization': await AsyncStorage.getItem('accessToken'),
                 'Content-Type': 'application/json'
             });
 
@@ -130,7 +130,7 @@ export function syncCalendar(calendar, authorization) {
             const promises = [];
 
             for (const event of calendar) {
-                const {allDay, endDate, startDate, title} = event;
+                const { allDay, endDate, startDate, title } = event;
 
                 const start = new Date(startDate);
                 const end = new Date(endDate);
@@ -147,90 +147,92 @@ export function syncCalendar(calendar, authorization) {
                         body: JSON.stringify({
                             title,
                             allDay,
-                            "@type": "calendar-event",
-                            "owner": "admin",
-                            "eventType": "event",
-                            "privacy": "default",
-                            "startTime": `${start.getHours()}:${start.getMinutes()}`,
-                            "endTime": `${end.getHours()}:${end.getMinutes()}`,
-                            "repeat": false,
-                            "repeatOptions": {
-                                "times": 1,
-                                "every": {"title": "days"},
-                                "repeatEnd": "never",
-                                "endTimes": 1,
-                                "weekDays": {
-                                    "su": true,
-                                    "mo": true,
-                                    "tu": true,
-                                    "we": true,
-                                    "th": true,
-                                    "fr": true,
-                                    "sa": true
+                            '@type': 'calendar-event',
+                            'owner': 'admin',
+                            'eventType': 'event',
+                            'privacy': 'default',
+                            'startTime': `${start.getHours()}:${start.getMinutes()}`,
+                            'endTime': `${end.getHours()}:${end.getMinutes()}`,
+                            'repeat': false,
+                            'repeatOptions': {
+                                'times': 1,
+                                'every': { 'title': 'days' },
+                                'repeatEnd': 'never',
+                                'endTimes': 1,
+                                'weekDays': {
+                                    'su': true,
+                                    'mo': true,
+                                    'tu': true,
+                                    'we': true,
+                                    'th': true,
+                                    'fr': true,
+                                    'sa': true
                                 },
-                                "monthRepeat": {"title": "", "select": "day"},
-                                "exception": [],
-                                "endDate": "2019-12-26"
+                                'monthRepeat': { 'title': '',
+                                    'select': 'day' },
+                                'exception': [],
+                                'endDate': '2019-12-26'
                             },
-                            "uniqueSlot": false,
-                            "slotDuration": 30,
-                            "nPersons": 1,
-                            "slots": [],
-                            "slotOptions": [{
-                                "weekDay": "Monday",
-                                "startTime": "",
-                                "endTime": "",
-                                "selected": true
+                            'uniqueSlot': false,
+                            'slotDuration': 30,
+                            'nPersons': 1,
+                            'slots': [],
+                            'slotOptions': [ {
+                                'weekDay': 'Monday',
+                                'startTime': '',
+                                'endTime': '',
+                                'selected': true
                             }, {
-                                "weekDay": "Tuesday",
-                                "startTime": "",
-                                "endTime": "",
-                                "selected": true
+                                'weekDay': 'Tuesday',
+                                'startTime': '',
+                                'endTime': '',
+                                'selected': true
                             }, {
-                                "weekDay": "Wednesday",
-                                "startTime": "",
-                                "endTime": "",
-                                "selected": true
+                                'weekDay': 'Wednesday',
+                                'startTime': '',
+                                'endTime': '',
+                                'selected': true
                             }, {
-                                "weekDay": "Thursday",
-                                "startTime": "",
-                                "endTime": "",
-                                "selected": true
+                                'weekDay': 'Thursday',
+                                'startTime': '',
+                                'endTime': '',
+                                'selected': true
                             }, {
-                                "weekDay": "Friday",
-                                "startTime": "",
-                                "endTime": "",
-                                "selected": true
+                                'weekDay': 'Friday',
+                                'startTime': '',
+                                'endTime': '',
+                                'selected': true
                             }, {
-                                "weekDay": "Saturday",
-                                "startTime": "",
-                                "endTime": "",
-                                "selected": true
+                                'weekDay': 'Saturday',
+                                'startTime': '',
+                                'endTime': '',
+                                'selected': true
                             }, {
-                                "weekDay": "Sunday",
-                                "startTime": "",
-                                "endTime": "",
-                                "selected": true
-                            }],
-                            "slotExceptions": [],
-                            "location": {
-                                "location": {
-                                    "type": "Point",
-                                    "coordinates": ["", ""]
+                                'weekDay': 'Sunday',
+                                'startTime': '',
+                                'endTime': '',
+                                'selected': true
+                            } ],
+                            'slotExceptions': [],
+                            'location': {
+                                'location': {
+                                    'type': 'Point',
+                                    'coordinates': [ '', '' ]
                                 },
-                                "favorite": {},
-                                "inputSearch": "",
-                                "active": {},
-                                "initial": false,
-                                "edit": true,
-                                "visible": []
+                                'favorite': {},
+                                'inputSearch': '',
+                                'active': {},
+                                'initial': false,
+                                'edit': true,
+                                'visible': []
                             },
-                            "shared": [],
-                            "guests": [],
-                            "guestList": false,
-                            "busy": true,
-                            "files": [],
-                            "calendar": mainCalendarId,
+                            'shared': [],
+                            'guests': [],
+                            'guestList': false,
+                            'busy': true,
+                            'files': [],
+                            'calendar': mainCalendarId,
+
                             // "timezone": {
                             //     "start": {
                             //         "utc": formattedUTC,
@@ -244,11 +246,12 @@ export function syncCalendar(calendar, authorization) {
                             //     },
                             //     "same": true
                             // },
-                            "startDate": `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`,
-                            "endDate": `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`,
-                            "description": "<p></p>",
-                            "startDateTime": `${start.toISOString()}`,
-                            "endDateTime": `${end.toISOString()}`,
+                            'startDate': `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`,
+                            'endDate': `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`,
+                            'description': '<p></p>',
+                            'startDateTime': `${start.toISOString()}`,
+                            'endDateTime': `${end.toISOString()}`
+
                             // "startDateTimeOriginal": "2019-12-26T00:00:00-03:00",
                             // "endDateTimeOriginal": "2019-12-26T12:00:00-03:00"
                         })
@@ -264,7 +267,7 @@ export function syncCalendar(calendar, authorization) {
                 loading: false
             });
         }
-    }
+    };
 }
 
 export function syncContacts(contacts) {
@@ -276,7 +279,7 @@ export function syncContacts(contacts) {
         });
 
         const headers = new Headers({
-            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'authorization': await AsyncStorage.getItem('accessToken'),
             'Content-Type': 'application/json'
         });
 
@@ -286,8 +289,8 @@ export function syncContacts(contacts) {
             body: JSON.stringify(contacts)
         });
 
-        if(importRes.ok) {
-            const [profilesRes, friendsRes, groupsRes] = await Promise.all([
+        if (importRes.ok) {
+            const [ profilesRes, friendsRes, groupsRes, configRes ] = await Promise.all([
                 fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                     method: 'GET',
                     headers
@@ -299,14 +302,19 @@ export function syncContacts(contacts) {
                 fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
                     method: 'GET',
                     headers
+                }),
+                fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+                    method: 'GET',
+                    headers
                 })
             ]);
 
-            if(profilesRes.ok && friendsRes.ok && groupsRes.ok) {
-                const [profiles, friends, groups] = await Promise.all([
+            if (profilesRes.ok && friendsRes.ok && groupsRes.ok && configRes.ok) {
+                const [ profiles, friends, groups, config ] = await Promise.all([
                     profilesRes.json(),
                     friendsRes.json(),
-                    groupsRes.json()
+                    groupsRes.json(),
+                    configRes.json()
                 ]);
 
                 const profileIds = profiles.map(profile => profile.id);
@@ -326,7 +334,8 @@ export function syncContacts(contacts) {
                     defaultProfile,
                     profiles: otherProfiles,
                     friends: friendsWithoutMe,
-                    groups
+                    groups,
+                    config
                 });
             } else {
                 dispatch({
@@ -342,13 +351,13 @@ export function syncContacts(contacts) {
             error: !importRes.ok,
             loading: false
         });
-    }
+    };
 }
 
 export function enterPersonalRoom(room) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         const headers = new Headers({
-            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'authorization': await AsyncStorage.getItem('accessToken'),
             'Content-Type': 'application/json'
         });
 
@@ -358,10 +367,10 @@ export function enterPersonalRoom(room) {
             body: JSON.stringify(room)
         });
 
-        tokenRes.json().then(({jwt, roomId}) => {
-            dispatch(appNavigate(`${roomId}?jwt=${jwt}`))
-        })
-    }
+        tokenRes.json().then(({ jwt, roomId }) => {
+            dispatch(appNavigate(`${roomId}?jwt=${jwt}`));
+        });
+    };
 }
 
 export function callFriend(friend) {
@@ -373,19 +382,19 @@ export function callFriend(friend) {
         });
 
         const headers = new Headers({
-            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'authorization': await AsyncStorage.getItem('accessToken'),
             'Content-Type': 'application/json'
         });
 
         const callRes = await fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/token`, {
             method: 'POST',
             headers,
-            body: JSON.stringify({profileId: friend.profileRef})
+            body: JSON.stringify({ profileId: friend.profileRef })
         });
 
-        if(callRes.ok) {
+        if (callRes.ok) {
             callRes.json().then(call => {
-                const {jwt, roomId, dateTime, sender, receiver} = call;
+                const { jwt, roomId, dateTime, sender, receiver } = call;
 
                 dispatch({
                     type: STORE_CALL_DATA,
@@ -394,20 +403,20 @@ export function callFriend(friend) {
                         jwt,
                         friend,
                         status: 'waiting...',
-                        isCaller: true,
+                        isCaller: true
                     }
                 });
 
                 dispatch(navigateToScreen('CallScreen'));
-            })
+            });
         } else {
             dispatch({
                 type: CALL_FRIEND,
                 loading: false,
                 error: true
-            })
+            });
         }
-    }
+    };
 }
 
 export function changeProfile(defaultProfile) {
@@ -421,7 +430,7 @@ export function changeProfile(defaultProfile) {
 
         try {
             const headers = new Headers({
-                'authorization': (await AsyncStorage.getItem('accessToken')),
+                'authorization': await AsyncStorage.getItem('accessToken'),
                 'Content-Type': 'application/json'
             });
 
@@ -431,15 +440,15 @@ export function changeProfile(defaultProfile) {
                 body: JSON.stringify({ defaultProfile })
             });
 
-            if(config.ok) {
+            if (config.ok) {
                 config.json().then(async res => {
-                    const {accessToken} = res;
+                    const { accessToken } = res;
 
                     AsyncStorage.setItem('accessToken', accessToken);
 
                     headers.set('authorization', accessToken);
 
-                    const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
+                    const [ profilesRes, friendsRes, groupsRes, personalRoomRes, configRes ] = await Promise.all([
                         fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
                             method: 'GET',
                             headers
@@ -454,21 +463,21 @@ export function changeProfile(defaultProfile) {
                         }),
                         fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
                             method: 'GET',
-                            headers,
+                            headers
                         }),
                         fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
                             method: 'GET',
-                            headers,
+                            headers
                         })
                     ]);
 
-                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
-                        const [profiles, friends, groups, personalRoom, config] = await Promise.all([
+                    if (profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
+                        const [ profiles, friends, groups, personalRoom, config ] = await Promise.all([
                             profilesRes.json(),
                             friendsRes.json(),
                             groupsRes.json(),
                             personalRoomRes.json(),
-                            configRes.json(),
+                            configRes.json()
                         ]);
 
                         const profileIds = profiles.map(profile => profile.id);
@@ -521,21 +530,21 @@ export function changeProfile(defaultProfile) {
 
 export function addClient(socketId, profileId) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        const [[, accessToken], [, userId]] = await AsyncStorage.multiGet(['accessToken', 'userId']);
+        const [ [ , accessToken ], [ , userId ] ] = await AsyncStorage.multiGet([ 'accessToken', 'userId' ]);
 
         const headers = new Headers({
             'authorization': accessToken,
             'Content-Type': 'application/json'
         });
 
-        const {publicKey, privateKey} = await generateKeys();
+        const { publicKey, privateKey } = await generateKeys();
 
         const res = await fetch(`${DEFAULT_SERVER_URL}/module/system/add-client`, {
             method: 'POST',
             headers,
             body: JSON.stringify({
                 token: accessToken,
-                userId: userId,
+                userId,
                 url: DEFAULT_SERVER_URL,
                 profile: profileId,
                 master: false,
@@ -545,7 +554,7 @@ export function addClient(socketId, profileId) {
             })
         });
 
-        if(!res.ok) {
+        if (!res.ok) {
             console.log('add client error', res);
         }
 
@@ -555,7 +564,7 @@ export function addClient(socketId, profileId) {
 export function hangup(isCaller, profileId, roomId) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         const headers = new Headers({
-            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'authorization': await AsyncStorage.getItem('accessToken'),
             'Content-Type': 'application/json'
         });
 
@@ -568,16 +577,16 @@ export function hangup(isCaller, profileId, roomId) {
             })
         });
 
-        if(!res.ok) {
+        if (!res.ok) {
             console.log('hangup error', res);
         }
     };
 }
 
-export function accept({roomId, dateTime, sender, receiver, friend}, socketId) {
+export function accept({ roomId, dateTime, sender, receiver, friend }, socketId) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         const headers = new Headers({
-            'authorization': (await AsyncStorage.getItem('accessToken')),
+            'authorization': await AsyncStorage.getItem('accessToken'),
             'Content-Type': 'application/json'
         });
 
@@ -596,10 +605,10 @@ export function accept({roomId, dateTime, sender, receiver, friend}, socketId) {
             })
         });
 
-        if(res.ok) {
+        if (res.ok) {
             dispatch(appNavigate(roomId));
         } else {
-            res.json().then(res => console.log('res', res))
+            res.json().then(res => console.log('res', res));
             console.log('accept error');
         }
     };

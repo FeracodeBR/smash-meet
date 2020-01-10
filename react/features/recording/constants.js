@@ -31,6 +31,12 @@ export const RECORDING_OFF_SOUND_ID = 'RECORDING_OFF_SOUND';
  */
 export const RECORDING_ON_SOUND_ID = 'RECORDING_ON_SOUND';
 
+
+export const CONFERENCE_SOUND_ID = 'CONFERENCE_SOUND';
+
+
+export const WAITING_SOUND_ID = 'WAITING_SOUND';
+
 /**
  * Expected supported recording types.
  *
