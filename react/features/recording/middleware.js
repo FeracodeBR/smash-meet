@@ -90,6 +90,14 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
             RECORDING_OFF_SOUND_FILE));
 
         dispatch(registerSound(
+            CONFERENCE_SOUND_ID,
+            CONFERENCE_SOUND_FILE));
+
+        dispatch(registerSound(
+            WAITING_SOUND_ID,
+            WAITING_SOUND_FILE));
+
+        dispatch(registerSound(
             RECORDING_ON_SOUND_ID,
             RECORDING_ON_SOUND_FILE));
 
@@ -100,6 +108,8 @@ MiddlewareRegistry.register(({ dispatch, getState }) => next => action => {
         dispatch(unregisterSound(LIVE_STREAMING_ON_SOUND_ID));
         dispatch(unregisterSound(RECORDING_OFF_SOUND_ID));
         dispatch(unregisterSound(RECORDING_ON_SOUND_ID));
+        dispatch(unregisterSound(CONFERENCE_SOUND_ID));
+        dispatch(unregisterSound(WAITING_SOUND_ID));
 
         break;
 

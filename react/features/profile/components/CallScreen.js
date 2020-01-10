@@ -1,28 +1,33 @@
 // @flow
 
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     ImageBackground,
-    Text,
+    Text
 } from 'react-native';
 import styles from './styles';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
 import { connect } from '../../base/redux';
-import {HangupButton, AcceptButton} from "../../toolbox/components";
-import {ColorSchemeRegistry} from "../../base/color-scheme";
-import {navigateToScreen} from "../../base/app";
-import {hangup, accept} from "../actions";
-import {playSound} from "../../base/sounds";
-import {CONFERENCE_SOUND_ID} from "../../invite/constants";
+import { HangupButton, AcceptButton } from '../../toolbox/components';
+import { ColorSchemeRegistry } from '../../base/color-scheme';
+import { navigateToScreen } from '../../base/app';
+import { hangup, accept } from '../actions';
+import { playSound, stopSound } from '../../base/sounds';
+import { CONFERENCE_SOUND_ID, WAITING_SOUND_ID } from '../../recording';
 
-function CallScreen({dispatch, _loading = {}, _error, _call, _styles, _socket}) {
-    const {roomId, dateTime, sender, receiver, jwt, friend, status, isCaller} = _call;
-    const {callScreenButtonStyles} = _styles;
+function CallScreen({ dispatch, _loading = {}, _error, _call, _styles, _socket }) {
+    const { roomId, dateTime, sender, receiver, jwt, friend, status, isCaller } = _call;
+    const { callScreenButtonStyles } = _styles;
+    const soundId = isCaller ? WAITING_SOUND_ID : CONFERENCE_SOUND_ID
 
     useEffect(() => {
-        dispatch(playSound(CONFERENCE_SOUND_ID));
+        dispatch(playSound(soundId));
+
+        return () => {
+            dispatch(stopSound(soundId));
+        };
     }, []);
 
     function onHangup() {
@@ -38,36 +43,44 @@ function CallScreen({dispatch, _loading = {}, _error, _call, _styles, _socket}) 
     function renderContent() {
         return (
             <>
-                <View style={styles.overlay}/>
-                <View style={styles.callHeader}>
-                    <HexagononImage friend={ friend } big />
-                    <View style={styles.callHeaderText}>
-                        <Text style={styles.callHeaderNameText}>
+                <View style = { styles.overlay } />
+                <View style = { styles.callHeader }>
+                    <HexagononImage
+                        friend = { friend }
+                        big = { true } />
+                    <View style = { styles.callHeaderText }>
+                        <Text style = { styles.callHeaderNameText }>
                             {friend.name}
                         </Text>
-                        <Text style={styles.callHeaderSubtitleText}>
+                        <Text style = { styles.callHeaderSubtitleText }>
                             {status}
                         </Text>
                     </View>
                 </View>
-                <View style={styles.callBody}>
-                    <HangupButton styles={callScreenButtonStyles} onPress={() => onHangup()}/>
+                <View style = { styles.callBody }>
+                    <HangupButton
+                        styles = { callScreenButtonStyles }
+                        onPress = { () => onHangup() } />
                     {
-                        !isCaller && <AcceptButton styles={callScreenButtonStyles} onPress={() => onAccept()}/>
+                        !isCaller && <AcceptButton
+                            styles = { callScreenButtonStyles }
+                            onPress = { () => onAccept() } />
                     }
                 </View>
             </>
-        )
+        );
     }
 
-    return friend.picture ?
-        <ImageBackground style = {styles.callContainer} source={{uri: friend.picture}} blurRadius={10}>
+    return friend.picture
+        ? <ImageBackground
+            style = { styles.callContainer }
+            source = {{ uri: friend.picture }}
+            blurRadius = { 10 }>
             {renderContent()}
         </ImageBackground>
-        :
-        <View style = {styles.callContainer}>
+        : <View style = { styles.callContainer }>
             {renderContent()}
-        </View>
+        </View>;
 }
 
 function _mapStateToProps(state: Object) {
@@ -76,7 +89,7 @@ function _mapStateToProps(state: Object) {
         _error: state['features/contacts-sync'].error,
         _call: state['features/contacts-sync'].call,
         _styles: ColorSchemeRegistry.get(state, 'Toolbox'),
-        _socket: state['features/welcome'].socket,
+        _socket: state['features/welcome'].socket
     };
 }
 

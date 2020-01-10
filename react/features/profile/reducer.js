@@ -19,7 +19,7 @@ import {
     STORE_CONFIG, UPDATE_FRIENDS_STATUS
 } from './actionTypes';
 
-import {FETCH_SESSION} from "../welcome/actionTypes";
+import { FETCH_SESSION } from '../welcome/actionTypes';
 
 /**
  * The default state of the calendar feature.
@@ -109,7 +109,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             error: {
                 ...state.error,
                 [action.type]: action.error
-            },
+            }
         });
 
     case SYNC_CONTACTS:
@@ -121,7 +121,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             error: {
                 ...state.error,
                 [action.type]: action.error
-            },
+            }
         });
 
     case SYNC_CALENDAR:
@@ -133,7 +133,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             error: {
                 ...state.error,
                 [action.type]: action.error
-            },
+            }
         });
 
     case TOGGLE_STATUS:
@@ -145,7 +145,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             error: {
                 ...state.error,
                 [action.type]: action.error
-            },
+            }
         });
 
     case FETCH_SESSION:
@@ -155,7 +155,7 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
             'friends': action.friends,
             'groups': action.groups,
             'personalRoom': action.personalRoom || {},
-            'config': action.config,
+            'config': action.config
         });
 
     case STORE_CALL_DATA:
@@ -165,10 +165,10 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
         return set(state, 'config', action.config);
 
     case UPDATE_FRIENDS_STATUS:
-        const {profileRef, status} = action;
+        const { profileRef, status } = action;
 
         const friends = state.friends.map(friend => {
-            if(friend.profileRef === profileRef) {
+            if (friend.profileRef === profileRef) {
                 friend.status = status;
             }
 

@@ -1,6 +1,6 @@
 // @flow
 
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Image,
@@ -43,8 +43,8 @@ import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
 import { connect } from '../../base/redux';
 import Collapsible from 'react-native-collapsible';
-import {getBottomSpace} from "react-native-iphone-x-helper";
-import {ColorPalette} from "../../base/styles/components/styles";
+import { getBottomSpace } from 'react-native-iphone-x-helper';
+import { ColorPalette } from '../../base/styles/components/styles';
 import {
     CHANGE_PROFILE,
     STORE_CALL_DATA,
@@ -52,66 +52,64 @@ import {
     SYNC_CONTACTS,
     TOGGLE_STATUS,
     UPDATE_FRIENDS_STATUS
-} from "../actionTypes";
-import {navigateToScreen} from "../../base/app";
-import {getProfileColor} from "../functions";
-import { setCalendarIntegration } from "../../calendar-sync/actions.native";
-import {appNavigate} from "../../app";
+} from '../actionTypes';
+import { navigateToScreen } from '../../base/app';
+import { getProfileColor } from '../functions';
+import { setCalendarIntegration } from '../../calendar-sync/actions.native';
+import { appNavigate } from '../../app';
 
 function ProfileScreen({
-                           dispatch,
-                           _contacts,
-                           _contactsAuthorization,
-                           _calendar,
-                           _calendarAuthorization,
-                           _defaultProfile,
-                           _profiles,
-                           _friends,
-                           _groups,
-                           _personalRoom,
-                           _call,
-                           _config,
-                           _loading = {},
-                           _error,
-                           _socket
+    dispatch,
+    _contacts,
+    _contactsAuthorization,
+    _calendar,
+    _calendarAuthorization,
+    _defaultProfile,
+    _profiles,
+    _friends,
+    _groups,
+    _personalRoom,
+    _call,
+    _config,
+    _loading = {},
+    _error,
+    _socket
 }) {
     useEffect(() => {
-        dispatch(setContactsIntegration());
-        dispatch(setCalendarIntegration());
-
-        AppState.addEventListener('change', _handleAppStateChange);
-
-        return () => {
-            AppState.removeEventListener('change', _handleAppStateChange);
+        if (Platform.OS === 'ios') {
+            dispatch(setContactsIntegration());
+            dispatch(setCalendarIntegration());
         }
     }, []);
 
     useEffect(() => {
-        if(_defaultProfile && _socket) dispatch(addClient(_socket.id, _defaultProfile.id));
-    }, [_defaultProfile]);
+        if (_defaultProfile && _socket) {
+            dispatch(addClient(_socket.id, _defaultProfile.id));
+        }
+    }, [ _defaultProfile ]);
 
     useEffect(() => {
-        if(_socket) {
+        if (_socket) {
             _socket.on('/user/friend-status', event => handleFriendStatusEvents(event));
 
-            if(_call) {
+            if (_call) {
                 _socket.on('/chat/conference', event => handleConferenceEvents(event, _call));
             }
         }
 
         return () => {
-            if(_socket) {
+            if (_socket) {
                 _socket.removeListener('/user/friend-status', handleFriendStatusEvents);
                 _socket.removeListener('/chat/conference', handleConferenceEvents);
             }
-        }
-    }, [_socket, _call]);
+        };
+    }, [ _socket, _call ]);
 
-    const [isCollapsed, setCollapsed] = useState(true);
-    const [appState, setAppState] = useState(AppState.currentState);
+    const [ isCollapsed, setCollapsed ] = useState(true);
+    const [ appState, setAppState ] = useState(AppState.currentState);
 
     function handleFriendStatusEvents(event) {
-        const {profileRef, status} = event;
+        const { profileRef, status } = event;
 
         dispatch({
             type: UPDATE_FRIENDS_STATUS,
@@ -121,58 +119,56 @@ function ProfileScreen({
     }
 
     function handleConferenceEvents(event, call) {
-        const {roomId, dateTime, sender, receiver} = event.object;
+        const { roomId, dateTime, sender, receiver } = event.object;
         const friend = _friends.filter(friend => friend.profileRef === sender)[0];
 
-        // console.log('event', event);
+        switch (event.action) {
+        case 'invite':
+            dispatch({
+                type: STORE_CALL_DATA,
+                call: {
+                    roomId,
+                    dateTime,
+                    sender,
+                    receiver,
+                    friend,
+                    status: 'calling...',
+                    isCaller: false
+                }
+            });
 
-        switch(event.action) {
-            case 'invite':
-                dispatch({
-                    type: STORE_CALL_DATA,
-                    call: {
-                        roomId,
-                        dateTime,
-                        sender,
-                        receiver,
-                        friend,
-                        status: 'calling...',
-                        isCaller: false,
-                    }
-                });
+            dispatch(navigateToScreen('CallScreen'));
+            break;
+        case 'accept':
+            console.log('call', call);
 
-                dispatch(navigateToScreen('CallScreen'));
-                break;
-            case 'accept':
-                console.log('call', call);
+            dispatch(navigateToScreen('ProfileScreen'));
+            dispatch(appNavigate(`${roomId}?jwt=${call.jwt}`));
+            break;
+        case 'deny':
+            dispatch({
+                type: STORE_CALL_DATA,
+                call: {
+                    roomId,
+                    friend,
+                    status: 'denied',
+                    isCaller: true
+                }
+            });
 
+            setTimeout(() => {
                 dispatch(navigateToScreen('ProfileScreen'));
-                dispatch(appNavigate(`${roomId}?jwt=${call.jwt}`));
-                break;
-            case 'deny':
-                dispatch({
-                    type: STORE_CALL_DATA,
-                    call: {
-                        roomId,
-                        friend,
-                        status: 'denied',
-                        isCaller: true,
-                    }
-                });
-
-                setTimeout(() => {
-                    dispatch(navigateToScreen('ProfileScreen'));
-                }, 2000);
-                break;
-            default:
-                break;
+            }, 2000);
+            break;
+        default:
+            break;
         }
     }
 
     function _handleAppStateChange(nextAppState) {
         if (
-            appState.match(/inactive|background/) &&
-            nextAppState === 'active'
+            appState.match(/inactive|background/)
+            && nextAppState === 'active'
         ) {
             console.log('voltou');
             dispatch(setContactsIntegration());
@@ -186,10 +182,13 @@ function ProfileScreen({
         return (
             <View style = { styles.friendItem }>
                 <View style = { styles.userInfo }>
-                    <HexagononImage friend={ item } showStatus/>
+                    <HexagononImage
+                        friend = { item }
+                        showStatus = { true } />
                     <View style = { styles.profileInfo }>
-                        <Text style = { styles.userName }
-                              numberOfLines={1}>
+                        <Text
+                            style = { styles.userName }
+                            numberOfLines = { 1 }>
                             {item.name}
                         </Text>
                         <Text style = { styles.friendName }>
@@ -199,20 +198,22 @@ function ProfileScreen({
                 </View>
 
                 {
-                    item.profileRef &&
-                        <View style = { styles.profileContainer }>
-                            {/*<TouchableOpacity>*/}
+                    item.profileRef
+                        && <View style = { styles.profileContainer }>
+                            {/* <TouchableOpacity>*/}
                             {/*    <Image*/}
                             {/*        resizeMethod = 'resize'*/}
                             {/*        resizeMode = 'contain'*/}
                             {/*        source = { phone }*/}
                             {/*        style = { styles.iconImage } />*/}
-                            {/*</TouchableOpacity>*/}
-                            <TouchableOpacity onPress={() => dispatch(callFriend(item))} disabled={item.status !== 'online'}>
+                            {/* </TouchableOpacity>*/}
+                            <TouchableOpacity
+                                onPress = { () => dispatch(callFriend(item)) }
+                                disabled = { item.status !== 'online' }>
                                 <Image
                                     resizeMethod = 'resize'
                                     resizeMode = 'contain'
-                                    source = { item.status === 'online' ? camera : cameraDisabled}
+                                    source = { item.status === 'online' ? camera : cameraDisabled }
                                     style = { styles.iconImage } />
                             </TouchableOpacity>
                         </View>
@@ -221,35 +222,40 @@ function ProfileScreen({
         );
     }
 
-    if(!_defaultProfile) {
+    if (!_defaultProfile) {
         return (
             <View style = { styles.loadingContainer }>
-                <ActivityIndicator color={ColorPalette.white} />
+                <ActivityIndicator color = { ColorPalette.white } />
             </View>
         );
     }
 
     const personalRoomDisabled = !_personalRoom?.name;
     const friendsLength = _friends.length + _groups.length;
-    const {userStatus} = _config;
+    const { userStatus } = _config;
 
     return (
         <View style = { styles.container }>
             <View style = { styles.header }>
-                <TouchableOpacity style = { styles.iconContainer } onPress={() => dispatch(navigateToScreen('WelcomePage'))}>
-                    <IconEnterMeet/>
-                    <Text style = {styles.descriptionIos}>
+                <TouchableOpacity
+                    style = { styles.iconContainer }
+                    onPress = { () => dispatch(navigateToScreen('WelcomePage')) }>
+                    <IconEnterMeet />
+                    <Text style = { styles.descriptionIos }>
                         ENTER MEET
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style = { styles.iconContainer } onPress={() => dispatch(enterPersonalRoom(_personalRoom))} disabled={personalRoomDisabled}>
-                    <Text style = { [styles.descriptionIos, {color: personalRoomDisabled ? '#656565' : '#BFBFBF'}] }>
+                <TouchableOpacity
+                    style = { styles.iconContainer }
+                    onPress = { () => dispatch(enterPersonalRoom(_personalRoom)) }
+                    disabled = { personalRoomDisabled }>
+                    <Text style = { [ styles.descriptionIos, { color: personalRoomDisabled ? '#656565' : '#BFBFBF' } ] }>
                         MY ROOM
                     </Text>
                     {
-                        personalRoomDisabled ?
-                            <IconRoomDisabled/> :
-                            <IconRoom/>
+                        personalRoomDisabled
+                            ? <IconRoomDisabled />
+                            : <IconRoom />
                     }
                 </TouchableOpacity>
             </View>
@@ -260,25 +266,30 @@ function ProfileScreen({
                     </Text>
                 </View>
                 {
-                    friendsLength > 0 ?
-                        <FlatList
+                    friendsLength > 0
+                        ? <FlatList
                             data = { [
                                 ..._groups,
                                 ..._friends
                             ] }
-                            keyExtractor = {item => item.profileRef || item._id}
-                            renderItem = { renderItem } /> :
-                        <View style={{alignItems: 'center', justifyContent: 'center', paddingVertical: 10}}>
-                            <Text style={styles.optionsBodyText}>
+                            keyExtractor = { item => item.profileRef || item._id }
+                            renderItem = { renderItem } />
+                        : <View
+                            style = {{ alignItems: 'center',
+                                justifyContent: 'center',
+                                paddingVertical: 10 }}>
+                            <Text style = { styles.optionsBodyText }>
                                 Friends list is empty
                             </Text>
                         </View>
                 }
             </View>
-            <TouchableWithoutFeedback onPress={() => setCollapsed(!isCollapsed)}>
+            <TouchableWithoutFeedback onPress = { () => setCollapsed(!isCollapsed) }>
                 <View style = { styles.footer }>
                     <View style = { styles.userInfo }>
-                        <HexagononImage friend= { _defaultProfile } showStatus/>
+                        <HexagononImage
+                            friend = { _defaultProfile }
+                            showStatus = { true } />
                         <View style = { styles.profileInfo }>
                             <Text style = { styles.userName }>{_defaultProfile.name}</Text>
                             <Text style = { styles.contactsInfo }>friends {friendsLength}</Text>
@@ -287,49 +298,51 @@ function ProfileScreen({
 
                     <View style = { styles.profileContainer }>
                         {
-                            _loading[CHANGE_PROFILE] ?
-                                <ActivityIndicator color={ColorPalette.white} /> :
-                                <View style = { [styles.profile, {backgroundColor: getProfileColor(_defaultProfile.color)}] }>
+                            _loading[CHANGE_PROFILE]
+                                ? <ActivityIndicator color = { ColorPalette.white } />
+                                : <View style = { [ styles.profile, { backgroundColor: getProfileColor(_defaultProfile.color) } ] }>
                                     <Text style = { styles.profileText }>
                                         {_defaultProfile.abbr}
                                     </Text>
                                 </View>
                         }
-                        <TouchableOpacity onPress={() => setCollapsed(!isCollapsed)} style={styles.menuIconContainer}>
+                        <TouchableOpacity
+                            onPress = { () => setCollapsed(!isCollapsed) }
+                            style = { styles.menuIconContainer }>
                             {
-                                isCollapsed ?
-                                    <IconMenuUp style = { styles.icon } /> :
-                                    <IconMenuDown style = { styles.icon } />
+                                isCollapsed
+                                    ? <IconMenuUp style = { styles.icon } />
+                                    : <IconMenuDown style = { styles.icon } />
                             }
                         </TouchableOpacity>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
-            <View style={styles.collapsible}>
-                <Collapsible collapsed={isCollapsed}>
-                    <View style={styles.options}>
-                        <View style={styles.optionsHeader}>
-                            <Text style={styles.optionsHeaderText}>
+            <View style = { styles.collapsible }>
+                <Collapsible collapsed = { isCollapsed }>
+                    <View style = { styles.options }>
+                        <View style = { styles.optionsHeader }>
+                            <Text style = { styles.optionsHeaderText }>
                                 OPTIONS
                             </Text>
                         </View>
-                        <View style={styles.optionsBody}>
+                        <View style = { styles.optionsBody }>
                             <TouchableOpacity
-                                style={styles.optionBodyItem}
-                                onPress={() => dispatch(toggleStatus(userStatus))}>
-                                <View style={[styles.optionBodyHeader, {flex: _calendarAuthorization !== 'denied' ? 3 : 1}]}>
-                                    <View style={styles.statusContainer}>
-                                        <View style={[styles.statusCircle, {backgroundColor: userStatus === 'online' ? 'lime' : 'grey'}]}/>
+                                style = { styles.optionBodyItem }
+                                onPress = { () => dispatch(toggleStatus(userStatus)) }>
+                                <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization !== 'denied' ? 3 : 1 } ] }>
+                                    <View style = { styles.statusContainer }>
+                                        <View style = { [ styles.statusCircle, { backgroundColor: userStatus === 'online' ? 'lime' : 'grey' } ] } />
                                     </View>
-                                    <View style={styles.optionBodyTitle}>
-                                        <Text style={styles.optionBodyTitleText}>
+                                    <View style = { styles.optionBodyTitle }>
+                                        <Text style = { styles.optionBodyTitleText }>
                                             Toggle status
                                         </Text>
                                     </View>
                                 </View>
-                                <View style={styles.optionLoading}>
+                                <View style = { styles.optionLoading }>
                                     {
-                                        _loading[TOGGLE_STATUS] && <ActivityIndicator color="white"/>
+                                        _loading[TOGGLE_STATUS] && <ActivityIndicator color = 'white' />
                                     }
                                 </View>
                             </TouchableOpacity>
@@ -337,57 +350,57 @@ function ProfileScreen({
                                 Platform.OS === 'ios' && (
                                     <>
                                         <TouchableOpacity
-                                            style={styles.optionBodyItem}
-                                            onPress={() => {
-                                                dispatch(syncCalendar(_calendar))
+                                            style = { styles.optionBodyItem }
+                                            onPress = { () => {
+                                                dispatch(syncCalendar(_calendar));
 
                                                 // dispatch(setCalendarIntegration());
                                                 // setTimeout(() => dispatch(syncCalendar(_calendar)), 2000);
-                                            }}
-                                            disabled={_calendarAuthorization === 'denied'}>
-                                            <View style={[styles.optionBodyHeader, {flex: _calendarAuthorization !== 'denied' ? 3 : 1}]}>
+                                            } }
+                                            disabled = { _calendarAuthorization === 'denied' }>
+                                            <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization !== 'denied' ? 3 : 1 } ] }>
                                                 {
-                                                    _calendarAuthorization !== 'denied' ?
-                                                        <IconSyncCalendar />:
-                                                        <IconSyncCalendarDisabled />
+                                                    _calendarAuthorization !== 'denied'
+                                                        ? <IconSyncCalendar />
+                                                        : <IconSyncCalendarDisabled />
                                                 }
-                                                <View style={styles.optionBodyTitle}>
-                                                    <Text style={[styles.optionBodyTitleText, {color: _calendarAuthorization !== 'denied' ? '#BFBFBF' : '#656565'}]}>
+                                                <View style = { styles.optionBodyTitle }>
+                                                    <Text style = { [ styles.optionBodyTitleText, { color: _calendarAuthorization !== 'denied' ? '#BFBFBF' : '#656565' } ] }>
                                                         Synchronize calendar
                                                     </Text>
                                                 </View>
                                             </View>
-                                            <View style={styles.optionLoading}>
+                                            <View style = { styles.optionLoading }>
                                                 {
-                                                    _calendarAuthorization !== 'denied' ?
-                                                        _loading[SYNC_CALENDAR] && <ActivityIndicator color="white"/> :
-                                                        <Text style={styles.permissionDeniedText}>
+                                                    _calendarAuthorization !== 'denied'
+                                                        ? _loading[SYNC_CALENDAR] && <ActivityIndicator color = 'white' />
+                                                        : <Text style = { styles.permissionDeniedText }>
                                                             permission denied
                                                         </Text>
                                                 }
                                             </View>
                                         </TouchableOpacity>
                                         <TouchableOpacity
-                                            style={styles.optionBodyItem}
-                                            onPress={() => dispatch(syncContacts(_contacts))}
-                                            disabled={!_contactsAuthorization}>
-                                            <View style={[styles.optionBodyHeader, {flex: _contactsAuthorization ? 3 : 1}]}>
+                                            style = { styles.optionBodyItem }
+                                            onPress = { () => dispatch(syncContacts(_contacts)) }
+                                            disabled = { !_contactsAuthorization }>
+                                            <View style = { [ styles.optionBodyHeader, { flex: _contactsAuthorization ? 3 : 1 } ] }>
                                                 {
-                                                    _contactsAuthorization ?
-                                                        <IconSyncContacts /> :
-                                                        <IconSyncContactsDisabled />
+                                                    _contactsAuthorization
+                                                        ? <IconSyncContacts />
+                                                        : <IconSyncContactsDisabled />
                                                 }
-                                                <View style={styles.optionBodyTitle}>
-                                                    <Text style={[styles.optionBodyTitleText, {color: _contactsAuthorization ? '#BFBFBF' : '#656565'}]}>
+                                                <View style = { styles.optionBodyTitle }>
+                                                    <Text style = { [ styles.optionBodyTitleText, { color: _contactsAuthorization ? '#BFBFBF' : '#656565' } ] }>
                                                         Synchronize contacts
                                                     </Text>
                                                 </View>
                                             </View>
-                                            <View style={styles.optionLoading}>
+                                            <View style = { styles.optionLoading }>
                                                 {
-                                                    _contactsAuthorization ?
-                                                        _loading[SYNC_CONTACTS] && <ActivityIndicator color="white"/> :
-                                                        <Text style={styles.permissionDeniedText}>
+                                                    _contactsAuthorization
+                                                        ? _loading[SYNC_CONTACTS] && <ActivityIndicator color = 'white' />
+                                                        : <Text style = { styles.permissionDeniedText }>
                                                             permission denied
                                                         </Text>
                                                 }
@@ -397,12 +410,12 @@ function ProfileScreen({
                                 )
                             }
                             <TouchableOpacity
-                                onPress={() => dispatch(logout())}
-                                style={styles.optionBodyItem}>
-                                <View style={styles.optionBodyHeader}>
-                                    <IconLogout style = { styles.icon }/>
-                                    <View style={styles.optionBodyTitle}>
-                                        <Text style={styles.optionBodyTitleText}>
+                                onPress = { () => dispatch(logout()) }
+                                style = { styles.optionBodyItem }>
+                                <View style = { styles.optionBodyHeader }>
+                                    <IconLogout style = { styles.icon } />
+                                    <View style = { styles.optionBodyTitle }>
+                                        <Text style = { styles.optionBodyTitleText }>
                                             Logout
                                         </Text>
                                     </View>
@@ -410,44 +423,43 @@ function ProfileScreen({
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={styles.options}>
-                        <View style={styles.optionsHeader}>
-                            <Text style={styles.optionsHeaderText}>
+                    <View style = { styles.options }>
+                        <View style = { styles.optionsHeader }>
+                            <Text style = { styles.optionsHeaderText }>
                                 PROFILES
                             </Text>
                         </View>
-                        <View style={styles.optionsBody}>
+                        <View style = { styles.optionsBody }>
                             {
-                                _profiles.length > 0 ?
-                                    <FlatList
-                                        style={styles.profileList}
+                                _profiles.length > 0
+                                    ? <FlatList
+                                        style = { styles.profileList }
                                         data = { _profiles.filter(profile => !profile.default) }
-                                        keyExtractor = {item => item.id}
-                                        ListFooterComponent={<View style={{height: getBottomSpace()}} />}
-                                        renderItem = {({item, index}) => (
+                                        keyExtractor = { item => item.id }
+                                        ListFooterComponent = { <View style = {{ height: getBottomSpace() }} /> }
+                                        renderItem = { ({ item, index }) => (
                                             <TouchableOpacity
-                                                style={styles.collapsed}
-                                                onPress={() => dispatch(changeProfile(item))}>
-                                                <View style={styles.userInfo}>
-                                                    <HexagononImage friend={item}/>
-                                                    <View style={styles.profileInfo}>
-                                                        <Text style={styles.userName}>
+                                                style = { styles.collapsed }
+                                                onPress = { () => dispatch(changeProfile(item)) }>
+                                                <View style = { styles.userInfo }>
+                                                    <HexagononImage friend = { item } />
+                                                    <View style = { styles.profileInfo }>
+                                                        <Text style = { styles.userName }>
                                                             {item.name}
                                                         </Text>
                                                     </View>
                                                 </View>
-                                                <View style={styles.profileContainer}>
-                                                    <View style={[styles.profile, {marginRight: 35}, {backgroundColor: getProfileColor(item.color)}]}>
-                                                        <Text style={styles.profileText}>
+                                                <View style = { styles.profileContainer }>
+                                                    <View style = { [ styles.profile, { marginRight: 35 }, { backgroundColor: getProfileColor(item.color) } ] }>
+                                                        <Text style = { styles.profileText }>
                                                             {item.abbr}
                                                         </Text>
                                                     </View>
                                                 </View>
                                             </TouchableOpacity>
-                                        )} />
-                                        :
-                                    <View style={{paddingBottom: getBottomSpace()}}>
-                                        <Text style={styles.optionsBodyText}>
+                                        ) } />
+                                    : <View style = {{ paddingBottom: getBottomSpace() }}>
+                                        <Text style = { styles.optionsBodyText }>
                                             No other profiles available
                                         </Text>
                                     </View>
@@ -475,7 +487,7 @@ function _mapStateToProps(state: Object) {
         _config: state['features/contacts-sync'].config,
         _loading: state['features/contacts-sync'].loading,
         _error: state['features/contacts-sync'].error,
-        _socket: state['features/welcome'].socket,
+        _socket: state['features/welcome'].socket
     };
 }
 
