@@ -368,6 +368,10 @@ export function enterPersonalRoom(room) {
         });
 
         tokenRes.json().then(({ jwt, roomId }) => {
+            dispatch({
+                type: STORE_CALL_DATA,
+                call: {}
+            });
             dispatch(appNavigate(`${roomId}?jwt=${jwt}`));
         });
     };
