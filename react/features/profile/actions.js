@@ -517,8 +517,6 @@ export function changeProfile(defaultProfile) {
                 });
             }
         } catch (err) {
-            console.log('err', err);
-
             dispatch({
                 type: CHANGE_PROFILE,
                 loading: false,
@@ -537,7 +535,7 @@ export function addClient(socketId, profileId) {
             'Content-Type': 'application/json'
         });
 
-        const { publicKey, privateKey } = await generateKeys();
+        const { publicKey, privateKey } = generateKeys();
 
         const res = await fetch(`${DEFAULT_SERVER_URL}/module/system/add-client`, {
             method: 'POST',
@@ -550,7 +548,7 @@ export function addClient(socketId, profileId) {
                 master: false,
                 SameSite: 'None',
                 connectionId: socketId,
-                publicKey: await exportPublic(publicKey)
+                publicKey,
             })
         });
 
