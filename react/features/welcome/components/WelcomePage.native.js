@@ -8,9 +8,9 @@ import { connect } from '../../base/redux';
 import { ColorPalette } from '../../base/styles';
 import { createDesiredLocalTracks, destroyLocalTracks } from '../../base/tracks';
 import { setSideBarVisible } from '../actions';
-import {AbstractWelcomePage, _mapStateToProps as _abstractMapStateToProps} from './AbstractWelcomePage';
+import { AbstractWelcomePage, _mapStateToProps as _abstractMapStateToProps } from './AbstractWelcomePage';
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
-import {Icon, IconArrowBack, IconSmashMeetLogo} from '../../base/icons';
+import { Icon, IconArrowBack, IconSmashMeetLogo } from '../../base/icons';
 import {
     Animated,
     Keyboard,
@@ -18,7 +18,7 @@ import {
     TouchableHighlight,
     View,
     KeyboardAvoidingView,
-    TouchableOpacity,
+    TouchableOpacity
 } from 'react-native';
 
 /**
@@ -233,7 +233,7 @@ class WelcomePage extends AbstractWelcomePage {
                     <View style = { styles.header }>
                         <Icon
                             src = { IconSmashMeetLogo }
-                            size={160}/>
+                            size = { 160 } />
                     </View>
                     <KeyboardAvoidingView
                         behavior = 'padding'
@@ -273,7 +273,9 @@ class WelcomePage extends AbstractWelcomePage {
                     </KeyboardAvoidingView>
                     <View style = { styles.footer }>
                         <View style = { styles.backButton } >
-                            <TouchableOpacity style = { styles.touchableWrapper } onPress = { this._goBack } >
+                            <TouchableOpacity
+                                style = { styles.touchableWrapper }
+                                onPress = { this._goBack } >
                                 <Icon
                                     src = { IconArrowBack }
                                     style = { styles.backButtonIcon } />
