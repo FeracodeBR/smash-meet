@@ -29,6 +29,7 @@ export default class Audio extends AbstractAudio {
     _soundLoadedCallback(error) {
         if (error) {
             logger.error('Failed to load sound', error);
+            console.log('Failed to load sound', error);
         } else {
             this.setAudioElementImpl(this._sound);
         }
