@@ -140,8 +140,6 @@ function ProfileScreen({
             dispatch(navigateToScreen('CallScreen'));
             break;
         case 'accept':
-            console.log('call', call);
-
             dispatch(navigateToScreen('ProfileScreen'));
             dispatch(appNavigate(`${roomId}?jwt=${call.jwt}`));
             break;
@@ -170,7 +168,6 @@ function ProfileScreen({
             appState.match(/inactive|background/)
             && nextAppState === 'active'
         ) {
-            console.log('voltou');
             dispatch(setContactsIntegration());
             dispatch(setCalendarIntegration());
 
