@@ -20,9 +20,14 @@ import { CONFERENCE_SOUND_ID, WAITING_SOUND_ID } from '../../recording';
 function CallScreen({ dispatch, _loading = {}, _error, _call, _styles, _socket }) {
     const { roomId, dateTime, sender, receiver, jwt, friend, status, isCaller } = _call;
     const { callScreenButtonStyles } = _styles;
-    const soundId = isCaller ? WAITING_SOUND_ID : CONFERENCE_SOUND_ID
+    const soundId = isCaller ? WAITING_SOUND_ID : CONFERENCE_SOUND_ID;
 
     useEffect(() => {
+        setTimeout(() => {
+            dispatch(navigateToScreen('ProfileScreen'));
+            dispatch(stopSound(soundId));
+        }, 30000);
+
         dispatch(playSound(soundId));
 
         return () => {
