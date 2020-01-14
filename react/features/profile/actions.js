@@ -15,12 +15,13 @@ import {
 } from './actionTypes';
 import AsyncStorage from '@react-native-community/async-storage';
 import { navigateToScreen } from '../base/app';
-import {FETCH_SESSION, SIGN_IN} from '../welcome/actionTypes';
+import {FETCH_SESSION, SIGN_IN, STORE_SOCKET} from '../welcome/actionTypes';
 import { appNavigate } from '../app';
-import { DEFAULT_SERVER_URL } from '../base/settings';
+import {DEFAULT_SERVER_URL, DEFAULT_WEBSOCKET_URL} from '../base/settings';
 import { exportPublic, generateKeys } from '../welcome';
 import {status} from "../base/app";
 import {fetchSession} from "../welcome/actions";
+import io from "socket.io-client";
 
 export function fetchContacts(contacts) {
     return {
@@ -378,5 +379,11 @@ export function accept({ roomId, dateTime, sender, receiver, friend }, socketId)
             res.json().then(res => console.log('res', res));
             console.log('accept error');
         }
+    };
+}
+
+export function refresh(accessToken: string) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        const fetchSessionRes = await fetchSession(dispatch, accessToken);
     };
 }

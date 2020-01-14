@@ -98,39 +98,29 @@ export async function fetchSession(dispatch, accessToken) {
         const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
         const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
 
-        dispatch({
-            type: FETCH_SESSION,
+        const sessionData = {
             defaultProfile,
             profiles: otherProfiles,
             friends: friendsWithoutMe,
             groups,
             personalRoom,
             config
-        });
-
-        const socket = io(DEFAULT_WEBSOCKET_URL, {
-            query: {
-                token: encodeURIComponent(accessToken),
-                EIO: 3,
-                transport: 'websocket'
-            }
-        });
+        };
 
         dispatch({
-            type: STORE_SOCKET,
-            socket
+            type: FETCH_SESSION,
+            ...sessionData
         });
 
-        socket.on('connect', () => {
-            dispatch(addClient(socket.id, defaultProfile.id));
-        });
-
-        socket.on('error', (e) => {
-            console.log('socket error', e);
-        });
+        dispatch(status({
+            trigger: FETCH_SESSION,
+            loading: false,
+            error: undefined
+        }));
 
         return {
-            success: true
+            success: true,
+            data: sessionData
         }
     } else {
         dispatch(status({
@@ -174,6 +164,31 @@ export function signIn(username: string, password: string) {
                     const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
                     if(fetchSessionRes.success) {
+
+
+                        const {defaultProfile} = fetchSessionRes.data;
+
+                        const socket = io(DEFAULT_WEBSOCKET_URL, {
+                            query: {
+                                token: encodeURIComponent(accessToken),
+                                EIO: 3,
+                                transport: 'websocket'
+                            }
+                        });
+
+                        dispatch({
+                            type: STORE_SOCKET,
+                            socket
+                        });
+
+                        socket.on('connect', () => {
+                            dispatch(addClient(socket.id, defaultProfile.id));
+                        });
+
+                        socket.on('error', (e) => {
+                            console.log('socket error', e);
+                        });
+
                         dispatch(status({
                             trigger: SIGN_IN,
                             loading: false,
@@ -211,7 +226,30 @@ export function reloadSession(accessToken: string) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
-        if(!fetchSessionRes.success) {
+        if(fetchSessionRes.success) {
+            const {defaultProfile} = fetchSessionRes.data;
+
+            const socket = io(DEFAULT_WEBSOCKET_URL, {
+                query: {
+                    token: encodeURIComponent(accessToken),
+                    EIO: 3,
+                    transport: 'websocket'
+                }
+            });
+
+            dispatch({
+                type: STORE_SOCKET,
+                socket
+            });
+
+            socket.on('connect', () => {
+                dispatch(addClient(socket.id, defaultProfile.id));
+            });
+
+            socket.on('error', (e) => {
+                console.log('socket error', e);
+            });
+        } else {
             AsyncStorage.clear();
             dispatch(navigateToScreen('SignIn'));
         }

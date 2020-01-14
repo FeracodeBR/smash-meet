@@ -1,6 +1,20 @@
 // @flow
 
 import React, { useState, useEffect } from 'react';
+import camera from '../../../../images/smash-camera.png';
+import cameraDisabled from '../../../../images/smash-camera-disabled.png';
+import styles from './styles';
+import HexagononImage from '../../base/react/components/native/HexagononImage';
+import { translate } from '../../base/i18n';
+import { connect } from '../../base/redux';
+import Collapsible from 'react-native-collapsible';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
+import { ColorPalette } from '../../base/styles/components/styles';
+import { navigateToScreen } from '../../base/app';
+import { getProfileColor } from '../functions';
+import { setCalendarIntegration } from '../../calendar-sync/actions.native';
+import { appNavigate } from '../../app';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
     View,
     Image,
@@ -13,8 +27,6 @@ import {
     TouchableWithoutFeedback,
     RefreshControl
 } from 'react-native';
-import camera from '../../../../images/smash-camera.png';
-import cameraDisabled from '../../../../images/smash-camera-disabled.png';
 import {
     setContactsIntegration,
     changeProfile,
@@ -24,9 +36,8 @@ import {
     syncCalendar,
     callFriend,
     addClient,
-    toggleStatus
+    toggleStatus, refresh
 } from '../actions';
-import styles from './styles';
 import {
     IconMenuUp,
     IconMenuDown,
@@ -39,12 +50,6 @@ import {
     IconRoomDisabled,
     IconEnterMeet,
 } from '../../base/icons/svg';
-import HexagononImage from '../../base/react/components/native/HexagononImage';
-import { translate } from '../../base/i18n';
-import { connect } from '../../base/redux';
-import Collapsible from 'react-native-collapsible';
-import { getBottomSpace } from 'react-native-iphone-x-helper';
-import { ColorPalette } from '../../base/styles/components/styles';
 import {
     CHANGE_PROFILE,
     STORE_CALL_DATA,
@@ -53,10 +58,9 @@ import {
     TOGGLE_STATUS,
     UPDATE_FRIENDS_STATUS
 } from '../actionTypes';
-import { navigateToScreen } from '../../base/app';
-import { getProfileColor } from '../functions';
-import { setCalendarIntegration } from '../../calendar-sync/actions.native';
-import { appNavigate } from '../../app';
+import {FETCH_SESSION} from "../../welcome/actionTypes";
+import {stopSound} from "../../base/sounds";
+import {WAITING_SOUND_ID} from "../../recording";
 
 function ProfileScreen({
     dispatch,
@@ -109,6 +113,12 @@ function ProfileScreen({
         };
     }, [ _socket, _call ]);
 
+    useEffect(() => {
+        if(!_loading[FETCH_SESSION]) {
+            setRefreshing(false);
+        }
+    }, [_loading[FETCH_SESSION]]);
+
     function handleFriendStatusEvents(event) {
         const { profileRef, status } = event;
 
@@ -122,6 +132,8 @@ function ProfileScreen({
     function handleConferenceEvents(event, call) {
         const { roomId, dateTime, sender, receiver } = event.object;
         const friend = _friends.filter(friend => friend.profileRef === sender)[0];
+
+        console.log('event', event);
 
         switch (event.action) {
         case 'invite':
@@ -155,9 +167,29 @@ function ProfileScreen({
                 }
             });
 
+            dispatch(stopSound(WAITING_SOUND_ID));
+
             setTimeout(() => {
                 dispatch(navigateToScreen('ProfileScreen'));
             }, 2000);
+            break;
+        case 'canceled':
+            dispatch({
+                type: STORE_CALL_DATA,
+                call: {
+                    roomId,
+                    friend,
+                    status: 'canceled',
+                    isCaller: true
+                }
+            });
+
+            dispatch(stopSound(WAITING_SOUND_ID));
+
+            setTimeout(() => {
+                dispatch(navigateToScreen('ProfileScreen'));
+            }, 2000);
+            break;
             break;
         default:
             break;
@@ -176,9 +208,10 @@ function ProfileScreen({
         setAppState(nextAppState);
     }
 
-    function onRefresh() {
-        return 1;
-    }
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        AsyncStorage.getItem('accessToken').then(accessToken => dispatch(refresh(accessToken)));
+    }, [refreshing]);
 
     function renderItem({ item }) {
         return (
@@ -275,11 +308,14 @@ function ProfileScreen({
                                 ..._friends
                             ] }
                             keyExtractor = { item => item.profileRef || item._id }
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor='#BFBFBF'/>}
                             renderItem = { renderItem } />
                         : <View
-                            style = {{ alignItems: 'center',
+                            style = {{
+                                alignItems: 'center',
                                 justifyContent: 'center',
-                                paddingVertical: 10 }}>
+                                paddingVertical: 10
+                            }}>
                             <Text style = { styles.optionsBodyText }>
                                 Friends list is empty
                             </Text>
@@ -353,12 +389,7 @@ function ProfileScreen({
                                     <>
                                         <TouchableOpacity
                                             style = { styles.optionBodyItem }
-                                            onPress = { () => {
-                                                dispatch(syncCalendar(_calendar));
-
-                                                // dispatch(setCalendarIntegration());
-                                                // setTimeout(() => dispatch(syncCalendar(_calendar)), 2000);
-                                            } }
+                                            onPress = { () => dispatch(syncCalendar(_calendar)) }
                                             disabled = { _calendarAuthorization === 'denied' }>
                                             <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization !== 'denied' ? 3 : 1 } ] }>
                                                 {
