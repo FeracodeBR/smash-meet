@@ -100,54 +100,6 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
     case SET_LOADING_CONTACTS_EVENTS:
         return set(state, 'isLoadingContacts', action.isLoadingContacts);
 
-    case CHANGE_PROFILE:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
-    case SYNC_CONTACTS:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
-    case SYNC_CALENDAR:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
-    case TOGGLE_STATUS:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
     case FETCH_SESSION:
         return assign(state, {
             'defaultProfile': action.defaultProfile,

@@ -10,7 +10,8 @@ import {
     ActivityIndicator,
     Platform,
     AppState,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    RefreshControl
 } from 'react-native';
 import camera from '../../../../images/smash-camera.png';
 import cameraDisabled from '../../../../images/smash-camera-disabled.png';
@@ -37,7 +38,6 @@ import {
     IconRoom,
     IconRoomDisabled,
     IconEnterMeet,
-    IconSmashCameraDisabled
 } from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
@@ -75,6 +75,10 @@ function ProfileScreen({
     _error,
     _socket
 }) {
+    const [ isCollapsed, setCollapsed ] = useState(true);
+    const [ appState, setAppState ] = useState(AppState.currentState);
+    const [ refreshing, setRefreshing] = useState(false);
+
     useEffect(() => {
         if (Platform.OS === 'ios') {
             dispatch(setContactsIntegration());
@@ -104,9 +108,6 @@ function ProfileScreen({
             }
         };
     }, [ _socket, _call ]);
-
-    const [ isCollapsed, setCollapsed ] = useState(true);
-    const [ appState, setAppState ] = useState(AppState.currentState);
 
     function handleFriendStatusEvents(event) {
         const { profileRef, status } = event;
@@ -173,6 +174,10 @@ function ProfileScreen({
 
         }
         setAppState(nextAppState);
+    }
+
+    function onRefresh() {
+        return 1;
     }
 
     function renderItem({ item }) {
@@ -482,8 +487,8 @@ function _mapStateToProps(state: Object) {
         _personalRoom: state['features/contacts-sync'].personalRoom,
         _call: state['features/contacts-sync'].call,
         _config: state['features/contacts-sync'].config,
-        _loading: state['features/contacts-sync'].loading,
-        _error: state['features/contacts-sync'].error,
+        _loading: state['features/base/app'].loading,
+        _error: state['features/base/app'].error,
         _socket: state['features/welcome'].socket
     };
 }
