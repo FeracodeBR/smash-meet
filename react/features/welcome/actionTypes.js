@@ -25,4 +25,3 @@ export const SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE
 
 export const SIGN_IN = 'SIGN_IN';
 export const FETCH_SESSION = 'FETCH_SESSION';
-export const STORE_SOCKET = 'STORE_SOCKET';

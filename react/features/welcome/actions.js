@@ -6,14 +6,12 @@ import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
     SIGN_IN,
-    FETCH_SESSION,
-    STORE_SOCKET,
+    FETCH_SESSION
 } from './actionTypes';
 
 import {navigateToScreen, status} from "../base/app";
-import {DEFAULT_SERVER_URL, DEFAULT_WEBSOCKET_URL} from "../base/settings";
-import io from "socket.io-client";
-import {addClient} from "../profile/actions";
+import {DEFAULT_SERVER_URL} from "../base/settings";
+import WebSocket from '../websocket/WebSocket';
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -164,30 +162,9 @@ export function signIn(username: string, password: string) {
                     const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
                     if(fetchSessionRes.success) {
-
-
                         const {defaultProfile} = fetchSessionRes.data;
 
-                        const socket = io(DEFAULT_WEBSOCKET_URL, {
-                            query: {
-                                token: encodeURIComponent(accessToken),
-                                EIO: 3,
-                                transport: 'websocket'
-                            }
-                        });
-
-                        dispatch({
-                            type: STORE_SOCKET,
-                            socket
-                        });
-
-                        socket.on('connect', () => {
-                            dispatch(addClient(socket.id, defaultProfile.id));
-                        });
-
-                        socket.on('error', (e) => {
-                            console.log('socket error', e);
-                        });
+                        WebSocket.connect(defaultProfile.id, accessToken);
 
                         dispatch(status({
                             trigger: SIGN_IN,
@@ -229,26 +206,7 @@ export function reloadSession(accessToken: string) {
         if(fetchSessionRes.success) {
             const {defaultProfile} = fetchSessionRes.data;
 
-            const socket = io(DEFAULT_WEBSOCKET_URL, {
-                query: {
-                    token: encodeURIComponent(accessToken),
-                    EIO: 3,
-                    transport: 'websocket'
-                }
-            });
-
-            dispatch({
-                type: STORE_SOCKET,
-                socket
-            });
-
-            socket.on('connect', () => {
-                dispatch(addClient(socket.id, defaultProfile.id));
-            });
-
-            socket.on('error', (e) => {
-                console.log('socket error', e);
-            });
+            WebSocket.connect(defaultProfile.id, accessToken);
         } else {
             AsyncStorage.clear();
             dispatch(navigateToScreen('SignIn'));
