@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import { notifications, messaging } from 'react-native-firebase';
 
 import '../../analytics';
 import '../../authentication';
@@ -14,6 +15,7 @@ import {
     ReducedUIDetector
 } from '../../base/responsive-ui';
 import { updateSettings } from '../../base/settings';
+import { reloadSession } from '../../welcome/actions';
 import '../../google-api';
 import '../../mobile/audio-mode';
 import '../../mobile/back-button';
@@ -32,7 +34,6 @@ import { AbstractApp } from './AbstractApp';
 import type { Props as AbstractAppProps } from './AbstractApp';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import {reloadSession} from "../../welcome/actions";
 
 declare var __DEV__;
 
@@ -96,6 +97,11 @@ export class App extends AbstractApp {
      */
     componentDidMount() {
         super.componentDidMount();
+        const channel = new notifications.Android.Channel('default_notification_channel_id', 'MTGX',
+            notifications.Android.Importance.Max
+        ).setDescription('SMASH MEET CHANNEL');
+
+        notifications().android.createChannel(channel);
 
         this._init.then(() => {
             // We set these early enough so then we avoid any unnecessary re-renders.
@@ -112,13 +118,28 @@ export class App extends AbstractApp {
                 dispatch(updateSettings({ disableCallIntegration: !callIntegrationEnabled }));
             }
 
+            this.removeNotificationListener = notifications().onNotification(notification => {
+                const { title, body, notificationId } = notification;
+                const localNotification = new notifications.Notification().setNotificationId(notificationId)
+                    .setTitle(title).setBody(body)
+                    .android.setChannelId('default_notification_channel_id')
+                    .android.setColor('#000000')
+                    .android.setPriority(notifications.Android.Priority.High);
+                notifications().displayNotification(localNotification).catch(err => console.log(err));
+            });
+
             AsyncStorage.getItem('accessToken')
                 .then(accessToken => {
-                    if(accessToken) {
-                        dispatch(reloadSession(accessToken))
+                    if (accessToken) {
+                        dispatch(reloadSession(accessToken));
                     }
                 });
         });
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        this.removeNotificationListener();
     }
 
     /**

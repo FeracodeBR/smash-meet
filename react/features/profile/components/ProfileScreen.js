@@ -37,7 +37,6 @@ import {
     IconRoom,
     IconRoomDisabled,
     IconEnterMeet,
-    IconSmashCameraDisabled
 } from '../../base/icons/svg';
 import HexagononImage from '../../base/react/components/native/HexagononImage';
 import { translate } from '../../base/i18n';
