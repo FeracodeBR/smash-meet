@@ -6,7 +6,6 @@ import { PersistenceRegistry } from '../base/storage';
 import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
-    STORE_SOCKET
 } from './actionTypes';
 
 /**
@@ -32,9 +31,6 @@ ReducerRegistry.register(STORE_NAME, (state = {}, action) => {
 
     case SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE:
         return set(state, 'defaultPage', action.pageIndex);
-
-    case STORE_SOCKET:
-        return set(state, 'socket', action.socket);
 
     }
 

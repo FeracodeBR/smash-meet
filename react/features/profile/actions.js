@@ -15,13 +15,11 @@ import {
 } from './actionTypes';
 import AsyncStorage from '@react-native-community/async-storage';
 import { navigateToScreen } from '../base/app';
-import {FETCH_SESSION, SIGN_IN, STORE_SOCKET} from '../welcome/actionTypes';
 import { appNavigate } from '../app';
-import {DEFAULT_SERVER_URL, DEFAULT_WEBSOCKET_URL} from '../base/settings';
-import { exportPublic, generateKeys } from '../welcome';
+import {DEFAULT_SERVER_URL} from '../base/settings';
+import { generateKeys } from '../welcome';
 import {status} from "../base/app";
 import {fetchSession} from "../welcome/actions";
-import io from "socket.io-client";
 
 export function fetchContacts(contacts) {
     return {

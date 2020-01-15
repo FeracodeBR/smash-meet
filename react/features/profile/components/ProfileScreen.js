@@ -61,6 +61,7 @@ import {
 import {FETCH_SESSION} from "../../welcome/actionTypes";
 import {stopSound} from "../../base/sounds";
 import {WAITING_SOUND_ID} from "../../recording";
+import WebSocket from '../../websocket/WebSocket';
 
 function ProfileScreen({
     dispatch,
@@ -76,8 +77,8 @@ function ProfileScreen({
     _call,
     _config,
     _loading = {},
+    _wsConnected,
     _error,
-    _socket
 }) {
     const [ isCollapsed, setCollapsed ] = useState(true);
     const [ appState, setAppState ] = useState(AppState.currentState);
@@ -91,27 +92,17 @@ function ProfileScreen({
     }, []);
 
     useEffect(() => {
-        if (_defaultProfile && _socket) {
-            dispatch(addClient(_socket.id, _defaultProfile.id));
+        if(_wsConnected) {
+            WebSocket.addListener('/user/friend-status', handleFriendStatusEvents);
+            WebSocket.addListener('/chat/conference', handleConferenceEvents);
         }
-    }, [ _defaultProfile ]);
+    }, [_wsConnected]);
 
     useEffect(() => {
-        if (_socket) {
-            _socket.on('/user/friend-status', event => handleFriendStatusEvents(event));
-
-            if (_call) {
-                _socket.on('/chat/conference', event => handleConferenceEvents(event, _call));
-            }
+        if (_defaultProfile && WebSocket.io) {
+            dispatch(addClient(WebSocket.io.id, _defaultProfile.id));
         }
-
-        return () => {
-            if (_socket) {
-                _socket.removeListener('/user/friend-status', handleFriendStatusEvents);
-                _socket.removeListener('/chat/conference', handleConferenceEvents);
-            }
-        };
-    }, [ _socket, _call ]);
+    }, [ _defaultProfile ]);
 
     useEffect(() => {
         if(!_loading[FETCH_SESSION]) {
@@ -122,6 +113,8 @@ function ProfileScreen({
     function handleFriendStatusEvents(event) {
         const { profileRef, status } = event;
 
+        console.log('event', event);
+
         dispatch({
             type: UPDATE_FRIENDS_STATUS,
             profileRef,
@@ -129,7 +122,7 @@ function ProfileScreen({
         });
     }
 
-    function handleConferenceEvents(event, call) {
+    function handleConferenceEvents(event) {
         const { roomId, dateTime, sender, receiver } = event.object;
         const friend = _friends.filter(friend => friend.profileRef === sender)[0];
 
@@ -154,7 +147,7 @@ function ProfileScreen({
             break;
         case 'accept':
             dispatch(navigateToScreen('ProfileScreen'));
-            dispatch(appNavigate(`${roomId}?jwt=${call.jwt}`));
+            dispatch(appNavigate(`${roomId}?jwt=${_call.jwt}`));
             break;
         case 'deny':
             dispatch({
@@ -189,7 +182,6 @@ function ProfileScreen({
             setTimeout(() => {
                 dispatch(navigateToScreen('ProfileScreen'));
             }, 2000);
-            break;
             break;
         default:
             break;
@@ -520,7 +512,7 @@ function _mapStateToProps(state: Object) {
         _config: state['features/contacts-sync'].config,
         _loading: state['features/base/app'].loading,
         _error: state['features/base/app'].error,
-        _socket: state['features/welcome'].socket
+        _wsConnected: state['features/base/app'].wsConnected,
     };
 }
 

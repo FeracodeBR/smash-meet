@@ -16,7 +16,7 @@ import {
     SYNC_CALENDAR,
     STORE_CALL_DATA,
     TOGGLE_STATUS,
-    STORE_CONFIG, UPDATE_FRIENDS_STATUS
+    STORE_CONFIG, UPDATE_FRIENDS_STATUS, CALL_TIMEOUT
 } from './actionTypes';
 
 import { FETCH_SESSION } from '../welcome/actionTypes';
@@ -42,7 +42,8 @@ const DEFAULT_STATE = {
     },
     config: {},
     loading: {},
-    error: {}
+    error: {},
+    callTimeout: null,
 };
 
 /**
@@ -115,6 +116,9 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
 
     case STORE_CONFIG:
         return set(state, 'config', action.config);
+
+    case CALL_TIMEOUT:
+        return set(state, 'callTimeout', action.callTimeout);
 
     case UPDATE_FRIENDS_STATUS:
         const { profileRef, status } = action;

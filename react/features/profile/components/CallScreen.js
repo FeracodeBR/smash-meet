@@ -16,17 +16,28 @@ import { navigateToScreen } from '../../base/app';
 import { hangup, accept } from '../actions';
 import { playSound, stopSound } from '../../base/sounds';
 import { CONFERENCE_SOUND_ID, WAITING_SOUND_ID } from '../../recording';
+import WebSocket from "../../websocket/WebSocket";
+import {CALL_TIMEOUT} from "../actionTypes";
 
-function CallScreen({ dispatch, _loading = {}, _error, _call, _styles, _socket }) {
+function CallScreen({ dispatch, _loading = {}, _error, _call, _callTimeout, _route, _styles }) {
     const { roomId, dateTime, sender, receiver, jwt, friend, status, isCaller } = _call;
     const { callScreenButtonStyles } = _styles;
     const soundId = isCaller ? WAITING_SOUND_ID : CONFERENCE_SOUND_ID;
 
     useEffect(() => {
-        setTimeout(() => {
-            dispatch(navigateToScreen('ProfileScreen'));
-            dispatch(stopSound(soundId));
+        if(_callTimeout) clearTimeout(_callTimeout);
+
+        const callTimeout = setTimeout(() => {
+            if(_route === 'CallScreen') {
+                dispatch(navigateToScreen('ProfileScreen'));
+                dispatch(stopSound(soundId));
+            }
         }, 30000);
+
+        dispatch({
+            type: CALL_TIMEOUT,
+            callTimeout
+        });
 
         dispatch(playSound(soundId));
 
@@ -42,7 +53,7 @@ function CallScreen({ dispatch, _loading = {}, _error, _call, _styles, _socket }
 
     function onAccept() {
         dispatch(navigateToScreen('ProfileScreen'));
-        dispatch(accept(_call, _socket.id));
+        dispatch(accept(_call, WebSocket.io.id));
     }
 
     function renderContent() {
@@ -93,8 +104,9 @@ function _mapStateToProps(state: Object) {
         _loading: state['features/contacts-sync'].loading,
         _error: state['features/contacts-sync'].error,
         _call: state['features/contacts-sync'].call,
+        _callTimeout: state['features/contacts-sync'].callTimeout,
+        _route: state['features/base/app'].route,
         _styles: ColorSchemeRegistry.get(state, 'Toolbox'),
-        _socket: state['features/welcome'].socket
     };
 }
 
