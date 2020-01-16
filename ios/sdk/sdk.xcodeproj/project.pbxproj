@@ -25,7 +25,7 @@
 		0BCA49611EC4B6C600B793EE /* Proximity.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BCA495E1EC4B6C600B793EE /* Proximity.m */; };
 		0BD906EA1EC0C00300C8C18E /* JitsiMeet.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BD906E81EC0C00300C8C18E /* JitsiMeet.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0F65EECE1D95DA94561BB47E /* libPods-JitsiMeet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03F2ADC957FF109849B7FCA1 /* libPods-JitsiMeet.a */; };
-		28E27A6A23CCE2CA00EF30A6 /* conference.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 28E27A6823CCE2CA00EF30A6 /* conference.mp3 */; };
+		1D5E451C23D07EDB00C587C7 /* conference.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1D5E451B23D07EDA00C587C7 /* conference.mp3 */; };
 		28E27A6B23CCE2CA00EF30A6 /* waiting.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 28E27A6923CCE2CA00EF30A6 /* waiting.mp3 */; };
 		6C31EDC820C06D490089C899 /* recordingOn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6C31EDC720C06D490089C899 /* recordingOn.mp3 */; };
 		6C31EDCA20C06D530089C899 /* recordingOff.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6C31EDC920C06D530089C899 /* recordingOff.mp3 */; };
@@ -86,7 +86,7 @@
 		0BD906E51EC0C00300C8C18E /* JitsiMeet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JitsiMeet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BD906E81EC0C00300C8C18E /* JitsiMeet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JitsiMeet.h; sourceTree = "<group>"; };
 		0BD906E91EC0C00300C8C18E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		28E27A6823CCE2CA00EF30A6 /* conference.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = conference.mp3; path = ../../sounds/conference.mp3; sourceTree = "<group>"; };
+		1D5E451B23D07EDA00C587C7 /* conference.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = conference.mp3; path = ../../sounds/conference.mp3; sourceTree = "<group>"; };
 		28E27A6923CCE2CA00EF30A6 /* waiting.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = waiting.mp3; path = ../../sounds/waiting.mp3; sourceTree = "<group>"; };
 		6C31EDC720C06D490089C899 /* recordingOn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = recordingOn.mp3; path = ../../sounds/recordingOn.mp3; sourceTree = "<group>"; };
 		6C31EDC920C06D530089C899 /* recordingOff.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = recordingOff.mp3; path = ../../sounds/recordingOff.mp3; sourceTree = "<group>"; };
@@ -149,7 +149,7 @@
 		0BCA49681EC4BBE500B793EE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				28E27A6823CCE2CA00EF30A6 /* conference.mp3 */,
+				1D5E451B23D07EDA00C587C7 /* conference.mp3 */,
 				28E27A6923CCE2CA00EF30A6 /* waiting.mp3 */,
 				87FE6F3221E52437004A5DC7 /* incomingMessage.wav */,
 				0BC4B8681F8C01E100CE8B21 /* CallKitIcon.png */,
@@ -376,7 +376,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28E27A6A23CCE2CA00EF30A6 /* conference.mp3 in Resources */,
+				1D5E451C23D07EDB00C587C7 /* conference.mp3 in Resources */,
 				28E27A6B23CCE2CA00EF30A6 /* waiting.mp3 in Resources */,
 				87FE6F3321E52437004A5DC7 /* incomingMessage.wav in Resources */,
 				0B49424520AD8DBD00BD2DE0 /* outgoingStart.wav in Resources */,

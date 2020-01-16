@@ -36,7 +36,8 @@ import {
     syncCalendar,
     callFriend,
     addClient,
-    toggleStatus, refresh
+    toggleStatus,
+    refresh
 } from '../actions';
 import {
     IconMenuUp,
@@ -360,7 +361,7 @@ function ProfileScreen({
                             <TouchableOpacity
                                 style = { styles.optionBodyItem }
                                 onPress = { () => dispatch(toggleStatus(userStatus)) }>
-                                <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization !== 'denied' ? 3 : 1 } ] }>
+                                <View style = { styles.optionBodyHeader }>
                                     <View style = { styles.statusContainer }>
                                         <View style = { [ styles.statusCircle, { backgroundColor: userStatus === 'online' ? 'lime' : 'grey' } ] } />
                                     </View>
@@ -382,22 +383,22 @@ function ProfileScreen({
                                         <TouchableOpacity
                                             style = { styles.optionBodyItem }
                                             onPress = { () => dispatch(syncCalendar(_calendar)) }
-                                            disabled = { _calendarAuthorization === 'denied' }>
-                                            <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization !== 'denied' ? 3 : 1 } ] }>
+                                            disabled = { !_calendarAuthorization }>
+                                            <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization ? 3 : 1 } ] }>
                                                 {
-                                                    _calendarAuthorization !== 'denied'
+                                                    _calendarAuthorization
                                                         ? <IconSyncCalendar />
                                                         : <IconSyncCalendarDisabled />
                                                 }
                                                 <View style = { styles.optionBodyTitle }>
-                                                    <Text style = { [ styles.optionBodyTitleText, { color: _calendarAuthorization !== 'denied' ? '#BFBFBF' : '#656565' } ] }>
+                                                    <Text style = { [ styles.optionBodyTitleText, { color: _calendarAuthorization ? '#BFBFBF' : '#656565' } ] }>
                                                         Synchronize calendar
                                                     </Text>
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
                                                 {
-                                                    _calendarAuthorization !== 'denied'
+                                                    _calendarAuthorization
                                                         ? _loading[SYNC_CALENDAR] && <ActivityIndicator color = 'white' />
                                                         : <Text style = { styles.permissionDeniedText }>
                                                             permission denied
