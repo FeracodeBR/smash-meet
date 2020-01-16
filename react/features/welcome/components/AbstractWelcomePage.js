@@ -38,8 +38,8 @@ type Props = {
      */
     dispatch: Dispatch<any>,
 
-    _error: boolean,
-    _loading: boolean
+    _error: Object,
+    _loading: Object
 };
 
 /**
@@ -315,8 +315,8 @@ export function _mapStateToProps(state: Object) {
         _calendarEnabled: isCalendarEnabled(state),
         _room: state['features/base/conference'].room,
         _settings: state['features/base/settings'],
-        _error: state['features/welcome'].error,
-        _loading: state['features/welcome'].loading,
+        _error: state['features/base/app'].error,
+        _loading: state['features/base/app'].loading,
         _conference: authRequired,
         _configHosts: configHosts,
     };

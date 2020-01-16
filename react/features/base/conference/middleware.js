@@ -194,6 +194,7 @@ function _conferenceJoined({ dispatch, getState }, next, action) {
     const { conference } = action;
     const { pendingSubjectChange } = getState()['features/base/conference'];
     const { requireDisplayName } = getState()['features/base/config'];
+    const {defaultProfile} = getState()['features/contacts-sync'];
 
     pendingSubjectChange && dispatch(setSubject(pendingSubjectChange));
 
@@ -210,7 +211,12 @@ function _conferenceJoined({ dispatch, getState }, next, action) {
     if (requireDisplayName
         && !getLocalParticipant(getState)?.name
         && !conference.isHidden()) {
-        dispatch(openDisplayNamePrompt(undefined));
+
+        if(defaultProfile.name) {
+            conference.setDisplayName(defaultProfile.name);
+        } else {
+            dispatch(openDisplayNamePrompt(undefined));
+        }
     }
 
     return result;

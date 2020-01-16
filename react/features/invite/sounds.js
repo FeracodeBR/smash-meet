@@ -3,8 +3,6 @@ import {
     OUTGOING_CALL_REJECTED_SOUND_ID,
     OUTGOING_CALL_RINGING_SOUND_ID,
     OUTGOING_CALL_START_SOUND_ID,
-    CONFERENCE_SOUND_ID,
-    WAITING_SOUND_ID
 } from './constants';
 
 /**
@@ -43,8 +41,4 @@ export const sounds = new Map([
      * started.
      */
     [ OUTGOING_CALL_START_SOUND_ID, { file: 'outgoingStart.wav' } ],
-
-
-    [ CONFERENCE_SOUND_ID, { file: 'conference.mp3' } ],
-    [ WAITING_SOUND_ID, { file: 'waiting.mp3' } ],
 ]);

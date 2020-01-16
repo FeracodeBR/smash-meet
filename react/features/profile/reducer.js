@@ -16,7 +16,7 @@ import {
     SYNC_CALENDAR,
     STORE_CALL_DATA,
     TOGGLE_STATUS,
-    STORE_CONFIG, UPDATE_FRIENDS_STATUS
+    STORE_CONFIG, UPDATE_FRIENDS_STATUS, CALL_TIMEOUT
 } from './actionTypes';
 
 import { FETCH_SESSION } from '../welcome/actionTypes';
@@ -42,7 +42,8 @@ const DEFAULT_STATE = {
     },
     config: {},
     loading: {},
-    error: {}
+    error: {},
+    callTimeout: null,
 };
 
 /**
@@ -100,54 +101,6 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
     case SET_LOADING_CONTACTS_EVENTS:
         return set(state, 'isLoadingContacts', action.isLoadingContacts);
 
-    case CHANGE_PROFILE:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
-    case SYNC_CONTACTS:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
-    case SYNC_CALENDAR:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
-    case TOGGLE_STATUS:
-        return assign(state, {
-            loading: {
-                ...state.loading,
-                [action.type]: action.loading
-            },
-            error: {
-                ...state.error,
-                [action.type]: action.error
-            }
-        });
-
     case FETCH_SESSION:
         return assign(state, {
             'defaultProfile': action.defaultProfile,
@@ -163,6 +116,9 @@ ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
 
     case STORE_CONFIG:
         return set(state, 'config', action.config);
+
+    case CALL_TIMEOUT:
+        return set(state, 'callTimeout', action.callTimeout);
 
     case UPDATE_FRIENDS_STATUS:
         const { profileRef, status } = action;

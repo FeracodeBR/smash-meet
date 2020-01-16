@@ -1,8 +1,9 @@
 // @flow
 
-import type { Dispatch } from 'redux';
+import type {Dispatch} from 'redux';
 
-import { APP_WILL_MOUNT, APP_WILL_UNMOUNT, APP_WILL_NAVIGATE } from './actionTypes';
+import {APP_WILL_MOUNT, APP_WILL_UNMOUNT, APP_WILL_NAVIGATE, STATUS} from './actionTypes';
+
 declare var APP;
 
 /**
@@ -53,5 +54,14 @@ export function navigateToScreen(route: string) {
     return {
         type: APP_WILL_NAVIGATE,
         route
+    };
+}
+
+export function status({trigger, loading, error}) {
+    return {
+        type: STATUS,
+        trigger,
+        loading,
+        error
     };
 }
