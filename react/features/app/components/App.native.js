@@ -97,6 +97,14 @@ export class App extends AbstractApp {
      */
     componentDidMount() {
         super.componentDidMount();
+        AsyncStorage.getItem('registerToken')
+            .then(accessToken => {
+                if (!accessToken) {
+                    messaging().getToken()
+                        .then(registerToken => AsyncStorage.setItem('registerToken', registerToken))
+                }
+            });
+
         const channel = new notifications.Android.Channel('default_notification_channel_id', 'MTGX',
             notifications.Android.Importance.Max
         ).setDescription('SMASH MEET CHANNEL');
@@ -123,9 +131,10 @@ export class App extends AbstractApp {
                 const localNotification = new notifications.Notification().setNotificationId(notificationId)
                     .setTitle(title).setBody(body)
                     .android.setChannelId('default_notification_channel_id')
-                    .android.setColor('#000000')
+                    .android.setSmallIcon('@drawable/ic_stat_smash_meet')
                     .android.setPriority(notifications.Android.Priority.High);
-                notifications().displayNotification(localNotification).catch(err => console.log(err));
+
+                notifications().displayNotification(localNotification);
             });
 
             AsyncStorage.getItem('accessToken')
