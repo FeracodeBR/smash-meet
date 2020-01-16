@@ -93,6 +93,18 @@ function ProfileScreen({
     }, []);
 
     useEffect(() => {
+        if(_calendarAuthorization) {
+            dispatch(syncCalendar(_calendar));
+        }
+    }, [_calendarAuthorization, _calendar]);
+
+    useEffect(() => {
+        if(_contactsAuthorization) {
+            dispatch(syncContacts(_contacts));
+        }
+    }, [_contactsAuthorization, _contacts]);
+
+    useEffect(() => {
         if(_wsConnected) {
             WebSocket.addListener('/user/friend-status', handleFriendStatusEvents);
             WebSocket.addListener('/chat/conference', handleConferenceEvents);

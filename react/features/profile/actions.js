@@ -123,6 +123,9 @@ export function syncCalendar(calendar, authorization) {
                 body: JSON.stringify(calendar)
             });
 
+            console.log('importRes', importRes);
+            importRes.json().then(res => console.log('res', res))
+
             dispatch(status({
                 trigger: SYNC_CALENDAR,
                 loading: false,
@@ -152,6 +155,8 @@ export function syncContacts(contacts) {
             headers,
             body: JSON.stringify(contacts)
         });
+
+        importRes.json().then(res => console.log('res', res))
 
         if(importRes.ok) {
             const fetchSessionRes = await fetchSession(dispatch, accessToken);
