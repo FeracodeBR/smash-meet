@@ -128,14 +128,20 @@ export class App extends AbstractApp {
 
             this.removeNotificationListener = notifications().onNotification(notification => {
                 const { title, body, notificationId } = notification;
+                console.log('caiu no on notification')
                 const localNotification = new notifications.Notification().setNotificationId(notificationId)
                     .setTitle(title).setBody(body)
                     .android.setChannelId('default_notification_channel_id')
                     .android.setSmallIcon('@drawable/ic_stat_smash_meet')
                     .android.setPriority(notifications.Android.Priority.High);
 
-                notifications().displayNotification(localNotification);
+                notifications().displayNotification(localNotification).then(res => console.log('deu bom', res));
             });
+
+            this.messageListener = messaging().onMessage(message => {
+                console.log(message)
+                console.log('caiu no on message')
+            })
 
             AsyncStorage.getItem('accessToken')
                 .then(accessToken => {
@@ -149,6 +155,7 @@ export class App extends AbstractApp {
     componentWillUnmount() {
         super.componentWillUnmount();
         this.removeNotificationListener();
+        this.messageListener();
     }
 
     /**
