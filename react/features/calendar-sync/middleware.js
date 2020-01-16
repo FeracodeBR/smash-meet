@@ -37,7 +37,7 @@ MiddlewareRegistry.register(store => next => action => {
     case APP_STATE_CHANGED: {
         const result = next(action);
 
-        _maybeClearAccessStatus(store, action);
+        // _maybeClearAccessStatus(store, action);
 
         return result;
     }

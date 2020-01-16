@@ -244,7 +244,7 @@ export default {
         paddingVertical: 5,
     },
     optionBodyHeader: {
-        flex: 1,
+        flex: 3,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start'
