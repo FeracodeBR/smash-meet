@@ -101,15 +101,19 @@ export class App extends AbstractApp {
             .then(accessToken => {
                 if (!accessToken) {
                     messaging().getToken()
-                        .then(registerToken => AsyncStorage.setItem('registerToken', registerToken))
+                        .then(registerToken => AsyncStorage.setItem('registerToken', registerToken));
                 }
             });
 
-        const channel = new notifications.Android.Channel('default_notification_channel_id', 'MTGX',
+        const channel = new notifications.Android.Channel('default_notification_channel_id', 'SMASH MEET',
             notifications.Android.Importance.Max
         ).setDescription('SMASH MEET CHANNEL');
 
         notifications().android.createChannel(channel);
+
+        messaging().requestPermission()
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
 
         this._init.then(() => {
             // We set these early enough so then we avoid any unnecessary re-renders.
@@ -129,12 +133,14 @@ export class App extends AbstractApp {
             this.removeNotificationListener = notifications().onNotification(notification => {
                 const { title, body, notificationId } = notification;
                 const localNotification = new notifications.Notification().setNotificationId(notificationId)
-                    .setTitle(title).setBody(body)
+                    .setTitle(title)
+                    .setBody(body)
                     .android.setChannelId('default_notification_channel_id')
                     .android.setSmallIcon('@drawable/ic_stat_smash_meet')
                     .android.setPriority(notifications.Android.Priority.High);
 
-                notifications().displayNotification(localNotification).then(res => console.log('deu bom', res));
+                notifications().displayNotification(localNotification)
+                    .then(res => console.log('deu bom', res));
             });
 
             AsyncStorage.getItem('accessToken')
