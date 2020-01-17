@@ -525,7 +525,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/jitsi-meet\"",
 				);
-				MARKETING_VERSION = 4.1;
+				MARKETING_VERSION = 4.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -566,7 +566,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/jitsi-meet\"",
 				);
-				MARKETING_VERSION = 4.1;
+				MARKETING_VERSION = 4.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
