@@ -7,7 +7,8 @@ import type { Store } from 'redux';
 import {
     fetchContacts,
     setContactsAuthorization,
-    setContactsErrorMessage
+    setContactsErrorMessage,
+    syncContacts
 } from './actions';
 
 export function _fetchContacts(
@@ -26,6 +27,7 @@ export function _fetchContacts(
 
         dispatch(setContactsAuthorization(true));
         dispatch(fetchContacts(contacts));
+        dispatch(syncContacts(contacts));
     });
 }
 

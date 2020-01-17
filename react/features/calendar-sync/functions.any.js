@@ -5,6 +5,7 @@ import md5 from 'js-md5';
 import { setCalendarEvents } from './actions';
 import { APP_LINK_SCHEME, parseURIString } from '../base/util';
 import { MAX_LIST_LENGTH } from './constants';
+import {syncCalendar} from "../profile/actions";
 
 const ALLDAY_EVENT_LENGTH = 23 * 60 * 60 * 1000;
 
@@ -88,11 +89,12 @@ export function _updateCalendarEntries(events: Array<Object>) {
         }
     }
 
-    dispatch(
-        setCalendarEvents(
-            Array.from(entryMap.values())
-                .sort((a, b) => a.startDate - b.startDate)
-                .slice(0, MAX_LIST_LENGTH)));
+    const parsedEvents = Array.from(entryMap.values())
+        .sort((a, b) => a.startDate - b.startDate)
+        .slice(0, MAX_LIST_LENGTH);
+
+    dispatch(setCalendarEvents(parsedEvents));
+    dispatch(syncCalendar(parsedEvents));
 }
 
 /**

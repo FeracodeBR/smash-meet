@@ -103,7 +103,7 @@ export function toggleStatus(currentStatus) {
 
 }
 
-export function syncCalendar(calendar, authorization) {
+export function syncCalendar(calendar) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         if (calendar?.length) {
             dispatch(status({
