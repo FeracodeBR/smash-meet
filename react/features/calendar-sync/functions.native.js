@@ -11,6 +11,7 @@ import { setCalendarAuthorization } from './actions';
 import { FETCH_END_DAYS, FETCH_START_DAYS } from './constants';
 import { _updateCalendarEntries } from './functions';
 import logger from './logger';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export * from './functions.any';
 
@@ -136,11 +137,15 @@ function _ensureCalendarAccess(promptForPermission, dispatch) {
                 } else if (promptForPermission) {
                     RNCalendarEvents.authorizeEventStore()
                         .then(result => {
-                            dispatch(setCalendarAuthorization(result === 'authorized'));
-                            resolve(result === 'authorized');
+                            const isAuthorized = result === 'authorized';
+
+                            if(isAuthorized) AsyncStorage.setItem('calendarAutoSync', 'true');
+                            dispatch(setCalendarAuthorization(isAuthorized));
+                            resolve(isAuthorized);
                         })
                         .catch(reject);
                 } else {
+                    AsyncStorage.removeItem('calendarAutoSync');
                     dispatch(setCalendarAuthorization(false));
                     resolve(false);
                 }

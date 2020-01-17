@@ -322,5 +322,11 @@ export default {
         height: 10,
         width: 10,
         borderRadius: 5
-    }
+    },
+    switch: {
+        transform: [
+            {scaleX: .7},
+            {scaleY: .7}
+        ]
+    },
 };

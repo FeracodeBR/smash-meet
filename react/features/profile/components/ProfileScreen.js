@@ -12,7 +12,6 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { ColorPalette } from '../../base/styles/components/styles';
 import { navigateToScreen } from '../../base/app';
 import { getProfileColor } from '../functions';
-import { setCalendarIntegration } from '../../calendar-sync/actions.native';
 import { appNavigate } from '../../app';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
@@ -23,12 +22,11 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Platform,
-    AppState,
     TouchableWithoutFeedback,
-    RefreshControl
+    RefreshControl,
+    Switch
 } from 'react-native';
 import {
-    setContactsIntegration,
     changeProfile,
     logout,
     enterPersonalRoom,
@@ -63,6 +61,7 @@ import {FETCH_SESSION} from "../../welcome/actionTypes";
 import {stopSound} from "../../base/sounds";
 import {WAITING_SOUND_ID} from "../../recording";
 import WebSocket from '../../websocket/WebSocket';
+import {setCalendarIntegration} from "../../calendar-sync/actions.native";
 
 function ProfileScreen({
     dispatch,
@@ -81,8 +80,17 @@ function ProfileScreen({
     _wsConnected,
     _error,
 }) {
+    const personalRoomDisabled = !_personalRoom?.name;
+    const friendsLength = _friends.length + _groups.length;
+    const { userStatus } = _config;
+    const calendarAutoSyncEnabled = AsyncStorage.getItem('calendarAutoSync');
+    const contactsAutoSyncEnabled = AsyncStorage.getItem('contactsAutoSync');
+
     const [ isCollapsed, setCollapsed ] = useState(true);
     const [ refreshing, setRefreshing] = useState(false);
+    const [ userStatusSwitch, setUserStatusSwitch] = useState(userStatus === 'online');
+    const [ calendarAutoSync, setCalendarAutoSync] = useState(!!calendarAutoSyncEnabled);
+    const [ contactsAutoSync, setContactsAutoSync] = useState(!!contactsAutoSyncEnabled);
 
     useEffect(() => {
         if(_wsConnected) {
@@ -230,6 +238,19 @@ function ProfileScreen({
         );
     }
 
+    function handleUserStatusChange(value) {
+        setUserStatusSwitch(value);
+        dispatch(toggleStatus(userStatus));
+    }
+
+    function handleCalendarAutoSyncChange(value) {
+        if(_calendarAuthorization) {
+            setCalendarAutoSync(value);
+        } else {
+            //tentar chamar permissao de novo ou guiar
+        }
+    }
+
     if (!_defaultProfile) {
         return (
             <View style = { styles.loadingContainer }>
@@ -237,10 +258,6 @@ function ProfileScreen({
             </View>
         );
     }
-
-    const personalRoomDisabled = !_personalRoom?.name;
-    const friendsLength = _friends.length + _groups.length;
-    const { userStatus } = _config;
 
     return (
         <View style = { styles.container }>
@@ -338,9 +355,7 @@ function ProfileScreen({
                             </Text>
                         </View>
                         <View style = { styles.optionsBody }>
-                            <TouchableOpacity
-                                style = { styles.optionBodyItem }
-                                onPress = { () => dispatch(toggleStatus(userStatus)) }>
+                            <View style = { styles.optionBodyItem }>
                                 <View style = { styles.optionBodyHeader }>
                                     <View style = { styles.statusContainer }>
                                         <View style = { [ styles.statusCircle, { backgroundColor: userStatus === 'online' ? 'lime' : 'grey' } ] } />
@@ -352,15 +367,16 @@ function ProfileScreen({
                                     </View>
                                 </View>
                                 <View style = { styles.optionLoading }>
-                                    {
-                                        _loading[TOGGLE_STATUS] && <ActivityIndicator color = 'white' />
-                                    }
+                                    <Switch value={userStatusSwitch}
+                                            style={styles.switch}
+                                            onValueChange={handleUserStatusChange}
+                                            disabled={_loading[TOGGLE_STATUS]} />
                                 </View>
-                            </TouchableOpacity>
+                            </View>
                             {
                                 Platform.OS === 'ios' && (
                                     <>
-                                        <TouchableOpacity
+                                        <View
                                             style = { styles.optionBodyItem }
                                             onPress = { () => dispatch(syncCalendar(_calendar)) }
                                             disabled = { !_calendarAuthorization }>
@@ -372,20 +388,17 @@ function ProfileScreen({
                                                 }
                                                 <View style = { styles.optionBodyTitle }>
                                                     <Text style = { [ styles.optionBodyTitleText, { color: _calendarAuthorization ? '#BFBFBF' : '#656565' } ] }>
-                                                        Synchronize calendar
+                                                        Auto-sync calendar
                                                     </Text>
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
-                                                {
-                                                    _calendarAuthorization
-                                                        ? _loading[SYNC_CALENDAR] && <ActivityIndicator color = 'white' />
-                                                        : <Text style = { styles.permissionDeniedText }>
-                                                            permission denied
-                                                        </Text>
-                                                }
+                                                <Switch value={calendarAutoSync}
+                                                        style={styles.switch}
+                                                        onValueChange={handleCalendarAutoSyncChange}
+                                                        disabled={_loading[TOGGLE_STATUS]} />
                                             </View>
-                                        </TouchableOpacity>
+                                        </View>
                                         <TouchableOpacity
                                             style = { styles.optionBodyItem }
                                             onPress = { () => dispatch(syncContacts(_contacts)) }
@@ -398,18 +411,12 @@ function ProfileScreen({
                                                 }
                                                 <View style = { styles.optionBodyTitle }>
                                                     <Text style = { [ styles.optionBodyTitleText, { color: _contactsAuthorization ? '#BFBFBF' : '#656565' } ] }>
-                                                        Synchronize contacts
+                                                        Auto-sync contacts
                                                     </Text>
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
-                                                {
-                                                    _contactsAuthorization
-                                                        ? _loading[SYNC_CONTACTS] && <ActivityIndicator color = 'white' />
-                                                        : <Text style = { styles.permissionDeniedText }>
-                                                            permission denied
-                                                        </Text>
-                                                }
+                                                <Switch value={true} style={styles.switch}/>
                                             </View>
                                         </TouchableOpacity>
                                     </>
