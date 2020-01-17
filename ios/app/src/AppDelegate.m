@@ -18,6 +18,7 @@
 #import "AppDelegate.h"
 #import "FIRUtilities.h"
 #import "Types.h"
+#import "RNFirebaseNotifications.h"
 
 @import Crashlytics;
 @import Fabric;
@@ -29,6 +30,8 @@
 
 -             (BOOL)application:(UIApplication *)application
   didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    [RNFirebaseNotifications configure];
 
     // Initialize Crashlytics and Firebase if a valid GoogleService-Info.plist file was provided.
     if ([FIRUtilities appContainsRealServiceInfoPlist]) {
@@ -91,6 +94,10 @@
     return [[JitsiMeet sharedInstance] application:application
                               continueUserActivity:userActivity
                                 restorationHandler:restorationHandler];
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+  [[RNFirebaseNotifications instance] didReceiveLocalNotification:notification];
 }
 
 - (BOOL)application:(UIApplication *)app

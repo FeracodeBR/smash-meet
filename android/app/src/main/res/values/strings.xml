@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Smash Meet</string>
+    <string name="default_notification_channel_id" translatable="false">default_notification_channel_id</string>
 </resources>
