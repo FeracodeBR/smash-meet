@@ -12,6 +12,8 @@ import {
 import {navigateToScreen, status} from "../base/app";
 import {DEFAULT_SERVER_URL} from "../base/settings";
 import WebSocket from '../websocket/WebSocket';
+import {setContactsIntegration} from "../profile/actions";
+import {setCalendarIntegration} from "../calendar-sync/actions.native";
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -166,6 +168,9 @@ export function signIn(username: string, password: string) {
 
                         WebSocket.connect(defaultProfile.id, accessToken);
 
+                        dispatch(setContactsIntegration());
+                        dispatch(setCalendarIntegration());
+
                         dispatch(status({
                             trigger: SIGN_IN,
                             loading: false,
@@ -207,6 +212,9 @@ export function reloadSession(accessToken: string) {
             const {defaultProfile} = fetchSessionRes.data;
 
             WebSocket.connect(defaultProfile.id, accessToken);
+
+            dispatch(setContactsIntegration());
+            dispatch(setCalendarIntegration());
         } else {
             AsyncStorage.clear();
             dispatch(navigateToScreen('SignIn'));

@@ -63,15 +63,15 @@
 		</dict>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>See your scheduled meetings in the app.</string>
+	<string>We'll upload your calendar events to Smash web app</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Participate in meetings with video.</string>
+	<string>Participate in meetings with video</string>
 	<key>NSContactsUsageDescription</key>
-	<string>To sync contacts</string>
+	<string>We'll upload your contacts to Smash web app</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Participate in meetings with voice.</string>
+	<string>Participate in meetings with voice</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>org.feracode.smashmeet.ios.conference</string>
