@@ -82,27 +82,7 @@ function ProfileScreen({
     _error,
 }) {
     const [ isCollapsed, setCollapsed ] = useState(true);
-    const [ appState, setAppState ] = useState(AppState.currentState);
     const [ refreshing, setRefreshing] = useState(false);
-
-    useEffect(() => {
-        if (Platform.OS === 'ios') {
-            dispatch(setContactsIntegration());
-            dispatch(setCalendarIntegration());
-        }
-    }, []);
-
-    useEffect(() => {
-        if(_calendarAuthorization) {
-            dispatch(syncCalendar(_calendar));
-        }
-    }, [_calendarAuthorization, _calendar]);
-
-    useEffect(() => {
-        if(_contactsAuthorization) {
-            dispatch(syncContacts(_contacts));
-        }
-    }, [_contactsAuthorization, _contacts]);
 
     useEffect(() => {
         if(_wsConnected) {
@@ -199,18 +179,6 @@ function ProfileScreen({
         default:
             break;
         }
-    }
-
-    function _handleAppStateChange(nextAppState) {
-        if (
-            appState.match(/inactive|background/)
-            && nextAppState === 'active'
-        ) {
-            dispatch(setContactsIntegration());
-            dispatch(setCalendarIntegration());
-
-        }
-        setAppState(nextAppState);
     }
 
     const onRefresh = React.useCallback(() => {

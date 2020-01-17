@@ -103,7 +103,7 @@ export function toggleStatus(currentStatus) {
 
 }
 
-export function syncCalendar(calendar, authorization) {
+export function syncCalendar(calendar) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         if (calendar?.length) {
             dispatch(status({
@@ -122,9 +122,6 @@ export function syncCalendar(calendar, authorization) {
                 headers,
                 body: JSON.stringify(calendar)
             });
-
-            console.log('importRes', importRes);
-            importRes.json().then(res => console.log('res', res))
 
             dispatch(status({
                 trigger: SYNC_CALENDAR,
@@ -155,8 +152,6 @@ export function syncContacts(contacts) {
             headers,
             body: JSON.stringify(contacts)
         });
-
-        importRes.json().then(res => console.log('res', res))
 
         if(importRes.ok) {
             const fetchSessionRes = await fetchSession(dispatch, accessToken);

@@ -2,6 +2,7 @@
 
 import _ from 'lodash';
 import React, { Component, Fragment } from 'react';
+import {AppState} from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { compose, createStore } from 'redux';
@@ -18,6 +19,8 @@ import { PersistenceRegistry } from '../../storage';
 
 import { appWillMount, appWillUnmount } from '../actions';
 import logger from '../logger';
+import {setContactsIntegration} from "../../../profile/actions";
+import {setCalendarIntegration} from "../../../calendar-sync/actions.native";
 
 declare var APP: Object;
 export let store;
@@ -58,6 +61,7 @@ export default class BaseApp extends Component<*, State> {
         this.state = {
             route: {},
             store: undefined,
+            appState: AppState.currentState
         };
     }
 
@@ -87,7 +91,11 @@ export default class BaseApp extends Component<*, State> {
                     store
                 }, resolve);
             }))
-            .then(() => this.state.store.dispatch(appWillMount(this)))
+            .then(() => {
+                AppState.addEventListener('change', nextAppState => this._handleAppStateChange(nextAppState));
+
+                this.state.store.dispatch(appWillMount(this));
+            })
             .catch(err => {
                 /* BaseApp should always initialize! */
                 logger.error(err);
@@ -101,7 +109,21 @@ export default class BaseApp extends Component<*, State> {
      * @inheritdoc
      */
     componentWillUnmount() {
+        AppState.removeEventListener('change', this._handleAppStateChange);
+
         this.state.store.dispatch(appWillUnmount(this));
+    }
+
+    _handleAppStateChange(nextAppState) {
+        if (
+            this.state.appState.match(/inactive|background/)
+            && nextAppState === 'active'
+        ) {
+            this.state.store.dispatch(setContactsIntegration());
+            this.state.store.dispatch(setCalendarIntegration());
+
+        }
+        this.setState({appState: nextAppState});
     }
 
     /**
