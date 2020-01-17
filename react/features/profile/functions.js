@@ -23,6 +23,8 @@ export function _fetchContacts(
         if (err) {
             return dispatch(setContactsErrorMessage(err));
         }
+
+        dispatch(setContactsAuthorization(true));
         dispatch(fetchContacts(contacts));
     });
 }

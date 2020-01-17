@@ -5,15 +5,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
-    SIGN_IN_RESPONSE,
-    FETCH_SESSION,
-    STORE_SOCKET,
+    SIGN_IN,
+    FETCH_SESSION
 } from './actionTypes';
 
-import {navigateToScreen} from "../base/app";
-import {DEFAULT_SERVER_URL, DEFAULT_WEBSOCKET_URL} from "../base/settings";
-import io from "socket.io-client";
-import {addClient} from "../profile/actions";
+import {navigateToScreen, status} from "../base/app";
+import {DEFAULT_SERVER_URL} from "../base/settings";
+import WebSocket from '../websocket/WebSocket';
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -48,14 +46,99 @@ export function setWelcomePageListsDefaultPage(pageIndex: number) {
     };
 }
 
-export function signIn(username: string, password: string) {
-    return async (dispatch: Dispatch<any>, getState: Function) => {
+export async function fetchSession(dispatch, accessToken) {
+    dispatch(status({
+        trigger: FETCH_SESSION,
+        loading: true,
+        error: undefined
+    }));
+
+    const headers = new Headers({
+        'authorization': accessToken,
+        'Content-Type': 'application/json'
+    });
+
+    const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
+        fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
+            method: 'GET',
+            headers
+        }),
+        fetch(`${DEFAULT_SERVER_URL}/module/user/friend`, {
+            method: 'GET',
+            headers
+        }),
+        fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
+            method: 'GET',
+            headers
+        }),
+        fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
+            method: 'GET',
+            headers,
+        }),
+        fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
+            method: 'GET',
+            headers,
+        })
+    ]);
+
+    if (profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
+        const [profiles, friends, groups, personalRoom, config] = await Promise.all([
+            profilesRes.json(),
+            friendsRes.json(),
+            groupsRes.json(),
+            personalRoomRes.json(),
+            configRes.json(),
+        ]);
+
+        const profileIds = profiles.map(profile => profile.id);
+
+        const defaultProfile = profiles.filter(profile => profile.default)[0];
+        const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
+        const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
+
+        const sessionData = {
+            defaultProfile,
+            profiles: otherProfiles,
+            friends: friendsWithoutMe,
+            groups,
+            personalRoom,
+            config
+        };
 
         dispatch({
-            type: SIGN_IN_RESPONSE,
-            error: undefined,
-            loading: true
+            type: FETCH_SESSION,
+            ...sessionData
         });
+
+        dispatch(status({
+            trigger: FETCH_SESSION,
+            loading: false,
+            error: undefined
+        }));
+
+        return {
+            success: true,
+            data: sessionData
+        }
+    } else {
+        dispatch(status({
+            trigger: FETCH_SESSION,
+            loading: false,
+            error: 'unable to fetch session'
+        }));
+
+        return {
+            success: false
+        }
+    }
+}
+
+export function signIn(username: string, password: string) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        dispatch(status({
+            trigger: SIGN_IN,
+            loading: true,
+        }));
 
         try {
             const headers = new Headers({
@@ -76,187 +159,55 @@ export function signIn(username: string, password: string) {
                     AsyncStorage.setItem('accessToken', accessToken);
                     AsyncStorage.setItem('userId', userId);
 
-                    headers.set('authorization', accessToken);
+                    const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
-                    const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
-                        fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
-                            method: 'GET',
-                            headers
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/user/friend`, {
-                            method: 'GET',
-                            headers
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
-                            method: 'GET',
-                            headers
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
-                            method: 'GET',
-                            headers,
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
-                            method: 'GET',
-                            headers,
-                        })
-                    ]);
+                    if(fetchSessionRes.success) {
+                        const {defaultProfile} = fetchSessionRes.data;
 
-                    if(profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
-                        const [profiles, friends, groups, personalRoom, config] = await Promise.all([
-                            profilesRes.json(),
-                            friendsRes.json(),
-                            groupsRes.json(),
-                            personalRoomRes.json(),
-                            configRes.json(),
-                        ]);
+                        WebSocket.connect(defaultProfile.id, accessToken);
 
-                        const profileIds = profiles.map(profile => profile.id);
-
-                        const defaultProfile = profiles.filter(profile => profile.default)[0];
-                        const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
-                        const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
-
-                        dispatch({
-                            type: SIGN_IN_RESPONSE,
+                        dispatch(status({
+                            trigger: SIGN_IN,
                             loading: false,
-                            error: undefined
-                        });
-
-                        dispatch({
-                            type: FETCH_SESSION,
-                            defaultProfile,
-                            profiles: otherProfiles,
-                            friends: friendsWithoutMe,
-                            groups,
-                            personalRoom,
-                            config
-                        });
-
-                        const socket = io(DEFAULT_WEBSOCKET_URL, {
-                            query: {
-                                token: encodeURIComponent(accessToken),
-                                EIO: 3,
-                                transport: 'websocket'
-                            }
-                        });
-
-                        dispatch({
-                            type: STORE_SOCKET,
-                            socket
-                        });
-
-                        socket.on('connect', () => {
-                            dispatch(addClient(socket.id, defaultProfile.id));
-                        });
-
-                        socket.on('error', (e) => {
-                            console.log('socket error', e);
-                        });
+                        }));
 
                         dispatch(navigateToScreen('ProfileScreen'));
                     } else {
-                        dispatch({
-                            type: SIGN_IN_RESPONSE,
+                        dispatch(status({
+                            trigger: SIGN_IN,
                             loading: false,
                             error: true
-                        });
+                        }));
                     }
                 });
             } else {
-                dispatch({
-                    type: SIGN_IN_RESPONSE,
+                dispatch(status({
+                    trigger: SIGN_IN,
                     loading: false,
                     error: true
-                });
+                }));
             }
           } catch (err) {
             console.log('err', err);
 
-            dispatch({
-                type: SIGN_IN_RESPONSE,
-                loading: false,
-                error: true
-            });
+            dispatch(status({
+                trigger: SIGN_IN,
+                loading: true,
+                error: undefined
+            }));
         }
     };
 }
 
 export function reloadSession(accessToken: string) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        try {
-            const headers = new Headers({
-                'authorization': accessToken,
-                'Content-Type': 'application/json'
-            });
+        const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
-            const [profilesRes, friendsRes, groupsRes, personalRoomRes, configRes] = await Promise.all([
-                fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
-                    method: 'GET',
-                    headers
-                }),
-                fetch(`${DEFAULT_SERVER_URL}/module/user/friend`, {
-                    method: 'GET',
-                    headers
-                }),
-                fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
-                    method: 'GET',
-                    headers
-                }),
-                fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
-                    method: 'GET',
-                    headers,
-                }),
-                fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
-                    method: 'GET',
-                    headers,
-                })
-            ]);
+        if(fetchSessionRes.success) {
+            const {defaultProfile} = fetchSessionRes.data;
 
-            const [profiles, friends, groups, personalRoom, config] = await Promise.all([
-                profilesRes.json(),
-                friendsRes.json(),
-                groupsRes.json(),
-                personalRoomRes.json(),
-                configRes.json()
-            ]);
-
-            const profileIds = profiles.map(profile => profile.id);
-
-            const defaultProfile = profiles.filter(profile => profile.default)[0];
-            const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
-            const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
-
-            dispatch({
-                type: FETCH_SESSION,
-                defaultProfile,
-                profiles: otherProfiles,
-                friends: friendsWithoutMe,
-                groups,
-                personalRoom,
-                config
-            });
-
-            const socket = io(DEFAULT_WEBSOCKET_URL, {
-                query: {
-                    token: encodeURIComponent(accessToken),
-                    EIO: 3,
-                    transport: 'websocket'
-                }
-            });
-
-            dispatch({
-                type: STORE_SOCKET,
-                socket
-            });
-
-            socket.on('connect', () => {
-                dispatch(addClient(socket.id, defaultProfile.id));
-            });
-
-            socket.on('error', (e) => {
-                console.log('socket error', e);
-            });
-        } catch (err) {
+            WebSocket.connect(defaultProfile.id, accessToken);
+        } else {
             AsyncStorage.clear();
             dispatch(navigateToScreen('SignIn'));
         }

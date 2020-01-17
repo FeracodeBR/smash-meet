@@ -32,6 +32,7 @@ import {
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
 import LinearGradient from 'react-native-linear-gradient';
 import { Icon, IconSmashMeetLogo } from '../../base/icons';
+import {SIGN_IN} from "../actionTypes";
 
 /**
  * The native container rendering the welcome page.
@@ -308,7 +309,7 @@ class SignInPage extends AbstractWelcomePage {
                                     onPress = { this._onSignIn }
                                     style = { styles.gradientButton }>
                                     {
-                                        _loading
+                                        _loading[SIGN_IN]
                                             ? <ActivityIndicator color = { ColorPalette.white } />
                                             : <Text style = { styles.gradientButtonText }>
                                                 SIGN IN
@@ -317,7 +318,7 @@ class SignInPage extends AbstractWelcomePage {
                                 </TouchableOpacity>
                             </LinearGradient>
                             {
-                                _error && (
+                                _error[SIGN_IN] && (
                                     <View style = { styles.errorContainer }>
                                         <Text style = {{ color: ColorPalette.red }}>
                                             Invalid username or password

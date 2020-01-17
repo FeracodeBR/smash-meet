@@ -15,10 +15,11 @@ import {
 } from './actionTypes';
 import AsyncStorage from '@react-native-community/async-storage';
 import { navigateToScreen } from '../base/app';
-import { FETCH_SESSION } from '../welcome/actionTypes';
 import { appNavigate } from '../app';
-import { DEFAULT_SERVER_URL } from '../base/settings';
-import { exportPublic, generateKeys } from '../welcome';
+import {DEFAULT_SERVER_URL} from '../base/settings';
+import { generateKeys } from '../welcome';
+import {status} from "../base/app";
+import {fetchSession} from "../welcome/actions";
 
 export function fetchContacts(contacts) {
     return {
@@ -57,13 +58,13 @@ export function logout() {
     };
 }
 
-export function toggleStatus(status) {
+export function toggleStatus(currentStatus) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        dispatch({
-            type: TOGGLE_STATUS,
-            error: undefined,
-            loading: true
-        });
+        dispatch(status({
+            trigger: TOGGLE_STATUS,
+            loading: true,
+            error: undefined
+        }));
 
         const headers = new Headers({
             'authorization': await AsyncStorage.getItem('accessToken'),
@@ -74,7 +75,7 @@ export function toggleStatus(status) {
             method: 'PUT',
             headers,
             body: JSON.stringify({
-                userStatus: status === 'online' ? 'invisible' : 'online'
+                userStatus: currentStatus === 'online' ? 'invisible' : 'online'
             })
         });
 
@@ -85,18 +86,18 @@ export function toggleStatus(status) {
                     config
                 });
 
-                dispatch({
-                    type: TOGGLE_STATUS,
-                    error: undefined,
-                    loading: false
-                });
+                dispatch(status({
+                    trigger: TOGGLE_STATUS,
+                    loading: false,
+                    error: undefined
+                }));
             });
         } else {
-            dispatch({
-                type: TOGGLE_STATUS,
-                error: true,
-                loading: false
-            });
+            dispatch(status({
+                trigger: TOGGLE_STATUS,
+                loading: false,
+                error: true
+            }));
         }
     };
 
@@ -105,11 +106,11 @@ export function toggleStatus(status) {
 export function syncCalendar(calendar, authorization) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
         if (calendar?.length) {
-            dispatch({
-                type: SYNC_CALENDAR,
-                error: undefined,
-                loading: true
-            });
+            dispatch(status({
+                trigger: SYNC_CALENDAR,
+                loading: true,
+                error: undefined
+            }));
 
             const headers = new Headers({
                 'authorization': await AsyncStorage.getItem('accessToken'),
@@ -122,25 +123,27 @@ export function syncCalendar(calendar, authorization) {
                 body: JSON.stringify(calendar)
             });
 
-            dispatch({
-                type: SYNC_CALENDAR,
-                error: undefined,
-                loading: false
-            });
+            dispatch(status({
+                trigger: SYNC_CALENDAR,
+                loading: false,
+                error: !importRes.ok
+            }));
         }
     };
 }
 
 export function syncContacts(contacts) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        dispatch({
-            type: SYNC_CONTACTS,
-            error: undefined,
-            loading: true
-        });
+        dispatch(status({
+            trigger: SYNC_CONTACTS,
+            loading: true,
+            error: undefined
+        }));
+
+        const accessToken = await AsyncStorage.getItem('accessToken');
 
         const headers = new Headers({
-            'authorization': await AsyncStorage.getItem('accessToken'),
+            'authorization': accessToken,
             'Content-Type': 'application/json'
         });
 
@@ -150,68 +153,21 @@ export function syncContacts(contacts) {
             body: JSON.stringify(contacts)
         });
 
-        if (importRes.ok) {
-            const [ profilesRes, friendsRes, groupsRes, configRes ] = await Promise.all([
-                fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
-                    method: 'GET',
-                    headers
-                }),
-                fetch(`${DEFAULT_SERVER_URL}/module/user/friend`, {
-                    method: 'GET',
-                    headers
-                }),
-                fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
-                    method: 'GET',
-                    headers
-                }),
-                fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
-                    method: 'GET',
-                    headers
-                })
-            ]);
+        if(importRes.ok) {
+            const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
-            if (profilesRes.ok && friendsRes.ok && groupsRes.ok && configRes.ok) {
-                const [ profiles, friends, groups, config ] = await Promise.all([
-                    profilesRes.json(),
-                    friendsRes.json(),
-                    groupsRes.json(),
-                    configRes.json()
-                ]);
-
-                const profileIds = profiles.map(profile => profile.id);
-
-                const defaultProfile = profiles.filter(profile => profile.default)[0];
-                const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
-                const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
-
-                dispatch({
-                    type: SYNC_CONTACTS,
-                    loading: false,
-                    error: undefined
-                });
-
-                dispatch({
-                    type: FETCH_SESSION,
-                    defaultProfile,
-                    profiles: otherProfiles,
-                    friends: friendsWithoutMe,
-                    groups,
-                    config
-                });
-            } else {
-                dispatch({
-                    type: SYNC_CONTACTS,
-                    loading: false,
-                    error: true
-                });
-            }
+            dispatch(status({
+                trigger: SYNC_CONTACTS,
+                loading: false,
+                error: !fetchSessionRes.success
+            }));
+        } else {
+            dispatch(status({
+                trigger: SYNC_CONTACTS,
+                loading: false,
+                error: !importRes.ok
+            }));
         }
-
-        dispatch({
-            type: SYNC_CONTACTS,
-            error: !importRes.ok,
-            loading: false
-        });
     };
 }
 
@@ -240,11 +196,11 @@ export function enterPersonalRoom(room) {
 
 export function callFriend(friend) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        dispatch({
-            type: CALL_FRIEND,
+        dispatch(status({
+            trigger: CALL_FRIEND,
             loading: true,
             error: undefined
-        });
+        }));
 
         const headers = new Headers({
             'authorization': await AsyncStorage.getItem('accessToken'),
@@ -275,11 +231,11 @@ export function callFriend(friend) {
                 dispatch(navigateToScreen('CallScreen'));
             });
         } else {
-            dispatch({
-                type: CALL_FRIEND,
+            dispatch(status({
+                trigger: CALL_FRIEND,
                 loading: false,
                 error: true
-            });
+            }));
         }
     };
 }
@@ -287,11 +243,11 @@ export function callFriend(friend) {
 export function changeProfile(defaultProfile) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
 
-        dispatch({
-            type: CHANGE_PROFILE,
-            error: undefined,
-            loading: true
-        });
+        dispatch(status({
+            trigger: CHANGE_PROFILE,
+            loading: true,
+            error: undefined
+        }));
 
         try {
             const headers = new Headers({
@@ -313,80 +269,27 @@ export function changeProfile(defaultProfile) {
 
                     headers.set('authorization', accessToken);
 
-                    const [ profilesRes, friendsRes, groupsRes, personalRoomRes, configRes ] = await Promise.all([
-                        fetch(`${DEFAULT_SERVER_URL}/module/user/profile`, {
-                            method: 'GET',
-                            headers
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/user/friend`, {
-                            method: 'GET',
-                            headers
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/contact/group/group-list`, {
-                            method: 'GET',
-                            headers
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/chat/conference/room`, {
-                            method: 'GET',
-                            headers
-                        }),
-                        fetch(`${DEFAULT_SERVER_URL}/module/user/config`, {
-                            method: 'GET',
-                            headers
-                        })
-                    ]);
+                    const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
-                    if (profilesRes.ok && friendsRes.ok && groupsRes.ok && personalRoomRes.ok && configRes.ok) {
-                        const [ profiles, friends, groups, personalRoom, config ] = await Promise.all([
-                            profilesRes.json(),
-                            friendsRes.json(),
-                            groupsRes.json(),
-                            personalRoomRes.json(),
-                            configRes.json()
-                        ]);
-
-                        const profileIds = profiles.map(profile => profile.id);
-
-                        const defaultProfile = profiles.filter(profile => profile.default)[0];
-                        const otherProfiles = profiles.filter(profile => !profile.default && !profile.master);
-                        const friendsWithoutMe = friends.friendsList.filter(friend => !profileIds.includes(friend.profileRef));
-
-                        dispatch({
-                            type: CHANGE_PROFILE,
-                            loading: false,
-                            error: undefined
-                        });
-
-                        dispatch({
-                            type: FETCH_SESSION,
-                            defaultProfile,
-                            profiles: otherProfiles,
-                            friends: friendsWithoutMe,
-                            groups,
-                            personalRoom,
-                            config
-                        });
-                    } else {
-                        dispatch({
-                            type: CHANGE_PROFILE,
-                            loading: false,
-                            error: true
-                        });
-                    }
+                    dispatch(status({
+                        trigger: CHANGE_PROFILE,
+                        loading: false,
+                        error: !fetchSessionRes.success
+                    }));
                 });
             } else {
-                dispatch({
-                    type: CHANGE_PROFILE,
+                dispatch(status({
+                    trigger: CHANGE_PROFILE,
                     loading: false,
                     error: true
-                });
+                }));
             }
         } catch (err) {
-            dispatch({
-                type: CHANGE_PROFILE,
+            dispatch(status({
+                trigger: CHANGE_PROFILE,
                 loading: false,
                 error: true
-            });
+            }));
         }
     };
 }
@@ -474,5 +377,11 @@ export function accept({ roomId, dateTime, sender, receiver, friend }, socketId)
             res.json().then(res => console.log('res', res));
             console.log('accept error');
         }
+    };
+}
+
+export function refresh(accessToken: string) {
+    return async (dispatch: Dispatch<any>, getState: Function) => {
+        const fetchSessionRes = await fetchSession(dispatch, accessToken);
     };
 }

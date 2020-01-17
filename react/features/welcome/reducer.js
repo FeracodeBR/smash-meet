@@ -1,13 +1,11 @@
 // @flow
 
-import { ReducerRegistry, set, assign } from '../base/redux';
+import { ReducerRegistry, set } from '../base/redux';
 import { PersistenceRegistry } from '../base/storage';
 
 import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
-    SIGN_IN_RESPONSE,
-    STORE_SOCKET
 } from './actionTypes';
 
 /**
@@ -33,15 +31,6 @@ ReducerRegistry.register(STORE_NAME, (state = {}, action) => {
 
     case SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE:
         return set(state, 'defaultPage', action.pageIndex);
-
-    case SIGN_IN_RESPONSE:
-        return assign(state, {
-            error: action.error,
-            loading: action.loading,
-        });
-
-    case STORE_SOCKET:
-        return set(state, 'socket', action.socket);
 
     }
 
