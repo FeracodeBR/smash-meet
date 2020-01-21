@@ -21,6 +21,7 @@ import { appWillMount, appWillUnmount } from '../actions';
 import logger from '../logger';
 import {setContactsIntegration} from "../../../profile/actions";
 import {setCalendarIntegration} from "../../../calendar-sync/actions.native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 declare var APP: Object;
 export let store;
@@ -121,7 +122,6 @@ export default class BaseApp extends Component<*, State> {
         ) {
             this.state.store.dispatch(setContactsIntegration());
             this.state.store.dispatch(setCalendarIntegration());
-
         }
         this.setState({appState: nextAppState});
     }

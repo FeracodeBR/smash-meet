@@ -10,6 +10,7 @@ import {
     setContactsErrorMessage,
     syncContacts
 } from './actions';
+import AsyncStorage from "@react-native-community/async-storage";
 
 export function _fetchContacts(
         store: Store<*, *>) {
@@ -27,7 +28,11 @@ export function _fetchContacts(
 
         dispatch(setContactsAuthorization(true));
         dispatch(fetchContacts(contacts));
-        dispatch(syncContacts(contacts));
+
+        AsyncStorage.getItem('contactsAutoSync')
+          .then(contactsAutoSyncEnabled => {
+              contactsAutoSyncEnabled && dispatch(syncContacts(contacts));
+          })
     });
 }
 
@@ -36,6 +41,7 @@ function _ensureContactsAccess(dispatch) {
         if (Platform.OS === 'ios') {
             Contacts.checkPermission((err, permission) => {
                 if (err) {
+                    AsyncStorage.removeItem('contactsAutoSync');
                     reject(err);
 
                     return dispatch(setContactsErrorMessage(err));
@@ -49,10 +55,11 @@ function _ensureContactsAccess(dispatch) {
             PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
                 'title': 'Contacts',
                 'message': 'This app would like to view your contacts.'
-            }
-            ).then(permission => {
+            }).then(permission => {
                 if (permission === 'granted') {
                     dispatch(setContactsAuthorization(true));
+                } else {
+                    AsyncStorage.removeItem('contactsAutoSync');
                 }
             });
         }

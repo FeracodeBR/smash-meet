@@ -32,6 +32,7 @@ const DEFAULT_STATE = {
     integrationReady: false,
     integrationType: undefined,
     msAuthState: undefined,
+    profiles: [],
     friends: [],
     groups: [],
     personalRoom: {},

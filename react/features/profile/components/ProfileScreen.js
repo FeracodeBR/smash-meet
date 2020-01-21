@@ -35,7 +35,7 @@ import {
     callFriend,
     addClient,
     toggleStatus,
-    refresh
+    refresh,
 } from '../actions';
 import {
     IconMenuUp,
@@ -52,8 +52,6 @@ import {
 import {
     CHANGE_PROFILE,
     STORE_CALL_DATA,
-    SYNC_CALENDAR,
-    SYNC_CONTACTS,
     TOGGLE_STATUS,
     UPDATE_FRIENDS_STATUS
 } from '../actionTypes';
@@ -61,7 +59,6 @@ import {FETCH_SESSION} from "../../welcome/actionTypes";
 import {stopSound} from "../../base/sounds";
 import {WAITING_SOUND_ID} from "../../recording";
 import WebSocket from '../../websocket/WebSocket';
-import {setCalendarIntegration} from "../../calendar-sync/actions.native";
 
 function ProfileScreen({
     dispatch,
@@ -70,12 +67,12 @@ function ProfileScreen({
     _calendar,
     _calendarAuthorization,
     _defaultProfile,
-    _profiles,
-    _friends,
-    _groups,
+    _profiles = [],
+    _friends = [],
+    _groups = [],
     _personalRoom,
     _call,
-    _config,
+    _config = {},
     _loading = {},
     _wsConnected,
     _error,
@@ -83,14 +80,18 @@ function ProfileScreen({
     const personalRoomDisabled = !_personalRoom?.name;
     const friendsLength = _friends.length + _groups.length;
     const { userStatus } = _config;
-    const calendarAutoSyncEnabled = AsyncStorage.getItem('calendarAutoSync');
-    const contactsAutoSyncEnabled = AsyncStorage.getItem('contactsAutoSync');
 
     const [ isCollapsed, setCollapsed ] = useState(true);
     const [ refreshing, setRefreshing] = useState(false);
     const [ userStatusSwitch, setUserStatusSwitch] = useState(userStatus === 'online');
-    const [ calendarAutoSync, setCalendarAutoSync] = useState(!!calendarAutoSyncEnabled);
-    const [ contactsAutoSync, setContactsAutoSync] = useState(!!contactsAutoSyncEnabled);
+    const [ calendarAutoSync, setCalendarAutoSync] = useState(false);
+    const [ contactsAutoSync, setContactsAutoSync] = useState(false);
+
+    AsyncStorage.multiGet([ 'calendarAutoSync', 'contactsAutoSync' ])
+        .then(([[, calendarAutoSyncEnabled], [, contactsAutoSyncEnabled]]) => {
+            calendarAutoSyncEnabled && setCalendarAutoSync(true);
+            contactsAutoSyncEnabled && setContactsAutoSync(true);
+        });
 
     useEffect(() => {
         if(_wsConnected) {
@@ -246,6 +247,24 @@ function ProfileScreen({
     function handleCalendarAutoSyncChange(value) {
         if(_calendarAuthorization) {
             setCalendarAutoSync(value);
+            if(value) {
+                AsyncStorage.setItem('calendarAutoSync', 'true');
+            } else {
+                AsyncStorage.removeItem('calendarAutoSync');
+            }
+        } else {
+            //tentar chamar permissao de novo ou guiar
+        }
+    }
+
+    function handleContactsAutoSyncChange(value) {
+        if(_contactsAuthorization) {
+            setContactsAutoSync(value);
+            if(value) {
+                AsyncStorage.setItem('contactsAutoSync', 'true');
+            } else {
+                AsyncStorage.removeItem('contactsAutoSync');
+            }
         } else {
             //tentar chamar permissao de novo ou guiar
         }
@@ -376,11 +395,9 @@ function ProfileScreen({
                             {
                                 Platform.OS === 'ios' && (
                                     <>
-                                        <View
-                                            style = { styles.optionBodyItem }
-                                            onPress = { () => dispatch(syncCalendar(_calendar)) }
-                                            disabled = { !_calendarAuthorization }>
-                                            <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization ? 3 : 1 } ] }>
+                                        <View style = { styles.optionBodyItem }
+                                              disabled = { !_calendarAuthorization }>
+                                            <View style = {styles.optionBodyHeader}>
                                                 {
                                                     _calendarAuthorization
                                                         ? <IconSyncCalendar />
@@ -396,14 +413,12 @@ function ProfileScreen({
                                                 <Switch value={calendarAutoSync}
                                                         style={styles.switch}
                                                         onValueChange={handleCalendarAutoSyncChange}
-                                                        disabled={_loading[TOGGLE_STATUS]} />
+                                                        disabled={!_calendarAuthorization} />
                                             </View>
                                         </View>
-                                        <TouchableOpacity
-                                            style = { styles.optionBodyItem }
-                                            onPress = { () => dispatch(syncContacts(_contacts)) }
-                                            disabled = { !_contactsAuthorization }>
-                                            <View style = { [ styles.optionBodyHeader, { flex: _contactsAuthorization ? 3 : 1 } ] }>
+                                        <View style = { styles.optionBodyItem }
+                                              disabled = { !_contactsAuthorization }>
+                                            <View style = {styles.optionBodyHeader}>
                                                 {
                                                     _contactsAuthorization
                                                         ? <IconSyncContacts />
@@ -416,9 +431,12 @@ function ProfileScreen({
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
-                                                <Switch value={true} style={styles.switch}/>
+                                                <Switch value={contactsAutoSync}
+                                                        style={styles.switch}
+                                                        onValueChange={handleContactsAutoSyncChange}
+                                                        disabled={!_contactsAuthorization} />
                                             </View>
-                                        </TouchableOpacity>
+                                        </View>
                                     </>
                                 )
                             }
