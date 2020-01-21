@@ -53,7 +53,7 @@ export function setContactsIntegration() {
 
 export function logout() {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        AsyncStorage.clear();
+        AsyncStorage.multiRemove(['accessToken', 'userId']);
         dispatch(navigateToScreen('SignIn'));
     };
 }

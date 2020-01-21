@@ -216,7 +216,7 @@ export function reloadSession(accessToken: string) {
             dispatch(setContactsIntegration());
             dispatch(setCalendarIntegration());
         } else {
-            AsyncStorage.clear();
+            AsyncStorage.multiRemove(['accessToken', 'userId']);
             dispatch(navigateToScreen('SignIn'));
         }
     };

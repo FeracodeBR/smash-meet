@@ -41,9 +41,7 @@ function _ensureContactsAccess(dispatch) {
         if (Platform.OS === 'ios') {
             Contacts.checkPermission((err, permission) => {
                 if (err) {
-                    AsyncStorage.removeItem('contactsAutoSync');
                     reject(err);
-
                     return dispatch(setContactsErrorMessage(err));
                 }
                 if (permission === 'authorized') {
@@ -58,8 +56,6 @@ function _ensureContactsAccess(dispatch) {
             }).then(permission => {
                 if (permission === 'granted') {
                     dispatch(setContactsAuthorization(true));
-                } else {
-                    AsyncStorage.removeItem('contactsAutoSync');
                 }
             });
         }

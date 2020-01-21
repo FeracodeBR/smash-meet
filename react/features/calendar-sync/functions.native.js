@@ -139,14 +139,11 @@ function _ensureCalendarAccess(promptForPermission, dispatch) {
                         .then(result => {
                             const isAuthorized = result === 'authorized';
 
-                            !isAuthorized && AsyncStorage.removeItem('calendarAutoSync');
-
                             dispatch(setCalendarAuthorization(isAuthorized));
                             resolve(isAuthorized);
                         })
                         .catch(reject);
                 } else {
-                    AsyncStorage.removeItem('calendarAutoSync');
                     dispatch(setCalendarAuthorization(false));
                     resolve(false);
                 }

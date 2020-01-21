@@ -87,11 +87,13 @@ function ProfileScreen({
     const [ calendarAutoSync, setCalendarAutoSync] = useState(false);
     const [ contactsAutoSync, setContactsAutoSync] = useState(false);
 
-    AsyncStorage.multiGet([ 'calendarAutoSync', 'contactsAutoSync' ])
-        .then(([[, calendarAutoSyncEnabled], [, contactsAutoSyncEnabled]]) => {
-            calendarAutoSyncEnabled && setCalendarAutoSync(true);
-            contactsAutoSyncEnabled && setContactsAutoSync(true);
-        });
+    useEffect(() => {
+        AsyncStorage.multiGet([ 'calendarAutoSync', 'contactsAutoSync' ])
+            .then(([[, calendarAutoSyncEnabled], [, contactsAutoSyncEnabled]]) => {
+                calendarAutoSyncEnabled && setCalendarAutoSync(true);
+                contactsAutoSyncEnabled && setContactsAutoSync(true);
+            });
+    }, []);
 
     useEffect(() => {
         if(_wsConnected) {
@@ -397,7 +399,7 @@ function ProfileScreen({
                                     <>
                                         <View style = { styles.optionBodyItem }
                                               disabled = { !_calendarAuthorization }>
-                                            <View style = {styles.optionBodyHeader}>
+                                            <View style = {[styles.optionBodyHeader, {flex: _calendarAuthorization ? 3 : 1}]}>
                                                 {
                                                     _calendarAuthorization
                                                         ? <IconSyncCalendar />
@@ -410,15 +412,23 @@ function ProfileScreen({
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
-                                                <Switch value={calendarAutoSync}
-                                                        style={styles.switch}
-                                                        onValueChange={handleCalendarAutoSyncChange}
-                                                        disabled={!_calendarAuthorization} />
+                                                {
+                                                    _calendarAuthorization
+                                                        ? <Switch
+                                                            value={calendarAutoSync}
+                                                            style={styles.switch}
+                                                            onValueChange={handleCalendarAutoSyncChange}
+                                                            disabled={!_calendarAuthorization}/>
+                                                        : <Text
+                                                            style={styles.permissionDeniedText}>
+                                                            permission denied
+                                                        </Text>
+                                                }
                                             </View>
                                         </View>
                                         <View style = { styles.optionBodyItem }
                                               disabled = { !_contactsAuthorization }>
-                                            <View style = {styles.optionBodyHeader}>
+                                            <View style = {[styles.optionBodyHeader, {flex: _calendarAuthorization ? 3 : 1}]}>
                                                 {
                                                     _contactsAuthorization
                                                         ? <IconSyncContacts />
@@ -431,10 +441,18 @@ function ProfileScreen({
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
-                                                <Switch value={contactsAutoSync}
-                                                        style={styles.switch}
-                                                        onValueChange={handleContactsAutoSyncChange}
-                                                        disabled={!_contactsAuthorization} />
+                                                {
+                                                    _contactsAuthorization
+                                                        ? <Switch
+                                                            value={contactsAutoSync}
+                                                            style={styles.switch}
+                                                            onValueChange={handleContactsAutoSyncChange}
+                                                            disabled={!_contactsAuthorization}/>
+                                                        : <Text
+                                                            style={styles.permissionDeniedText}>
+                                                            permission denied
+                                                        </Text>
+                                                }
                                             </View>
                                         </View>
                                     </>
