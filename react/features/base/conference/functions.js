@@ -158,13 +158,13 @@ export function getConferenceName(stateful: Function | Object): string {
     const { callee } = state['features/base/jwt'];
     const { callDisplayName } = state['features/base/config'];
     const { pendingSubjectChange, room, subject } = state['features/base/conference'];
-    const { call: {friend} } = state['features/contacts-sync'];
+    const { call } = state['features/contacts-sync'];
 
     return pendingSubjectChange
         || subject
         || callDisplayName
         || (callee && callee.name)
-        || friend?.fullname
+        || call?.friend?.fullname
         || _.startCase(decodeURIComponent(room));
 }
 
