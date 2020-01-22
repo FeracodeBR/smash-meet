@@ -107,6 +107,7 @@ function ProfileScreen({
     useEffect(() => {
         if (_defaultProfile && WebSocket.io) {
             dispatch(addClient(WebSocket.io.id, _defaultProfile.id));
+            setUserStatusSwitch(userStatus === 'online');
         }
     }, [ _defaultProfile ]);
 
