@@ -6,6 +6,7 @@ import { setCalendarEvents } from './actions';
 import { APP_LINK_SCHEME, parseURIString } from '../base/util';
 import { MAX_LIST_LENGTH } from './constants';
 import {syncCalendar} from "../profile/actions";
+import AsyncStorage from '@react-native-community/async-storage';
 
 const ALLDAY_EVENT_LENGTH = 23 * 60 * 60 * 1000;
 
@@ -94,7 +95,11 @@ export function _updateCalendarEntries(events: Array<Object>) {
         .slice(0, MAX_LIST_LENGTH);
 
     dispatch(setCalendarEvents(parsedEvents));
-    dispatch(syncCalendar(parsedEvents));
+
+    AsyncStorage.getItem('calendarAutoSync')
+        .then(calendarAutoSyncEnabled => {
+            calendarAutoSyncEnabled && dispatch(syncCalendar(parsedEvents));
+        })
 }
 
 /**

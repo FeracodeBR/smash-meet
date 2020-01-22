@@ -121,7 +121,6 @@ export default class BaseApp extends Component<*, State> {
         ) {
             this.state.store.dispatch(setContactsIntegration());
             this.state.store.dispatch(setCalendarIntegration());
-
         }
         this.setState({appState: nextAppState});
     }

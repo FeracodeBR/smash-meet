@@ -136,8 +136,10 @@ function _ensureCalendarAccess(promptForPermission, dispatch) {
                 } else if (promptForPermission) {
                     RNCalendarEvents.authorizeEventStore()
                         .then(result => {
-                            dispatch(setCalendarAuthorization(result === 'authorized'));
-                            resolve(result === 'authorized');
+                            const isAuthorized = result === 'authorized';
+
+                            dispatch(setCalendarAuthorization(isAuthorized));
+                            resolve(isAuthorized);
                         })
                         .catch(reject);
                 } else {

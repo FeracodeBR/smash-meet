@@ -12,7 +12,6 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { ColorPalette } from '../../base/styles/components/styles';
 import { navigateToScreen } from '../../base/app';
 import { getProfileColor } from '../functions';
-import { setCalendarIntegration } from '../../calendar-sync/actions.native';
 import { appNavigate } from '../../app';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
@@ -23,21 +22,18 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Platform,
-    AppState,
     TouchableWithoutFeedback,
-    RefreshControl
+    RefreshControl,
+    Switch
 } from 'react-native';
 import {
-    setContactsIntegration,
     changeProfile,
     logout,
     enterPersonalRoom,
-    syncContacts,
-    syncCalendar,
     callFriend,
     addClient,
     toggleStatus,
-    refresh
+    refresh,
 } from '../actions';
 import {
     IconMenuUp,
@@ -54,12 +50,14 @@ import {
 import {
     CHANGE_PROFILE,
     STORE_CALL_DATA,
-    SYNC_CALENDAR,
-    SYNC_CONTACTS,
     TOGGLE_STATUS,
     UPDATE_FRIENDS_STATUS
 } from '../actionTypes';
-import {FETCH_SESSION} from "../../welcome/actionTypes";
+import {
+    FETCH_SESSION,
+    RELOAD_SESSION,
+    SIGN_IN
+} from "../../welcome/actionTypes";
 import {stopSound} from "../../base/sounds";
 import {WAITING_SOUND_ID} from "../../recording";
 import WebSocket from '../../websocket/WebSocket';
@@ -71,18 +69,33 @@ function ProfileScreen({
     _calendar,
     _calendarAuthorization,
     _defaultProfile,
-    _profiles,
-    _friends,
-    _groups,
+    _profiles = [],
+    _friends = [],
+    _groups = [],
     _personalRoom,
     _call,
-    _config,
+    _config = {},
     _loading = {},
     _wsConnected,
     _error,
 }) {
+    const personalRoomDisabled = !_personalRoom?.name;
+    const friendsLength = _friends.length + _groups.length;
+    const { userStatus } = _config;
+
     const [ isCollapsed, setCollapsed ] = useState(true);
     const [ refreshing, setRefreshing] = useState(false);
+    const [ userStatusSwitch, setUserStatusSwitch] = useState(false);
+    const [ calendarAutoSync, setCalendarAutoSync] = useState(false);
+    const [ contactsAutoSync, setContactsAutoSync] = useState(false);
+
+    useEffect(() => {
+        AsyncStorage.multiGet([ 'calendarAutoSync', 'contactsAutoSync' ])
+            .then(([[, calendarAutoSyncEnabled], [, contactsAutoSyncEnabled]]) => {
+                calendarAutoSyncEnabled && setCalendarAutoSync(true);
+                contactsAutoSyncEnabled && setContactsAutoSync(true);
+            });
+    }, []);
 
     useEffect(() => {
         if(_wsConnected) {
@@ -96,6 +109,12 @@ function ProfileScreen({
             dispatch(addClient(WebSocket.io.id, _defaultProfile.id));
         }
     }, [ _defaultProfile ]);
+
+    useEffect(() => {
+        if(!_loading[RELOAD_SESSION]) {
+            setUserStatusSwitch(userStatus === 'online');
+        }
+    }, [_loading[RELOAD_SESSION]]);
 
     useEffect(() => {
         if(!_loading[FETCH_SESSION]) {
@@ -230,6 +249,37 @@ function ProfileScreen({
         );
     }
 
+    function handleUserStatusChange(value) {
+        setUserStatusSwitch(value);
+        dispatch(toggleStatus(userStatus));
+    }
+
+    function handleCalendarAutoSyncChange(value) {
+        if(_calendarAuthorization) {
+            setCalendarAutoSync(value);
+            if(value) {
+                AsyncStorage.setItem('calendarAutoSync', 'true');
+            } else {
+                AsyncStorage.removeItem('calendarAutoSync');
+            }
+        } else {
+            //tentar chamar permissao de novo ou guiar
+        }
+    }
+
+    function handleContactsAutoSyncChange(value) {
+        if(_contactsAuthorization) {
+            setContactsAutoSync(value);
+            if(value) {
+                AsyncStorage.setItem('contactsAutoSync', 'true');
+            } else {
+                AsyncStorage.removeItem('contactsAutoSync');
+            }
+        } else {
+            //tentar chamar permissao de novo ou guiar
+        }
+    }
+
     if (!_defaultProfile) {
         return (
             <View style = { styles.loadingContainer }>
@@ -237,10 +287,6 @@ function ProfileScreen({
             </View>
         );
     }
-
-    const personalRoomDisabled = !_personalRoom?.name;
-    const friendsLength = _friends.length + _groups.length;
-    const { userStatus } = _config;
 
     return (
         <View style = { styles.container }>
@@ -338,9 +384,7 @@ function ProfileScreen({
                             </Text>
                         </View>
                         <View style = { styles.optionsBody }>
-                            <TouchableOpacity
-                                style = { styles.optionBodyItem }
-                                onPress = { () => dispatch(toggleStatus(userStatus)) }>
+                            <View style = { styles.optionBodyItem }>
                                 <View style = { styles.optionBodyHeader }>
                                     <View style = { styles.statusContainer }>
                                         <View style = { [ styles.statusCircle, { backgroundColor: userStatus === 'online' ? 'lime' : 'grey' } ] } />
@@ -352,19 +396,18 @@ function ProfileScreen({
                                     </View>
                                 </View>
                                 <View style = { styles.optionLoading }>
-                                    {
-                                        _loading[TOGGLE_STATUS] && <ActivityIndicator color = 'white' />
-                                    }
+                                    <Switch value={userStatusSwitch}
+                                            style={styles.switch}
+                                            onValueChange={handleUserStatusChange}
+                                            disabled={_loading[TOGGLE_STATUS]} />
                                 </View>
-                            </TouchableOpacity>
+                            </View>
                             {
                                 Platform.OS === 'ios' && (
                                     <>
-                                        <TouchableOpacity
-                                            style = { styles.optionBodyItem }
-                                            onPress = { () => dispatch(syncCalendar(_calendar)) }
-                                            disabled = { !_calendarAuthorization }>
-                                            <View style = { [ styles.optionBodyHeader, { flex: _calendarAuthorization ? 3 : 1 } ] }>
+                                        <View style = { styles.optionBodyItem }
+                                              disabled = { !_calendarAuthorization }>
+                                            <View style = {[styles.optionBodyHeader, {flex: _calendarAuthorization ? 3 : 1}]}>
                                                 {
                                                     _calendarAuthorization
                                                         ? <IconSyncCalendar />
@@ -372,25 +415,28 @@ function ProfileScreen({
                                                 }
                                                 <View style = { styles.optionBodyTitle }>
                                                     <Text style = { [ styles.optionBodyTitleText, { color: _calendarAuthorization ? '#BFBFBF' : '#656565' } ] }>
-                                                        Synchronize calendar
+                                                        Auto-sync calendar
                                                     </Text>
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
                                                 {
                                                     _calendarAuthorization
-                                                        ? _loading[SYNC_CALENDAR] && <ActivityIndicator color = 'white' />
-                                                        : <Text style = { styles.permissionDeniedText }>
+                                                        ? <Switch
+                                                            value={calendarAutoSync}
+                                                            style={styles.switch}
+                                                            onValueChange={handleCalendarAutoSyncChange}
+                                                            disabled={!_calendarAuthorization}/>
+                                                        : <Text
+                                                            style={styles.permissionDeniedText}>
                                                             permission denied
                                                         </Text>
                                                 }
                                             </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style = { styles.optionBodyItem }
-                                            onPress = { () => dispatch(syncContacts(_contacts)) }
-                                            disabled = { !_contactsAuthorization }>
-                                            <View style = { [ styles.optionBodyHeader, { flex: _contactsAuthorization ? 3 : 1 } ] }>
+                                        </View>
+                                        <View style = { styles.optionBodyItem }
+                                              disabled = { !_contactsAuthorization }>
+                                            <View style = {[styles.optionBodyHeader, {flex: _calendarAuthorization ? 3 : 1}]}>
                                                 {
                                                     _contactsAuthorization
                                                         ? <IconSyncContacts />
@@ -398,20 +444,25 @@ function ProfileScreen({
                                                 }
                                                 <View style = { styles.optionBodyTitle }>
                                                     <Text style = { [ styles.optionBodyTitleText, { color: _contactsAuthorization ? '#BFBFBF' : '#656565' } ] }>
-                                                        Synchronize contacts
+                                                        Auto-sync contacts
                                                     </Text>
                                                 </View>
                                             </View>
                                             <View style = { styles.optionLoading }>
                                                 {
                                                     _contactsAuthorization
-                                                        ? _loading[SYNC_CONTACTS] && <ActivityIndicator color = 'white' />
-                                                        : <Text style = { styles.permissionDeniedText }>
+                                                        ? <Switch
+                                                            value={contactsAutoSync}
+                                                            style={styles.switch}
+                                                            onValueChange={handleContactsAutoSyncChange}
+                                                            disabled={!_contactsAuthorization}/>
+                                                        : <Text
+                                                            style={styles.permissionDeniedText}>
                                                             permission denied
                                                         </Text>
                                                 }
                                             </View>
-                                        </TouchableOpacity>
+                                        </View>
                                     </>
                                 )
                             }

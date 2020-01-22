@@ -18,6 +18,7 @@ import { IncomingCallApp } from './features/mobile/incoming-call';
 
 // It's crucial that the native loggers are created ASAP, not to lose any data.
 import { _initLogging } from './features/base/logging/functions';
+import AsyncStorage from "@react-native-community/async-storage";
 
 declare var __DEV__;
 
@@ -43,6 +44,18 @@ class Root extends PureComponent<Props> {
 
     constructor() {
         super();
+
+        AsyncStorage.getItem('alreadyLaunched')
+            .then(alreadyLaunched => {
+               if(!alreadyLaunched) {
+                   AsyncStorage.multiSet([
+                       ['alreadyLaunched', 'true'],
+                       ['calendarAutoSync', 'true'],
+                       ['contactsAutoSync', 'true']
+                   ]);
+               }
+            });
+
         StatusBar.setBarStyle('light-content');
 
         //TODO: Tratar warnings

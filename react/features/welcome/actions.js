@@ -6,7 +6,7 @@ import {
     SET_SIDEBAR_VISIBLE,
     SET_WELCOME_PAGE_LISTS_DEFAULT_PAGE,
     SIGN_IN,
-    FETCH_SESSION
+    FETCH_SESSION, RELOAD_SESSION
 } from './actionTypes';
 
 import {navigateToScreen, status} from "../base/app";
@@ -206,6 +206,11 @@ export function signIn(username: string, password: string) {
 
 export function reloadSession(accessToken: string) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
+        dispatch(status({
+            trigger: RELOAD_SESSION,
+            loading: true,
+        }));
+
         const fetchSessionRes = await fetchSession(dispatch, accessToken);
 
         if(fetchSessionRes.success) {
@@ -216,8 +221,14 @@ export function reloadSession(accessToken: string) {
             dispatch(setContactsIntegration());
             dispatch(setCalendarIntegration());
         } else {
-            AsyncStorage.clear();
+            AsyncStorage.multiRemove(['accessToken', 'userId']);
             dispatch(navigateToScreen('SignIn'));
         }
+
+        dispatch(status({
+            trigger: RELOAD_SESSION,
+            loading: false,
+            error: !fetchSessionRes.success
+        }));
     };
 }
