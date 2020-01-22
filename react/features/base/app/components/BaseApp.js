@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React, { Component, Fragment } from 'react';
-import {AppState} from 'react-native';
+import {AppState, Platform} from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { compose, createStore } from 'redux';
@@ -119,8 +119,10 @@ export default class BaseApp extends Component<*, State> {
             this.state.appState.match(/inactive|background/)
             && nextAppState === 'active'
         ) {
-            this.state.store.dispatch(setContactsIntegration());
-            this.state.store.dispatch(setCalendarIntegration());
+            if(Platform.OS === 'ios') {
+                this.state.store.dispatch(setContactsIntegration());
+                this.state.store.dispatch(setCalendarIntegration());
+            }
         }
         this.setState({appState: nextAppState});
     }

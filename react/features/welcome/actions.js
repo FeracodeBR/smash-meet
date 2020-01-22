@@ -14,6 +14,7 @@ import {DEFAULT_SERVER_URL} from "../base/settings";
 import WebSocket from '../websocket/WebSocket';
 import {setContactsIntegration} from "../profile/actions";
 import {setCalendarIntegration} from "../calendar-sync/actions.native";
+import {Platform} from "react-native";
 
 /**
  * Sets the visibility of {@link WelcomePageSideBar}.
@@ -168,8 +169,10 @@ export function signIn(username: string, password: string) {
 
                         WebSocket.connect(defaultProfile.id, accessToken);
 
-                        dispatch(setContactsIntegration());
-                        dispatch(setCalendarIntegration());
+                        if(Platform.OS === 'ios') {
+                            dispatch(setContactsIntegration());
+                            dispatch(setCalendarIntegration());
+                        }
 
                         dispatch(status({
                             trigger: SIGN_IN,
@@ -218,8 +221,10 @@ export function reloadSession(accessToken: string) {
 
             WebSocket.connect(defaultProfile.id, accessToken);
 
-            dispatch(setContactsIntegration());
-            dispatch(setCalendarIntegration());
+            if(Platform.OS === 'ios') {
+                dispatch(setContactsIntegration());
+                dispatch(setCalendarIntegration());
+            }
         } else {
             AsyncStorage.multiRemove(['accessToken', 'userId']);
             dispatch(navigateToScreen('SignIn'));
