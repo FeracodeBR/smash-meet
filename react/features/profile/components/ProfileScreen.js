@@ -30,8 +30,6 @@ import {
     changeProfile,
     logout,
     enterPersonalRoom,
-    syncContacts,
-    syncCalendar,
     callFriend,
     addClient,
     toggleStatus,
@@ -55,7 +53,11 @@ import {
     TOGGLE_STATUS,
     UPDATE_FRIENDS_STATUS
 } from '../actionTypes';
-import {FETCH_SESSION} from "../../welcome/actionTypes";
+import {
+    FETCH_SESSION,
+    RELOAD_SESSION,
+    SIGN_IN
+} from "../../welcome/actionTypes";
 import {stopSound} from "../../base/sounds";
 import {WAITING_SOUND_ID} from "../../recording";
 import WebSocket from '../../websocket/WebSocket';
@@ -83,7 +85,7 @@ function ProfileScreen({
 
     const [ isCollapsed, setCollapsed ] = useState(true);
     const [ refreshing, setRefreshing] = useState(false);
-    const [ userStatusSwitch, setUserStatusSwitch] = useState(userStatus === 'online');
+    const [ userStatusSwitch, setUserStatusSwitch] = useState(false);
     const [ calendarAutoSync, setCalendarAutoSync] = useState(false);
     const [ contactsAutoSync, setContactsAutoSync] = useState(false);
 
@@ -107,6 +109,12 @@ function ProfileScreen({
             dispatch(addClient(WebSocket.io.id, _defaultProfile.id));
         }
     }, [ _defaultProfile ]);
+
+    useEffect(() => {
+        if(!_loading[RELOAD_SESSION]) {
+            setUserStatusSwitch(userStatus === 'online');
+        }
+    }, [_loading[RELOAD_SESSION]]);
 
     useEffect(() => {
         if(!_loading[FETCH_SESSION]) {

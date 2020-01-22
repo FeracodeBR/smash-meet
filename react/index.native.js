@@ -47,8 +47,6 @@ class Root extends PureComponent<Props> {
 
         AsyncStorage.getItem('alreadyLaunched')
             .then(alreadyLaunched => {
-                console.log('alreadyLaunched', alreadyLaunched);
-
                if(!alreadyLaunched) {
                    AsyncStorage.multiSet([
                        ['alreadyLaunched', 'true'],
