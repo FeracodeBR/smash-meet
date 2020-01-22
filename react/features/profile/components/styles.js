@@ -183,7 +183,6 @@ export default {
         paddingBottom: 5,
     },
     optionsBody: {
-        paddingLeft: 5,
         paddingTop: 10,
         paddingBottom: 20,
     },

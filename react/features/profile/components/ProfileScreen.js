@@ -437,7 +437,7 @@ function ProfileScreen({
                                         </View>
                                         <View style = { styles.optionBodyItem }
                                               disabled = { !_contactsAuthorization }>
-                                            <View style = {[styles.optionBodyHeader, {flex: _calendarAuthorization ? 3 : 1}]}>
+                                            <View style = {[styles.optionBodyHeader, {flex: _contactsAuthorization ? 3 : 1}]}>
                                                 {
                                                     _contactsAuthorization
                                                         ? <IconSyncContacts />
