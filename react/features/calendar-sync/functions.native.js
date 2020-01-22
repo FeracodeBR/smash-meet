@@ -11,7 +11,6 @@ import { setCalendarAuthorization } from './actions';
 import { FETCH_END_DAYS, FETCH_START_DAYS } from './constants';
 import { _updateCalendarEntries } from './functions';
 import logger from './logger';
-import AsyncStorage from '@react-native-community/async-storage';
 
 export * from './functions.any';
 

@@ -21,7 +21,6 @@ import { appWillMount, appWillUnmount } from '../actions';
 import logger from '../logger';
 import {setContactsIntegration} from "../../../profile/actions";
 import {setCalendarIntegration} from "../../../calendar-sync/actions.native";
-import AsyncStorage from "@react-native-community/async-storage";
 
 declare var APP: Object;
 export let store;
