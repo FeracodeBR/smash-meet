@@ -17,7 +17,7 @@ import {
     getLocalParticipant,
     getParticipantById,
     getPinnedParticipant,
-    PARTICIPANT_UPDATED,
+    PARTICIPANT_UPDATED, participantUpdated,
     PIN_PARTICIPANT
 } from '../participants';
 import { MiddlewareRegistry, StateListenerRegistry } from '../redux';
@@ -46,6 +46,7 @@ import {
     getCurrentConference
 } from './functions';
 import logger from './logger';
+import AsyncStorage from "@react-native-community/async-storage";
 
 declare var APP: Object;
 
@@ -208,16 +209,17 @@ function _conferenceJoined({ dispatch, getState }, next, action) {
     };
     window.addEventListener('beforeunload', beforeUnloadHandler);
 
-    if (requireDisplayName
-        && !getLocalParticipant(getState)?.name
-        && !conference.isHidden()) {
-
-        if(defaultProfile.name) {
-            conference.setDisplayName(defaultProfile.name);
-        } else {
-            dispatch(openDisplayNamePrompt(undefined));
-        }
-    }
+    AsyncStorage.getItem('accessToken')
+        .then(accessToken => {
+            if(accessToken) {
+                dispatch(participantUpdated({
+                    ...getLocalParticipant(getState),
+                    name: defaultProfile.name
+                }))
+            } else {
+                dispatch(openDisplayNamePrompt(undefined));
+            }
+        });
 
     return result;
 }
