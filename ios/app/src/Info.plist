@@ -63,11 +63,11 @@
 		</dict>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>We'll upload your calendar events to keep them synchronized with your Smash account</string>
+	<string>We'll upload your calendar events to our servers to keep them synchronized with your Smash account</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Participate in meetings with video</string>
 	<key>NSContactsUsageDescription</key>
-	<string>We'll upload your contacts to keep them synchronized with your Smash account</string>
+	<string>We'll upload your contacts to our servers to keep them synchronized with your Smash account</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
