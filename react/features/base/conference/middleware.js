@@ -217,7 +217,12 @@ function _conferenceJoined({ dispatch, getState }, next, action) {
                     name: defaultProfile.name
                 }))
             } else {
-                dispatch(openDisplayNamePrompt(undefined));
+                if (requireDisplayName
+                    && !getLocalParticipant(getState)?.name
+                    && !conference.isHidden()) {
+
+                    dispatch(openDisplayNamePrompt(undefined));
+                }
             }
         });
 
