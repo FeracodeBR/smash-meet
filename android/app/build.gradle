@@ -20,7 +20,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId 'org.feracode.smashmeet'
+        applicationId 'com.feracode.smashmeet'
         versionCode vcode
         versionName project.appVersion
 
