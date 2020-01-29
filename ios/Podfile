@@ -67,6 +67,10 @@ target 'JitsiMeet' do
   pod 'RNGoogleSignin', :path => '../node_modules/@react-native-community/google-signin'
   pod 'RNSound', :path => '../node_modules/react-native-sound'
   pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+  pod 'RNScreens', :path => '../node_modules/react-native-screens'
+  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
   pod 'RNWatch', :path => '../node_modules/react-native-watch-connectivity'
 

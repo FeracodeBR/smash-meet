@@ -34,6 +34,10 @@ import { AbstractApp } from './AbstractApp';
 import type { Props as AbstractAppProps } from './AbstractApp';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import {createStackNavigator} from "@react-navigation/stack";
+import {NavigationNativeContainer} from "@react-navigation/native";
+import {SignInPage, WelcomePage} from "../../welcome/components";
+import ProfileScreen from "../../profile/components/ProfileScreen";
 
 declare var __DEV__;
 
@@ -164,10 +168,34 @@ export class App extends AbstractApp {
      * @override
      */
     _createMainElement(component, props) {
+        const Stack = createStackNavigator();
+
         return (
             <AspectRatioDetector>
                 <ReducedUIDetector>
-                    { super._createMainElement(component, props) }
+                    <NavigationNativeContainer>
+                        {
+                            component
+                                ? component === SignInPage
+                                ? (
+                                    <Stack.Navigator>
+                                        <Stack.Screen name='SignInPage'
+                                                      component={SignInPage}/>
+                                        <Stack.Screen name='WelcomePage'
+                                                      component={WelcomePage}/>
+                                    </Stack.Navigator>
+                                )
+                                : (
+                                    <Stack.Navigator initialRouteName='ProfileScreen'>
+                                        <Stack.Screen name='ProfileScreen'
+                                                      component={ProfileScreen}/>
+                                        <Stack.Screen name='WelcomePage'
+                                                      component={WelcomePage}/>
+                                    </Stack.Navigator>
+                                )
+                                : null
+                        }
+                    </NavigationNativeContainer>
                 </ReducedUIDetector>
             </AspectRatioDetector>
         );

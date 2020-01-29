@@ -8,6 +8,7 @@
 // execution of base/lib-jitsi-meet (which is understandable given that the
 // polyfills are globals). The remaining problem to be solved here is where to
 // collect the polyfills' files.
+import 'react-native-gesture-handler';
 import './features/base/lib-jitsi-meet/native/polyfills-bundler';
 
 import React, { PureComponent } from 'react';

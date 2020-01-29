@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React, { Component, Fragment } from 'react';
-import {AppState, Platform} from 'react-native';
+import {AppState, Platform } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { compose, createStore } from 'redux';
@@ -156,10 +156,10 @@ export default class BaseApp extends Component<*, State> {
                 <I18nextProvider i18n = { i18next }>
                     <Provider store = { store }>
                         <Fragment>
-                            { this._createMainElement(component) }
-                            <SoundCollection />
-                            { this._createExtraElement() }
-                            { this._renderDialogContainer() }
+                            {this._createMainElement(component)}
+                            <SoundCollection/>
+                            {this._createExtraElement()}
+                            {this._renderDialogContainer()}
                         </Fragment>
                     </Provider>
                 </I18nextProvider>
