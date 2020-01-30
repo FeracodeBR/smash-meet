@@ -38,6 +38,13 @@ import {createStackNavigator} from "@react-navigation/stack";
 import {NavigationNativeContainer} from "@react-navigation/native";
 import {SignInPage, WelcomePage} from "../../welcome/components";
 import ProfileScreen from "../../profile/components/ProfileScreen";
+import {ColorPalette} from "../../base/styles/components/styles";
+import {IconClose} from "../../base/icons/svg";
+import {
+    View,
+    Text,
+    TouchableOpacity
+} from 'react-native';
 
 declare var __DEV__;
 
@@ -186,11 +193,29 @@ export class App extends AbstractApp {
                                     </Stack.Navigator>
                                 )
                                 : (
-                                    <Stack.Navigator initialRouteName='ProfileScreen'>
+                                    <Stack.Navigator initialRouteName='ProfileScreen'
+                                                     mode='modal'
+                                                     screenOptions={{
+                                                         headerStyle: {
+                                                             backgroundColor: ColorPalette.black,
+                                                             shadowColor: 'transparent'
+                                                         },
+                                                         headerTintColor: 'white'
+                                                     }}>
                                         <Stack.Screen name='ProfileScreen'
-                                                      component={ProfileScreen}/>
+                                                      component={ProfileScreen}
+                                                      options={{
+                                                          headerTitle: null
+                                                      }}/>
                                         <Stack.Screen name='WelcomePage'
-                                                      component={WelcomePage}/>
+                                                      component={WelcomePage}
+                                                      options={{
+                                                          headerStyle: {
+                                                              backgroundColor: ColorPalette.screen,
+                                                              shadowColor: 'transparent'
+                                                          },
+                                                          headerTitle: null,
+                                                      }}/>
                                     </Stack.Navigator>
                                 )
                                 : null

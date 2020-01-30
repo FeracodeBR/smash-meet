@@ -41,7 +41,7 @@ export default {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 10,
+        padding: 10,
     },
     descriptionIos: {
         marginHorizontal: 7,

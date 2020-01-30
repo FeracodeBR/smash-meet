@@ -10,7 +10,12 @@ import { createDesiredLocalTracks, destroyLocalTracks } from '../../base/tracks'
 import { setSideBarVisible } from '../actions';
 import { AbstractWelcomePage, _mapStateToProps as _abstractMapStateToProps } from './AbstractWelcomePage';
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
-import { Icon, IconArrowBack, IconSmashMeetLogo } from '../../base/icons';
+import {
+    Icon,
+    IconArrowBack,
+    IconClose,
+    IconSmashMeetLogo
+} from '../../base/icons';
 import {
     Animated,
     Keyboard,
@@ -46,6 +51,23 @@ class WelcomePage extends AbstractWelcomePage {
         // Specially bind functions to avoid function definition on render.
         this._onFieldBlur = this._onFieldFocusChange.bind(this, false);
         this._onFieldFocus = this._onFieldFocusChange.bind(this, true);
+
+        const {navigation} = props;
+
+        navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity
+                    style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 20,
+                        marginLeft: 10,
+                    }}
+                    onPress={() => navigation.goBack()}>
+                    <IconClose />
+                </TouchableOpacity>
+            )
+        })
     }
 
     /**
@@ -71,6 +93,23 @@ class WelcomePage extends AbstractWelcomePage {
                 response === 'granted'
                     && dispatch(createDesiredLocalTracks(MEDIA_TYPE.VIDEO));
             });
+        }
+    }
+
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerLeft: () => (
+                <TouchableOpacity
+                    style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 20,
+                        marginLeft: 10,
+                    }}
+                    onPress={() => navigation.goBack()}>
+                    <IconClose />
+                </TouchableOpacity>
+            )
         }
     }
 
@@ -271,20 +310,6 @@ class WelcomePage extends AbstractWelcomePage {
                             </View>
                         </View>
                     </KeyboardAvoidingView>
-                    <View style = { styles.footer }>
-                        <View style = { styles.backButton } >
-                            <TouchableOpacity
-                                style = { styles.touchableWrapper }
-                                onPress = { this._goBack } >
-                                <Icon
-                                    src = { IconArrowBack }
-                                    style = { styles.backButtonIcon } />
-                                <Text style = { styles.backButtonLabel }>
-                                    back
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
                 </KeyboardAvoidingView>
             </View>
         );

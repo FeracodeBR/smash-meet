@@ -63,6 +63,7 @@ import {WAITING_SOUND_ID} from "../../recording";
 import WebSocket from '../../websocket/WebSocket';
 
 function ProfileScreen({
+    navigation,
     dispatch,
     _contacts,
     _contactsAuthorization,
@@ -79,6 +80,33 @@ function ProfileScreen({
     _wsConnected,
     _error,
 }) {
+    navigation.setOptions({
+       headerLeft: () => (
+           <TouchableOpacity style = { styles.iconContainer }
+                             onPress = { () => navigation.navigate('WelcomePage') }>
+               <IconEnterMeet />
+               <Text style = { styles.descriptionIos }>
+                   ENTER MEET
+               </Text>
+           </TouchableOpacity>
+       ),
+        headerRight: () => (
+            <TouchableOpacity
+                style = { styles.iconContainer }
+                onPress = { () => dispatch(enterPersonalRoom(_personalRoom)) }
+                disabled = { personalRoomDisabled }>
+                <Text style = { [ styles.descriptionIos, { color: personalRoomDisabled ? '#656565' : '#BFBFBF' } ] }>
+                    MY ROOM
+                </Text>
+                {
+                    personalRoomDisabled
+                        ? <IconRoomDisabled />
+                        : <IconRoom />
+                }
+            </TouchableOpacity>
+        )
+    });
+
     const personalRoomDisabled = !_personalRoom?.name;
     const friendsLength = _friends.length + _groups.length;
     const { userStatus } = _config;
@@ -291,29 +319,6 @@ function ProfileScreen({
 
     return (
         <View style = { styles.container }>
-            <View style = { styles.header }>
-                <TouchableOpacity
-                    style = { styles.iconContainer }
-                    onPress = { () => dispatch(navigateToScreen('WelcomePage')) }>
-                    <IconEnterMeet />
-                    <Text style = { styles.descriptionIos }>
-                        ENTER MEET
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style = { styles.iconContainer }
-                    onPress = { () => dispatch(enterPersonalRoom(_personalRoom)) }
-                    disabled = { personalRoomDisabled }>
-                    <Text style = { [ styles.descriptionIos, { color: personalRoomDisabled ? '#656565' : '#BFBFBF' } ] }>
-                        MY ROOM
-                    </Text>
-                    {
-                        personalRoomDisabled
-                            ? <IconRoomDisabled />
-                            : <IconRoom />
-                    }
-                </TouchableOpacity>
-            </View>
             <View style = { styles.content }>
                 <View style = { styles.subheader } >
                     <Text style = { styles.descriptionIos }>
