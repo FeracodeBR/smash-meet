@@ -16,36 +16,37 @@ var config = {
 
     hosts: {
         // XMPP domain.
-        domain: 'meet-dev.smashinnovations.com',
+        domain: 'meet.smashinnovations.com',
 
         // When using authentication, domain for guest users.
-        anonymousdomain: 'guest.meet-dev.smashinnovations.com',
+        anonymousdomain: 'guest.meet.smashinnovations.com',
 
         // Domain for authenticated users. Defaults to <domain>.
-        // authdomain: 'meet-dev.smashinnovations.com',
+        // authdomain: 'meet.smashinnovations.com',
 
         // Jirecon recording component domain.
-        // jirecon: 'jirecon.meet-dev.smashinnovations.com',
+        // jirecon: 'jirecon.meet.smashinnovations.com',
 
         // Call control component (Jigasi).
         // eslint-disable-next-line camelcase
-        call_control: 'callcontrol.meet-dev.smashinnovations.com',
+        call_control: 'callcontrol.meet.smashinnovations.com',
 
         // Focus component domain. Defaults to focus.<domain>.
-        // focus: 'focus.meet-dev.smashinnovations.com',
+        // focus: 'focus.meet.smashinnovations.com',
 
         // XMPP MUC domain. FIXME: use XEP-0030 to discover it.
-        muc: 'conference.meet-dev.smashinnovations.com'
+        muc: 'conference.meet.smashinnovations.com'
     },
 
     // BOSH URL. FIXME: use XEP-0156 to discover it.
-    bosh: '//meet-dev.smashinnovations.com/http-bind',
+    bosh: '//meet.smashinnovations.com/http-bind',
+    // bosh: 'https://meet.smashinnovations.com/http-bind',
 
     // The name of client node advertised in XEP-0115 'c' stanza
     clientNode: 'http://jitsi.org/jitsimeet',
 
     // The real JID of focus participant - can be overridden here
-    // focusUserJid: 'focus@auth.meet-dev.smashinnovations.com',
+    // focusUserJid: 'focus@auth.meet.smashinnovations.com',
 
 
     // Testing / experimental features.
@@ -176,16 +177,16 @@ var config = {
 
     // Whether to enable file recording or not.
     fileRecordingsEnabled: true,
-    hiddenDomain: 'recorder.meet-dev.smashinnovations.com',
+    hiddenDomain: 'recorder.meet.smashinnovations.com',
 
     // Enable the dropbox integration.
     // dropbox: {
     //     appKey: '<APP_KEY>' // Specify your app key here.
     //     // A URL to redirect the user to, after authenticating
     //     // by default uses:
-    //     // 'https://meet-dev.smashinnovations.com/static/oauth.html'
+    //     // 'https://meet.smashinnovations.com/static/oauth.html'
     //     redirectURI:
-    //          'https://meet-dev.smashinnovations.com/subfolder/static/oauth.html'
+    //          'https://meet.smashinnovations.com/subfolder/static/oauth.html'
     // },
     // When integrations like dropbox are enabled only that will be shown,
     // by enabling fileRecordingsServiceEnabled, we show both the integrations

@@ -105,68 +105,84 @@ export function toggleStatus(currentStatus) {
 
 export function syncCalendar(calendar) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        if (calendar?.length) {
-            dispatch(status({
-                trigger: SYNC_CALENDAR,
-                loading: true,
-                error: undefined
-            }));
+        //TODO REMOVER
+        const firstProfileId = await AsyncStorage.getItem('firstProfileId');
+        const defaultProfileId = getState()['features/contacts-sync'].defaultProfile?.id;
 
-            const headers = new Headers({
-                'authorization': await AsyncStorage.getItem('accessToken'),
-                'Content-Type': 'application/json'
-            });
+        if(firstProfileId === defaultProfileId) {
+            console.log('calendar sync');
 
-            const importRes = await fetch(`${DEFAULT_SERVER_URL}/module/calendar/import/apple`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(calendar)
-            });
+            if (calendar?.length) {
+                dispatch(status({
+                    trigger: SYNC_CALENDAR,
+                    loading: true,
+                    error: undefined
+                }));
 
-            dispatch(status({
-                trigger: SYNC_CALENDAR,
-                loading: false,
-                error: !importRes.ok
-            }));
+                const headers = new Headers({
+                    'authorization': await AsyncStorage.getItem('accessToken'),
+                    'Content-Type': 'application/json'
+                });
+
+                const importRes = await fetch(`${DEFAULT_SERVER_URL}/module/calendar/import/apple`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(calendar)
+                });
+
+                dispatch(status({
+                    trigger: SYNC_CALENDAR,
+                    loading: false,
+                    error: !importRes.ok
+                }));
+            }
         }
     };
 }
 
 export function syncContacts(contacts) {
     return async (dispatch: Dispatch<any>, getState: Function) => {
-        dispatch(status({
-            trigger: SYNC_CONTACTS,
-            loading: true,
-            error: undefined
-        }));
+        //TODO REMOVER
+        const firstProfileId = await AsyncStorage.getItem('firstProfileId');
+        const defaultProfileId = getState()['features/contacts-sync'].defaultProfile?.id;
 
-        const accessToken = await AsyncStorage.getItem('accessToken');
-
-        const headers = new Headers({
-            'authorization': accessToken,
-            'Content-Type': 'application/json'
-        });
-
-        const importRes = await fetch(`${DEFAULT_SERVER_URL}/module/contact/import/apple`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(contacts)
-        });
-
-        if(importRes.ok) {
-            const fetchSessionRes = await fetchSession(dispatch, accessToken);
+        if(firstProfileId === defaultProfileId) {
+            console.log('contacts sync');
 
             dispatch(status({
                 trigger: SYNC_CONTACTS,
-                loading: false,
-                error: !fetchSessionRes.success
+                loading: true,
+                error: undefined
             }));
-        } else {
-            dispatch(status({
-                trigger: SYNC_CONTACTS,
-                loading: false,
-                error: !importRes.ok
-            }));
+
+            const accessToken = await AsyncStorage.getItem('accessToken');
+
+            const headers = new Headers({
+                'authorization': accessToken,
+                'Content-Type': 'application/json'
+            });
+
+            const importRes = await fetch(`${DEFAULT_SERVER_URL}/module/contact/import/apple`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(contacts)
+            });
+
+            if (importRes.ok) {
+                const fetchSessionRes = await fetchSession(dispatch, accessToken);
+
+                dispatch(status({
+                    trigger: SYNC_CONTACTS,
+                    loading: false,
+                    error: !fetchSessionRes.success
+                }));
+            } else {
+                dispatch(status({
+                    trigger: SYNC_CONTACTS,
+                    loading: false,
+                    error: !importRes.ok
+                }));
+            }
         }
     };
 }

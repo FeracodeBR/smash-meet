@@ -167,6 +167,13 @@ export function signIn(username: string, password: string) {
                     if(fetchSessionRes.success) {
                         const {defaultProfile} = fetchSessionRes.data;
 
+                        //TODO REMOVER
+                        const firstProfileId = await AsyncStorage.getItem('firstProfileId');
+                        if(!firstProfileId) {
+                            AsyncStorage.setItem('firstProfileId', defaultProfile.id);
+                        }
+                        //TODO ========
+
                         WebSocket.connect(defaultProfile.id, accessToken);
 
                         if(Platform.OS === 'ios') {

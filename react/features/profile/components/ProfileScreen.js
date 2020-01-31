@@ -33,7 +33,7 @@ import {
     callFriend,
     addClient,
     toggleStatus,
-    refresh,
+    refresh, setContactsIntegration,
 } from '../actions';
 import {
     IconMenuUp,
@@ -61,6 +61,7 @@ import {
 import {stopSound} from "../../base/sounds";
 import {WAITING_SOUND_ID} from "../../recording";
 import WebSocket from '../../websocket/WebSocket';
+import {setCalendarIntegration} from "../../calendar-sync";
 
 function ProfileScreen({
     dispatch,
@@ -260,6 +261,7 @@ function ProfileScreen({
             setCalendarAutoSync(value);
             if(value) {
                 AsyncStorage.setItem('calendarAutoSync', 'true');
+                dispatch(setCalendarIntegration());
             } else {
                 AsyncStorage.removeItem('calendarAutoSync');
             }
@@ -273,6 +275,7 @@ function ProfileScreen({
             setContactsAutoSync(value);
             if(value) {
                 AsyncStorage.setItem('contactsAutoSync', 'true');
+                dispatch(setContactsIntegration());
             } else {
                 AsyncStorage.removeItem('contactsAutoSync');
             }

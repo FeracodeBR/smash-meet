@@ -38,7 +38,6 @@ export async function loadConfig(url, env): Promise<Object> {
 
 export async function loadEnv(url){
     try {
-
         return await loadScript(url, 2.5 * 1000, true);
     } catch (err) {
         logger.error(`Failed to load config from ${url}`, err);
