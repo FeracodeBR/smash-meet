@@ -103,7 +103,7 @@ function ProfileScreen({
             WebSocket.addListener('/user/friend-status', handleFriendStatusEvents);
             WebSocket.addListener('/chat/conference', handleConferenceEvents);
         }
-    }, [_wsConnected]);
+    }, [_wsConnected, _call]);
 
     useEffect(() => {
         if (_defaultProfile && WebSocket.io) {
