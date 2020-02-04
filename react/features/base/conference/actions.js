@@ -435,7 +435,7 @@ export function checkIfCanJoin() {
         const { authRequired, password }
             = getState()['features/base/conference'];
 
-        authRequired && dispatch(_conferenceWillJoin(authRequired));
+        // authRequired && dispatch(_conferenceWillJoin(authRequired));
         authRequired && authRequired.join(password);
     };
 }
