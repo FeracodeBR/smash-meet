@@ -66,7 +66,7 @@ MiddlewareRegistry.register(store => next => action => {
  * @private
  * @returns {Object} The value returned by {@code next(action)}.
  */
-function _appStateChanged({ dispatch, getState }, next, action) {
+function _appStateChanged({ dispatch }, next, action) {
     const { appState } = action;
 
     const mute = appState !== 'active'; // Note that 'background' and 'inactive' are treated equal.

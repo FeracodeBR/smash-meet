@@ -21,11 +21,6 @@ import { appWillMount, appWillUnmount } from '../actions';
 import logger from '../logger';
 import {setContactsIntegration} from "../../../profile/actions";
 import {setCalendarIntegration} from "../../../calendar-sync/actions.native";
-import {
-    SET_VIDEO_MUTED,
-    setVideoMuted,
-    VIDEO_MUTISM_AUTHORITY
-} from "../../media";
 
 declare var APP: Object;
 export let store;
