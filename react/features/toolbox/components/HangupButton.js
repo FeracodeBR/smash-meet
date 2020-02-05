@@ -9,11 +9,6 @@ import { translate } from '../../base/i18n';
 import { connect } from '../../base/redux';
 import { AbstractHangupButton } from '../../base/toolbox';
 import type { AbstractButtonProps } from '../../base/toolbox';
-import {
-    SET_VIDEO_MUTED,
-    setVideoMuted, setVideoMutedIfNotMuted,
-    VIDEO_MUTISM_AUTHORITY
-} from "../../base/media";
 
 /**
  * The type of the React {@code Component} props of {@link HangupButton}.
@@ -54,14 +49,6 @@ class HangupButton extends AbstractHangupButton<Props, *> {
 
                 // FIXME: these should be unified.
                 if (navigator.product === 'ReactNative') {
-                    // this.props.dispatch(setVideoMutedIfNotMuted(true, VIDEO_MUTISM_AUTHORITY.USER, true));
-                    // this.props.dispatch(setVideoMutedIfNotMuted(true, VIDEO_MUTISM_AUTHORITY.USER, true));
-                    // this.props.dispatch({
-                    //     type: SET_VIDEO_MUTED,
-                    //     ensureTrack: true,
-                    //     muted: true
-                    // });
-
                     this.props.dispatch(appNavigate(undefined));
                 } else {
                     this.props.dispatch(disconnect(true));

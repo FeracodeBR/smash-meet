@@ -113,30 +113,6 @@ export function setVideoMuted(
     };
 }
 
-export function setVideoMutedIfNotMuted(
-    muted: boolean,
-    authority: number = VIDEO_MUTISM_AUTHORITY.USER,
-    ensureTrack: boolean = false) {
-    return (dispatch: Dispatch<any>, getState: Function) => {
-        const oldValue = getState()['features/base/media'].video.muted;
-
-        console.log('oldValue', oldValue);
-
-        if(!oldValue) {
-            // eslint-disable-next-line no-bitwise
-            const newValue = muted ? oldValue | authority : oldValue & ~authority;
-
-            console.log('newValue', newValue);
-
-            return dispatch({
-                type: SET_VIDEO_MUTED,
-                ensureTrack,
-                muted: newValue
-            });
-        }
-    };
-}
-
 /**
  * Creates an action to store the last video {@link Transform} applied to a
  * stream.
