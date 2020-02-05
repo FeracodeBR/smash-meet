@@ -21,6 +21,11 @@ import { appWillMount, appWillUnmount } from '../actions';
 import logger from '../logger';
 import {setContactsIntegration} from "../../../profile/actions";
 import {setCalendarIntegration} from "../../../calendar-sync/actions.native";
+import {
+    SET_VIDEO_MUTED,
+    setVideoMuted,
+    VIDEO_MUTISM_AUTHORITY
+} from "../../media";
 
 declare var APP: Object;
 export let store;
@@ -119,6 +124,14 @@ export default class BaseApp extends Component<*, State> {
             this.state.appState.match(/inactive|background/)
             && nextAppState === 'active'
         ) {
+            // const {conference} = this.state.store.getState()['features/base/conference'];
+            // !conference && this.state.store.dispatch(setVideoMuted(true, VIDEO_MUTISM_AUTHORITY.USER, true));
+            // !conference && this.state.store.dispatch({
+            //     type: SET_VIDEO_MUTED,
+            //     ensureTrack: true,
+            //     muted: true
+            // });
+
             if(Platform.OS === 'ios') {
                 this.state.store.dispatch(setContactsIntegration());
                 this.state.store.dispatch(setCalendarIntegration());

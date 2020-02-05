@@ -66,9 +66,13 @@ MiddlewareRegistry.register(store => next => action => {
  * @private
  * @returns {Object} The value returned by {@code next(action)}.
  */
-function _appStateChanged({ dispatch }, next, action) {
+function _appStateChanged({ dispatch, getState }, next, action) {
     const { appState } = action;
+
+    const {conference} = getState()['features/base/conference'];
+
     const mute = appState !== 'active'; // Note that 'background' and 'inactive' are treated equal.
+    // const mute = appState !== 'active' || !conference; // Note that 'background' and 'inactive' are treated equal.
 
     sendAnalytics(createTrackMutedEvent('video', 'background mode', mute));
 
