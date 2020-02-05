@@ -62,6 +62,10 @@ import {stopSound} from "../../base/sounds";
 import {WAITING_SOUND_ID} from "../../recording";
 import WebSocket from '../../websocket/WebSocket';
 import {setCalendarIntegration} from "../../calendar-sync";
+import {
+    setVideoMuted,
+    VIDEO_MUTISM_AUTHORITY
+} from "../../base/media";
 
 function ProfileScreen({
     dispatch,
@@ -96,6 +100,8 @@ function ProfileScreen({
                 calendarAutoSyncEnabled && setCalendarAutoSync(true);
                 contactsAutoSyncEnabled && setContactsAutoSync(true);
             });
+
+        dispatch(setVideoMuted(true, VIDEO_MUTISM_AUTHORITY.USER, true));
     }, []);
 
     useEffect(() => {

@@ -41,6 +41,7 @@ import styles, { NAVBAR_GRADIENT_COLORS } from './styles';
 
 import type { AbstractProps } from '../AbstractConference';
 import { ColorSchemeRegistry } from '../../../base/color-scheme';
+import {setVideoMuted, VIDEO_MUTISM_AUTHORITY} from "../../../base/media";
 
 /**
  * The type of the React {@code Component} props of {@link Conference}.
@@ -133,6 +134,8 @@ class Conference extends AbstractConference<Props, *> {
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._setToolboxVisible = this._setToolboxVisible.bind(this);
         this._onShowSideBar = this._onShowSideBar.bind(this);
+
+        props.dispatch(setVideoMuted(false, VIDEO_MUTISM_AUTHORITY.USER, true));
     }
 
     /**

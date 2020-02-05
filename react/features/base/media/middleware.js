@@ -68,6 +68,7 @@ MiddlewareRegistry.register(store => next => action => {
  */
 function _appStateChanged({ dispatch }, next, action) {
     const { appState } = action;
+
     const mute = appState !== 'active'; // Note that 'background' and 'inactive' are treated equal.
 
     sendAnalytics(createTrackMutedEvent('video', 'background mode', mute));
