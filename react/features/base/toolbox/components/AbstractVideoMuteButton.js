@@ -1,6 +1,11 @@
 // @flow
 
-import { IconCamera, IconCameraDisabled } from '../../icons';
+import {
+    IconSmashCamera,
+    IconSmashCameraDisabled,
+    IconSmashHexagon,
+    IconSmashHexagonDisabled
+} from '../../icons';
 
 import AbstractButton from './AbstractButton';
 import type { Props } from './AbstractButton';
@@ -11,8 +16,11 @@ import type { Props } from './AbstractButton';
 export default class AbstractVideoMuteButton<P : Props, S : *>
     extends AbstractButton<P, S> {
 
-    icon = IconCamera;
-    toggledIcon = IconCameraDisabled;
+    icon = IconSmashCamera;
+    toggledIcon = IconSmashCameraDisabled;
+    containerIcon = IconSmashHexagon;
+    toggledIconContainerIcon = IconSmashHexagonDisabled;
+
 
     /**
      * Handles clicking / pressing the button, and toggles the video mute state

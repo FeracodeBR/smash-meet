@@ -69,11 +69,11 @@ class AudioMuteButton extends AbstractAudioMuteButton<Props, *> {
      */
     componentDidMount() {
         typeof APP === 'undefined'
-            || APP.keyboardshortcut.registerShortcut(
-                'M',
-                null,
-                this._onKeyboardShortcut,
-                'keyboardShortcuts.mute');
+        || APP.keyboardshortcut.registerShortcut(
+            'M',
+            null,
+            this._onKeyboardShortcut,
+            'keyboardShortcuts.mute');
     }
 
     /**
@@ -84,7 +84,7 @@ class AudioMuteButton extends AbstractAudioMuteButton<Props, *> {
      */
     componentWillUnmount() {
         typeof APP === 'undefined'
-            || APP.keyboardshortcut.unregisterShortcut('M');
+        || APP.keyboardshortcut.unregisterShortcut('M');
     }
 
     /**
@@ -131,7 +131,7 @@ class AudioMuteButton extends AbstractAudioMuteButton<Props, *> {
         // FIXME: The old conference logic as well as the shared video feature
         // still rely on this event being emitted.
         typeof APP === 'undefined'
-            || APP.UI.emitEvent(UIEvents.AUDIO_MUTED, audioMuted, true);
+        || APP.UI.emitEvent(UIEvents.AUDIO_MUTED, audioMuted, true);
     }
 
     /**

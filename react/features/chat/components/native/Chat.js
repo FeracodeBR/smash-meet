@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react';
-import { KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { KeyboardAvoidingView, SafeAreaView, View } from 'react-native';
 
-import { ColorSchemeRegistry } from '../../../base/color-scheme';
-import { translate } from '../../../base/i18n';
-import { HeaderWithNavigation, SlidingView } from '../../../base/react';
-import { connect } from '../../../base/redux';
-import { StyleType } from '../../../base/styles';
+import { ColorSchemeRegistry } from '../../../../../react/features/base/color-scheme';
+import { translate } from '../../../../../react/features/base/i18n';
+import { HeaderWithNavigation, SlidingView } from '../../../../../react/features/base/react';
+import { connect } from '../../../../../react/features/base/redux';
+import { StyleType } from '../../../../../react/features/base/styles';
 
 import AbstractChat, {
     _mapDispatchToProps,
@@ -50,22 +50,23 @@ class Chat extends AbstractChat<Props> {
      * @inheritdoc
      */
     render() {
-        const { _styles } = this.props;
 
         return (
             <SlidingView
                 onHide = { this._onClose }
                 position = 'bottom'
-                show = { this.props._isOpen } >
+                show = { this.props._isOpen }>
                 <KeyboardAvoidingView
                     behavior = 'padding'
                     style = { styles.chatContainer }>
                     <HeaderWithNavigation
                         headerLabelKey = 'chat.title'
                         onPressBack = { this._onClose } />
-                    <SafeAreaView style = { _styles.backdrop }>
+                    <SafeAreaView style = { styles.backdrop }>
                         <MessageContainer messages = { this.props._messages } />
                         <MessageRecipient />
+                    </SafeAreaView>
+                    <SafeAreaView style = { styles.footer }>
                         <ChatInputBar onSend = { this.props._onSendMessage } />
                     </SafeAreaView>
                 </KeyboardAvoidingView>

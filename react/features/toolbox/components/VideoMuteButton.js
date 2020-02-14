@@ -78,11 +78,11 @@ class VideoMuteButton extends AbstractVideoMuteButton<Props, *> {
      */
     componentDidMount() {
         typeof APP === 'undefined'
-            || APP.keyboardshortcut.registerShortcut(
-                'V',
-                null,
-                this._onKeyboardShortcut,
-                'keyboardShortcuts.videoMute');
+        || APP.keyboardshortcut.registerShortcut(
+            'V',
+            null,
+            this._onKeyboardShortcut,
+            'keyboardShortcuts.videoMute');
     }
 
     /**
@@ -93,7 +93,7 @@ class VideoMuteButton extends AbstractVideoMuteButton<Props, *> {
      */
     componentWillUnmount() {
         typeof APP === 'undefined'
-            || APP.keyboardshortcut.unregisterShortcut('V');
+        || APP.keyboardshortcut.unregisterShortcut('V');
     }
 
     /**
@@ -152,7 +152,7 @@ class VideoMuteButton extends AbstractVideoMuteButton<Props, *> {
         // FIXME: The old conference logic still relies on this event being
         // emitted.
         typeof APP === 'undefined'
-            || APP.UI.emitEvent(UIEvents.VIDEO_MUTED, videoMuted, true);
+        || APP.UI.emitEvent(UIEvents.VIDEO_MUTED, videoMuted, true);
     }
 }
 

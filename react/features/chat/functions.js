@@ -3,7 +3,7 @@
 import aliases from 'react-emoji-render/data/aliases';
 import emojiAsciiAliases from 'react-emoji-render/data/asciiAliases';
 
-import { escapeRegexp } from '../base/util';
+import { escapeRegexp } from '../../../react/features/base/util';
 
 /**
  * An ASCII emoticon regexp array to find and replace old-style ASCII
@@ -32,7 +32,7 @@ const EMOTICON_REGEXP_ARRAY: Array<Array<Object>> = [];
         // Adding slack-type emoji format
         escapedValues.push(escapeRegexp(`:${key}:`));
 
-        const regexp = `\\B(${escapedValues.join('|')})\\B`;
+        const regexp = `(${escapedValues.join('|')})`;
 
         EMOTICON_REGEXP_ARRAY.push([ new RegExp(regexp, 'g'), value ]);
     }

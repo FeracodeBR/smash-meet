@@ -2,9 +2,9 @@
 
 import React from 'react';
 
-import { ConfirmDialog } from '../../../base/dialog';
-import { translate } from '../../../base/i18n';
-import { connect } from '../../../base/redux';
+import { ConfirmDialog } from '../../../../../react/features/base/dialog';
+import { translate } from '../../../../../react/features/base/i18n';
+import { connect } from '../../../../../react/features/base/redux';
 
 import { AbstractChatPrivacyDialog, _mapDispatchToProps, _mapStateToProps } from '../AbstractChatPrivacyDialog';
 

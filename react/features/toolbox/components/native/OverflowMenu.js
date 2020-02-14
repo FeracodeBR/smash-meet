@@ -2,7 +2,6 @@
 
 import React, { PureComponent } from 'react';
 import { Platform, TouchableOpacity, View } from 'react-native';
-import Collapsible from 'react-native-collapsible';
 
 import { ColorSchemeRegistry } from '../../../base/color-scheme';
 import { BottomSheet, hideDialog, isDialogOpen } from '../../../base/dialog';
@@ -10,15 +9,11 @@ import { IconDragHandle } from '../../../base/icons';
 import { CHAT_ENABLED, IOS_RECORDING_ENABLED, getFeatureFlag } from '../../../base/flags';
 import { connect } from '../../../base/redux';
 import { StyleType } from '../../../base/styles';
-import { SharedDocumentButton } from '../../../etherpad';
 import { InfoDialogButton, InviteButton } from '../../../invite';
 import { AudioRouteButton } from '../../../mobile/audio-mode';
-import { LiveStreamButton, RecordButton } from '../../../recording';
 import { RoomLockButton } from '../../../room-lock';
-import { ClosedCaptionButton } from '../../../subtitles';
 import { TileViewButton } from '../../../video-layout';
 
-import HelpButton from '../HelpButton';
 
 import AudioOnlyButton from './AudioOnlyButton';
 import RaiseHandButton from './RaiseHandButton';
@@ -111,7 +106,6 @@ class OverflowMenu extends PureComponent<Props, State> {
      */
     render() {
         const { _bottomSheetStyles } = this.props;
-        const { showMore } = this.state;
 
         const buttonProps = {
             afterClick: this._onCancel,
@@ -122,29 +116,18 @@ class OverflowMenu extends PureComponent<Props, State> {
         return (
             <BottomSheet
                 onCancel = { this._onCancel }
-                onSwipe = { this._onSwipe }
-                renderHeader = { this._renderMenuExpandToggle }>
+                onSwipe = { this._onSwipe }>
+                <RaiseHandButton { ...buttonProps } />
+                {
+                    this.props._chatEnabled
+                    && <InfoDialogButton { ...buttonProps } />
+                }
+                <InviteButton { ...buttonProps } />
+                <TileViewButton { ...buttonProps } />
                 <AudioRouteButton { ...buttonProps } />
                 <ToggleCameraButton { ...buttonProps } />
                 <AudioOnlyButton { ...buttonProps } />
-                <Collapsible collapsed = { !showMore }>
-                    <RoomLockButton { ...buttonProps } />
-                    <ClosedCaptionButton { ...buttonProps } />
-                    {
-                        this.props._recordingEnabled
-                            && <RecordButton { ...buttonProps } />
-                    }
-                    <LiveStreamButton { ...buttonProps } />
-                    <TileViewButton { ...buttonProps } />
-                    <InviteButton { ...buttonProps } />
-                    {
-                        this.props._chatEnabled
-                            && <InfoDialogButton { ...buttonProps } />
-                    }
-                    <RaiseHandButton { ...buttonProps } />
-                    <SharedDocumentButton { ...buttonProps } />
-                    <HelpButton { ...buttonProps } />
-                </Collapsible>
+                <RoomLockButton { ...buttonProps } />
             </BottomSheet>
         );
     }

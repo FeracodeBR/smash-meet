@@ -1,12 +1,30 @@
 // @flow
 
 import React from 'react';
-import { Text, TouchableHighlight, View } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { Icon } from '../../icons';
 
 import AbstractToolboxItem from './AbstractToolboxItem';
 import type { Props } from './AbstractToolboxItem';
+import { ColorPalette } from '../../styles/components/styles';
+
+const hexagonIconStyles = StyleSheet.create({
+    container: {
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    hexagon: {
+        fontSize: 50
+    },
+    icon: {
+        position: 'absolute',
+        fontSize: 28,
+        color: ColorPalette.black
+    }
+});
+
 
 /**
  * Native implementation of {@code AbstractToolboxItem}.
@@ -20,6 +38,19 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
      */
     _renderIcon() {
         const { styles } = this.props;
+
+        if (this.props.containerIcon) {
+            return (
+                <View style = { hexagonIconStyles.container }>
+                    <Icon
+                        src = { this.props.containerIcon }
+                        style = { styles.hexagonIconStyles } />
+                    <Icon
+                        src = { this.props.icon }
+                        style = { styles && styles.iconStyle && hexagonIconStyles.icon } />
+                </View>
+            );
+        }
 
         return (
             <Icon
@@ -54,10 +85,11 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
             // XXX TouchableHighlight requires 1 child. If there's a need to
             // show both the icon and the label, then these two need to be
             // wrapped in a View.
+
             children = (
                 <View style = { style }>
                     { children }
-                    <Text style = { styles && styles.labelStyle }>
+                    <Text style = { StyleSheet.flatten([ styles && styles.labelStyle, { color: '#fff' } ]) }>
                         { this.label }
                     </Text>
                     { elementAfter }
@@ -70,14 +102,13 @@ export default class ToolboxItem extends AbstractToolboxItem<Props> {
         }
 
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 accessibilityLabel = { this.accessibilityLabel }
                 disabled = { disabled }
                 onPress = { onClick }
-                style = { style }
-                underlayColor = { styles && styles.underlayColor } >
+                style = { style }>
                 { children }
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

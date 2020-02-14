@@ -3,7 +3,7 @@
 import { Component } from 'react';
 import type { Dispatch } from 'redux';
 
-import { getLocalParticipant } from '../../base/participants';
+import { getLocalParticipant } from '../../../../react/features/base/participants';
 
 import { sendMessage, toggleChat } from '../actions';
 

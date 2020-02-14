@@ -42,16 +42,18 @@ class HangupButton extends AbstractHangupButton<Props, *> {
     constructor(props: Props) {
         super(props);
 
-        this._hangup = _.once(() => {
-            sendAnalytics(createToolbarEvent('hangup'));
+        this._hangup = props.onPress
+            ? () => props.onPress()
+            : _.once(() => {
+                sendAnalytics(createToolbarEvent('hangup'));
 
-            // FIXME: these should be unified.
-            if (navigator.product === 'ReactNative') {
-                this.props.dispatch(appNavigate(undefined));
-            } else {
-                this.props.dispatch(disconnect(true));
-            }
-        });
+                // FIXME: these should be unified.
+                if (navigator.product === 'ReactNative') {
+                    this.props.dispatch(appNavigate(undefined));
+                } else {
+                    this.props.dispatch(disconnect(true));
+                }
+            });
     }
 
     /**

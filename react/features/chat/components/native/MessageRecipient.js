@@ -3,11 +3,11 @@
 import React from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
 
-import { ColorSchemeRegistry } from '../../../base/color-scheme';
-import { translate } from '../../../base/i18n';
-import { Icon, IconCancelSelection } from '../../../base/icons';
-import { connect } from '../../../base/redux';
-import { type StyleType } from '../../../base/styles';
+import { ColorSchemeRegistry } from '../../../../../react/features/base/color-scheme';
+import { translate } from '../../../../../react/features/base/i18n';
+import { Icon, IconCancelSelection } from '../../../../../react/features/base/icons';
+import { connect } from '../../../../../react/features/base/redux';
+import { type StyleType } from '../../../../../react/features/base/styles';
 
 import AbstractMessageRecipient, {
     _mapDispatchToProps,

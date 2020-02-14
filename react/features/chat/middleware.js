@@ -1,27 +1,27 @@
 // @flow
 
-import { APP_WILL_MOUNT, APP_WILL_UNMOUNT } from '../base/app';
+import { APP_WILL_MOUNT, APP_WILL_UNMOUNT } from '../../../react/features/base/app';
 import {
     CONFERENCE_JOINED,
     getCurrentConference
-} from '../base/conference';
-import { openDialog } from '../base/dialog';
+} from '../../../react/features/base/conference';
+import { openDialog } from '../../../react/features/base/dialog';
 import {
     JitsiConferenceErrors,
     JitsiConferenceEvents
-} from '../base/lib-jitsi-meet';
+} from '../../../react/features/base/lib-jitsi-meet';
 import {
     getLocalParticipant,
     getParticipantById,
     getParticipantDisplayName
-} from '../base/participants';
-import { MiddlewareRegistry, StateListenerRegistry } from '../base/redux';
-import { playSound, registerSound, unregisterSound } from '../base/sounds';
-import { isButtonEnabled, showToolbox } from '../toolbox';
+} from '../../../react/features/base/participants';
+import { MiddlewareRegistry, StateListenerRegistry } from '../../../react/features/base/redux';
+import { playSound, registerSound, unregisterSound } from '../../../react/features/base/sounds';
+import { isButtonEnabled, showToolbox } from '../../../react/features/toolbox';
 
 import { SEND_MESSAGE, SET_PRIVATE_MESSAGE_RECIPIENT } from './actionTypes';
 import { addMessage, clearMessages, toggleChat } from './actions';
-import { ChatPrivacyDialog } from './components';
+import { ChatPrivacyDialog } from './components/index';
 import { INCOMING_MSG_SOUND_ID, MESSAGE_TYPE_ERROR, MESSAGE_TYPE_LOCAL, MESSAGE_TYPE_REMOTE } from './constants';
 import { INCOMING_MSG_SOUND_FILE } from './sounds';
 

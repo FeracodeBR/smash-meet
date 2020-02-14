@@ -1,11 +1,10 @@
 // @flow
 
 import React, { Component } from 'react';
-import { TextInput, TouchableOpacity, View } from 'react-native';
+import { TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 
-import { translate } from '../../../base/i18n';
-import { Icon, IconChatSend } from '../../../base/icons';
-import { Platform } from '../../../base/react';
+import { Icon, IconChatSend } from '../../../../../react/features/base/icons';
+import { Platform } from '../../../../../react/features/base/react';
 
 import styles from './styles';
 
@@ -14,12 +13,7 @@ type Props = {
     /**
      * Callback to invoke on message send.
      */
-    onSend: Function,
-
-    /**
-     * Function to be used to translate i18n labels.
-     */
-    t: Function
+    onSend: Function
 };
 
 type State = {
@@ -43,7 +37,7 @@ type State = {
 /**
  * Implements the chat input bar with text field and action(s).
  */
-class ChatInputBar extends Component<Props, State> {
+export default class ChatInputBar extends Component<Props, State> {
     /**
      * Instantiates a new instance of the component.
      *
@@ -59,7 +53,6 @@ class ChatInputBar extends Component<Props, State> {
         };
 
         this._onChangeText = this._onChangeText.bind(this);
-        this._onFieldReferenceAvailable = this._onFieldReferenceAvailable.bind(this);
         this._onFocused = this._onFocused.bind(this);
         this._onSubmit = this._onSubmit.bind(this);
     }
@@ -71,7 +64,7 @@ class ChatInputBar extends Component<Props, State> {
      */
     render() {
         return (
-            <View
+            <SafeAreaView
                 style = { [
                     styles.inputBar,
                     this.state.addPadding ? styles.extraBarPadding : null
@@ -83,19 +76,20 @@ class ChatInputBar extends Component<Props, State> {
                     onChangeText = { this._onChangeText }
                     onFocus = { this._onFocused(true) }
                     onSubmitEditing = { this._onSubmit }
-                    placeholder = { this.props.t('chat.fieldPlaceHolder') }
-                    ref = { this._onFieldReferenceAvailable }
+                    placeholder = 'Type...'
+                    placeholderTextColor = '#DADADA'
                     returnKeyType = 'send'
                     style = { styles.inputField }
                     value = { this.state.message } />
-                {
-                    this.state.showSend && <TouchableOpacity onPress = { this._onSubmit }>
-                        <Icon
-                            src = { IconChatSend }
-                            style = { styles.sendButtonIcon } />
-                    </TouchableOpacity>
-                }
-            </View>
+                <TouchableOpacity
+                    onPress = { this._onSubmit }
+                    style = { styles.sendButton }>
+                    <Icon
+                        src = { IconChatSend }
+                        style = { styles.sendButtonIcon } />
+                </TouchableOpacity>
+
+            </SafeAreaView>
         );
     }
 
@@ -112,18 +106,6 @@ class ChatInputBar extends Component<Props, State> {
             message: text,
             showSend: Boolean(text)
         });
-    }
-
-    _onFieldReferenceAvailable: Object => void;
-
-    /**
-     * Callback to be invoked when the field reference is available.
-     *
-     * @param {Object} field - The reference to the field.
-     * @returns {void}
-     */
-    _onFieldReferenceAvailable(field) {
-        field && field.focus();
     }
 
     _onFocused: boolean => Function;
@@ -159,5 +141,3 @@ class ChatInputBar extends Component<Props, State> {
         });
     }
 }
-
-export default translate(ChatInputBar);

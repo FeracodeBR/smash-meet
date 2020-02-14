@@ -1,11 +1,11 @@
 // @flow
 
-import { AbstractButton, type AbstractButtonProps } from '../../base/toolbox';
+import { AbstractButton, type AbstractButtonProps } from '../../../../react/features/base/toolbox';
 
-import { translate } from '../../base/i18n';
-import { IconMessage, IconReply } from '../../base/icons';
-import { getParticipantById } from '../../base/participants';
-import { connect } from '../../base/redux';
+import { translate } from '../../../../react/features/base/i18n';
+import { IconMessage, IconReply } from '../../../../react/features/base/icons';
+import { getParticipantById } from '../../../../react/features/base/participants';
+import { connect } from '../../../../react/features/base/redux';
 
 import { setPrivateMessageRecipient } from '../actions';
 

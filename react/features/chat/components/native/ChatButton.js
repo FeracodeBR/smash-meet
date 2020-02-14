@@ -1,13 +1,13 @@
 // @flow
 
-import { IconChat, IconChatUnread } from '../../../base/icons';
-import { getLocalParticipant } from '../../../base/participants';
-import { connect } from '../../../base/redux';
+import { IconChat, IconChatUnread } from '../../../../../react/features/base/icons';
+import { getLocalParticipant } from '../../../../../react/features/base/participants';
+import { connect } from '../../../../../react/features/base/redux';
 import {
     AbstractButton,
     type AbstractButtonProps
-} from '../../../base/toolbox';
-import { openDisplayNamePrompt } from '../../../display-name';
+} from '../../../../../react/features/base/toolbox';
+import { openDisplayNamePrompt } from '../../../../../react/features/display-name';
 
 import { toggleChat } from '../../actions';
 import { getUnreadCount } from '../../functions';

@@ -3,12 +3,12 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-import { Avatar } from '../../../base/avatar';
-import { ColorSchemeRegistry } from '../../../base/color-scheme';
-import { translate } from '../../../base/i18n';
-import { Linkify } from '../../../base/react';
-import { connect } from '../../../base/redux';
-import { type StyleType } from '../../../base/styles';
+import { Avatar } from '../../../../../react/features/base/avatar';
+import { ColorSchemeRegistry } from '../../../../../react/features/base/color-scheme';
+import { translate } from '../../../../../react/features/base/i18n';
+import { Linkify } from '../../../../../react/features/base/react';
+import { connect } from '../../../../../react/features/base/redux';
+import { type StyleType, ColorPalette } from '../../../../../react/features/base/styles';
 
 import { MESSAGE_TYPE_ERROR, MESSAGE_TYPE_LOCAL } from '../../constants';
 import { replaceNonUnicodeEmojis } from '../../functions';
@@ -48,6 +48,10 @@ class ChatMessage extends AbstractChatMessage<Props> {
         const messageBubbleStyle = [
             styles.messageBubble
         ];
+        const textWrapperStyle = [
+            styles.textWrapper
+        ];
+
 
         if (localMessage) {
             // This is a message sent by the local participant.
@@ -57,11 +61,15 @@ class ChatMessage extends AbstractChatMessage<Props> {
 
             // The bubble needs some additional styling
             messageBubbleStyle.push(_styles.localMessageBubble);
+
+            textWrapperStyle.push(styles.ownTextWrapper);
         } else if (message.messageType === MESSAGE_TYPE_ERROR) {
             // This is a system message.
 
             // The bubble needs some additional styling
             messageBubbleStyle.push(styles.systemMessageBubble);
+
+            textWrapperStyle.push(styles.systemTextWrapper);
         } else {
             // This is a remote message sent by a remote participant.
 
@@ -77,17 +85,27 @@ class ChatMessage extends AbstractChatMessage<Props> {
             <View style = { styles.messageWrapper } >
                 { this._renderAvatar() }
                 <View style = { detailsWrapperStyle }>
-                    <View style = { messageBubbleStyle }>
-                        <View style = { styles.textWrapper } >
-                            { this._renderDisplayName() }
-                            <Linkify linkStyle = { styles.chatLink }>
-                                { replaceNonUnicodeEmojis(this._getMessageText()) }
-                            </Linkify>
-                            { this._renderPrivateNotice() }
+                    <View style = { styles.replyWrapper }>
+                        <View style = { textWrapperStyle } >
+                            {
+                                this.props.showDisplayName
+                                    && this._renderDisplayName()
+                            }
+                            <View>
+                                <Linkify linkStyle = { styles.chatLink }>
+                                    { replaceNonUnicodeEmojis(this._getMessageText()) }
+                                </Linkify>
+                                <View style = { styles.timestampContainer }>
+                                    {this._renderTimestamp() }
+                                </View>
+                            </View>
+                            {
+                                message.privateMessage
+                                    && this._renderPrivateNotice()
+                            }
                         </View>
                         { this._renderPrivateReplyButton() }
                     </View>
-                    { this._renderTimestamp() }
                 </View>
             </View>
         );
@@ -131,7 +149,7 @@ class ChatMessage extends AbstractChatMessage<Props> {
         }
 
         return (
-            <Text style = { _styles.displayName }>
+            <Text style = { styles.displayName }>
                 { message.displayName }
             </Text>
         );

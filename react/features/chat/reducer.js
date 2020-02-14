@@ -1,6 +1,6 @@
 // @flow
 
-import { ReducerRegistry } from '../base/redux';
+import { ReducerRegistry } from '../../../react/features/base/redux';
 
 import {
     ADD_MESSAGE,
