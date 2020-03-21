@@ -54,6 +54,16 @@ type Props = {
     _filmstripWidth: number,
 
     /**
+     * Whether the filmstrip scrollbar should be hidden or not.
+     */
+    _hideScrollbar: boolean,
+
+    /**
+     * Whether the filmstrip toolbar should be hidden or not.
+     */
+    _hideToolbar: boolean,
+
+    /**
      * Whether or not remote videos are currently being hovered over. Hover
      * handling is currently being handled detected outside of react.
      */
@@ -184,12 +194,23 @@ class Filmstrip extends Component <Props> {
         }
         }
 
+        let remoteVideosWrapperClassName = 'filmstrip__videos';
+
+        if (this.props._hideScrollbar) {
+            remoteVideosWrapperClassName += ' hide-scrollbar';
+        }
+
+        let toolbar = null;
+
+        if (!this.props._hideToolbar) {
+            toolbar = this.props._filmstripOnly ? <Toolbar /> : this._renderToggleButton();
+        }
+
         return (
             <div
                 className = { `filmstrip ${this.props._className}` }
                 style = { filmstripStyle }>
-                { this.props._filmstripOnly
-                    ? <Toolbar /> : this._renderToggleButton() }
+                { toolbar }
                 <div
                     className = { this.props._videosClassName }
                     id = 'remoteVideos'>
@@ -201,7 +222,7 @@ class Filmstrip extends Component <Props> {
                         <div id = 'filmstripLocalVideoThumbnail' />
                     </div>
                     <div
-                        className = 'filmstrip__videos'
+                        className = { remoteVideosWrapperClassName }
                         id = 'filmstripRemoteVideos'>
                         {/*
                           * XXX This extra video container is needed for
@@ -335,15 +356,10 @@ class Filmstrip extends Component <Props> {
  *
  * @param {Object} state - The Redux state.
  * @private
- * @returns {{
- *     _className: string,
- *     _filmstripOnly: boolean,
- *     _hovered: boolean,
- *     _videosClassName: string,
- *     _visible: boolean
- * }}
+ * @returns {Props}
  */
 function _mapStateToProps(state) {
+    const { iAmSipGateway } = state['features/base/config'];
     const { hovered, visible } = state['features/filmstrip'];
     const isFilmstripOnly = Boolean(interfaceConfig.filmStripOnly);
     const reduceHeight
@@ -362,6 +378,8 @@ function _mapStateToProps(state) {
         _currentLayout: getCurrentLayout(state),
         _filmstripOnly: isFilmstripOnly,
         _filmstripWidth: filmstripWidth,
+        _hideScrollbar: Boolean(iAmSipGateway),
+        _hideToolbar: Boolean(iAmSipGateway),
         _hovered: hovered,
         _rows: gridDimensions.rows,
         _videosClassName: videosClassName,

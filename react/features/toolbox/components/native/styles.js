@@ -44,16 +44,6 @@ const whiteToolbarButtonIcon = {
  */
 const styles = {
 
-    expandMenuContainer: {
-        alignItems: 'center',
-        flexDirection: 'column'
-    },
-
-    sheetGestureRecognizer: {
-        alignItems: 'stretch',
-        flexDirection: 'column'
-    },
-
     /**
      * The style of the toolbar.
      */

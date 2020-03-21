@@ -11,6 +11,10 @@ export default {
         icon: '#fff',
         label: '#1c2025'
     },
+    'Conference': {
+        inviteButtonBackground: 'rgb(0, 119, 225)',
+        onVideoText: 'white'
+    },
     'Dialog': {
         background: 'rgb(255, 255, 255)',
         border: 'rgba(0, 3, 6, 0.6)',
