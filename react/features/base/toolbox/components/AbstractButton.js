@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 
-import { combineStyles } from '../../styles';
+import { ColorPalette, combineStyles } from '../../styles';
 
 import type { Styles } from './AbstractToolboxItem';
 import ToolboxItem from './ToolboxItem';
@@ -51,10 +51,9 @@ export type Props = {
  */
 export const defaultDisabledButtonStyles = {
     iconStyle: {
-        opacity: 0.5
     },
     labelStyle: {
-        opacity: 0.5
+        color: ColorPalette.white
     },
     style: undefined,
     underlayColor: undefined
@@ -88,6 +87,14 @@ export default class AbstractButton<P: Props, S: *> extends Component<P, S> {
      * @abstract
      */
     icon: Object;
+
+    /**
+     * The icon of the container of the  button.
+     *
+     * @abstract
+     */
+
+    containerIcon: Object;
 
     /**
      * The text associated with this button. When `showLabel` is set to
@@ -165,6 +172,12 @@ export default class AbstractButton<P: Props, S: *> extends Component<P, S> {
         ) || this.icon;
     }
 
+    _getContainerIcon() {
+        return (
+            this._isToggled() ? this.toggledIconContainerIcon : this.containerIcon
+        );
+    }
+
     /**
      * Gets the current label, taking the toggled state into account. If no
      * toggled label is provided, the regular label will also be used in the
@@ -188,6 +201,7 @@ export default class AbstractButton<P: Props, S: *> extends Component<P, S> {
      */
     _getStyles(): ?Styles {
         const { disabledStyles, styles, toggledStyles } = this.props;
+
         const buttonStyles
             = (this._isToggled() ? toggledStyles : styles) || styles;
 
@@ -268,10 +282,11 @@ export default class AbstractButton<P: Props, S: *> extends Component<P, S> {
             disabled: this._isDisabled(),
             elementAfter: this._getElementAfter(),
             icon: this._getIcon(),
+            containerIcon: this._getContainerIcon(),
             label: this._getLabel(),
             styles: this._getStyles(),
             toggled: this._isToggled(),
-            tooltip: this._getTooltip()
+            tooltip: this._getTooltip(),
         };
 
         return (

@@ -3,26 +3,16 @@
 import { ColorSchemeRegistry, schemeColor } from '../../../base/color-scheme';
 import { BoxModel, ColorPalette } from '../../../base/styles';
 
-const BUTTON_SIZE = 50;
-
 // Toolbox, toolbar:
 
 /**
  * The style of toolbar buttons.
  */
 const toolbarButton = {
-    backgroundColor: schemeColor('button'),
-    borderRadius: BUTTON_SIZE / 2,
-    borderWidth: 0,
     flex: 0,
     flexDirection: 'row',
-    height: BUTTON_SIZE,
     justifyContent: 'center',
-
-    // XXX We probably tested BoxModel.margin and discovered it to be too small
-    // for our taste.
-    marginHorizontal: 7,
-    width: BUTTON_SIZE
+    marginHorizontal: 8
 };
 
 /**
@@ -31,7 +21,7 @@ const toolbarButton = {
 const toolbarButtonIcon = {
     alignSelf: 'center',
     color: ColorPalette.darkGrey,
-    fontSize: 22
+    fontSize: 26
 };
 
 /**
@@ -39,15 +29,14 @@ const toolbarButtonIcon = {
  */
 const whiteToolbarButton = {
     ...toolbarButton,
-    backgroundColor: schemeColor('buttonToggled')
+    backgroundColor: 'transparent'
 };
 
 /**
  * The icon style of toolbar buttons which display white icons.
  */
 const whiteToolbarButtonIcon = {
-    ...toolbarButtonIcon,
-    color: ColorPalette.white
+    ...toolbarButtonIcon
 };
 
 /**
@@ -74,8 +63,8 @@ const styles = {
         alignItems: 'center',
         flexDirection: 'row',
         flexGrow: 0,
-        justifyContent: 'center',
-        marginBottom: BoxModel.margin / 2,
+        justifyContent: 'space-evenly',
+        marginBottom: BoxModel.margin + 5,
         paddingHorizontal: BoxModel.margin
     },
 
@@ -99,6 +88,9 @@ ColorSchemeRegistry.register('Toolbox', {
      */
     buttonStyles: {
         iconStyle: toolbarButtonIcon,
+        hexagonIconStyles: {
+            fontSize: 50
+        },
         style: toolbarButton
     },
 
@@ -116,15 +108,31 @@ ColorSchemeRegistry.register('Toolbox', {
      */
     chatButtonOverride: {
         toggled: {
-            backgroundColor: ColorPalette.blue
+            backgroundColor: 'transparent'
         }
+    },
+
+    callScreenButtonStyles: {
+        iconStyle: {
+            ...whiteToolbarButtonIcon,
+            fontSize: 50
+        },
+        hexagonIconStyles: {
+            fontSize: 60
+        },
+        style: {
+            ...toolbarButton
+        },
+        underlayColor: ColorPalette.buttonUnderlay
     },
 
     hangupButtonStyles: {
         iconStyle: whiteToolbarButtonIcon,
+        hexagonIconStyles: {
+            fontSize: 50
+        },
         style: {
-            ...toolbarButton,
-            backgroundColor: schemeColor('hangup')
+            ...toolbarButton
         },
         underlayColor: ColorPalette.buttonUnderlay
     },
@@ -134,10 +142,12 @@ ColorSchemeRegistry.register('Toolbox', {
      */
     toggledButtonStyles: {
         iconStyle: whiteToolbarButtonIcon,
+        hexagonIconStyles: {
+            fontSize: 50
+        },
         style: {
             ...whiteToolbarButton,
-            borderColor: schemeColor('buttonToggledBorder'),
-            borderWidth: 1
+            borderColor: schemeColor('buttonToggledBorder')
         }
     }
 });
