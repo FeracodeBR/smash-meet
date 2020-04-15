@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Platform, TextInput, TouchableOpacity, View } from 'react-native';
+import { Platform, TextInput, TouchableOpacity, View, SafeAreaView } from 'react-native';
 
 import { translate } from '../../../base/i18n';
 import { Icon, IconChatSend } from '../../../base/icons';
@@ -70,10 +70,9 @@ class ChatInputBar extends Component<Props, State> {
      */
     render() {
         return (
-            <View
+            <SafeAreaView
                 style = { [
-                    styles.inputBar,
-                    this.state.addPadding ? styles.extraBarPadding : null
+                    styles.inputBar
                 ] }>
                 <TextInput
                     blurOnSubmit = { false }
@@ -87,14 +86,12 @@ class ChatInputBar extends Component<Props, State> {
                     returnKeyType = 'send'
                     style = { styles.inputField }
                     value = { this.state.message } />
-                {
-                    this.state.showSend && <TouchableOpacity onPress = { this._onSubmit }>
+                    <TouchableOpacity onPress = { this._onSubmit }>
                         <Icon
                             src = { IconChatSend }
                             style = { styles.sendButtonIcon } />
                     </TouchableOpacity>
-                }
-            </View>
+            </SafeAreaView>
         );
     }
 

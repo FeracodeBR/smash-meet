@@ -1,7 +1,7 @@
 // @flow
 
 import React, { PureComponent } from 'react';
-import { KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { KeyboardAvoidingView, SafeAreaView, View } from 'react-native';
 
 import { ColorSchemeRegistry } from '../../color-scheme';
 import { HeaderWithNavigation, SlidingView } from '../../react';
@@ -116,9 +116,9 @@ class JitsiModal extends PureComponent<Props> {
                     <HeaderWithNavigation
                         { ...headerProps }
                         onPressBack = { this._onRequestClose } />
-                    <SafeAreaView style = { styles.safeArea }>
+                    <View style = { styles.safeArea }>
                         { children }
-                    </SafeAreaView>
+                    </View>
                     { footerComponent && footerComponent() }
                 </KeyboardAvoidingView>
             </SlidingView>

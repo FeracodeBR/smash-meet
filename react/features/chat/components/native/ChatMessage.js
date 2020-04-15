@@ -84,10 +84,10 @@ class ChatMessage extends AbstractChatMessage<Props> {
                                 { replaceNonUnicodeEmojis(this._getMessageText()) }
                             </Linkify>
                             { this._renderPrivateNotice() }
+                            { this._renderTimestamp() }
                         </View>
                         { this._renderPrivateReplyButton() }
                     </View>
-                    { this._renderTimestamp() }
                 </View>
             </View>
         );

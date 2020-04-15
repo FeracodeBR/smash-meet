@@ -52,16 +52,20 @@ export default {
 
     inputBar: {
         alignItems: 'center',
-        borderTopColor: 'rgb(209, 219, 231)',
-        borderTopWidth: 1,
+        justifyContent: 'center',
         flexDirection: 'row',
-        paddingHorizontal: BoxModel.padding
+        backgroundColor: '#111214',
     },
 
     inputField: {
-        color: 'rgb(28, 32, 37)',
+        color: '#FFF',
         flex: 1,
-        height: 48
+        height: 34,
+        borderRadius: 18,
+        backgroundColor: '#46484E',
+        padding: 10,
+        marginTop: 15,
+        marginHorizontal: 4
     },
 
     messageBubble: {
@@ -71,7 +75,8 @@ export default {
     },
 
     messageContainer: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#1F2126'
     },
 
     /**
@@ -99,7 +104,9 @@ export default {
 
     sendButtonIcon: {
         color: ColorPalette.darkGrey,
-        fontSize: 22
+        fontSize: 22,
+        marginTop: 15,
+        marginRight: 4
     },
 
     /**
@@ -122,8 +129,9 @@ export default {
      * Text node for the timestamp.
      */
     timeText: {
-        color: 'rgb(164, 184, 209)',
-        fontSize: 13
+        color: '#FFF',
+        fontSize: 9,
+        alignSelf: 'flex-end'
     }
 };
 
@@ -145,12 +153,12 @@ ColorSchemeRegistry.register('Chat', {
     },
 
     emptyComponentText: {
-        color: schemeColor('displayName'),
+        color: '#FFF',
         textAlign: 'center'
     },
 
     localMessageBubble: {
-        backgroundColor: schemeColor('localMsgBackground'),
+        backgroundColor: '#084643',
         borderTopRightRadius: 0
     },
 
