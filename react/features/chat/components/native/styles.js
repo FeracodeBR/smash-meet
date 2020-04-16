@@ -186,11 +186,11 @@ ColorSchemeRegistry.register('Chat', {
     },
 
     privateMessageBubble: {
-        backgroundColor: schemeColor('privateMsgBackground')
+        backgroundColor:'#202D36'
     },
 
     remoteMessageBubble: {
-        backgroundColor: schemeColor('remoteMsgBackground'),
+        backgroundColor: '#202D36',
         borderTopLeftRadius: 0
     },
 

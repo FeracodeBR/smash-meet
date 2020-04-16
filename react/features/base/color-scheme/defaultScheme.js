@@ -18,7 +18,7 @@ export default {
     'Dialog': {
         background: 'rgb(255, 255, 255)',
         border: 'rgba(0, 3, 6, 0.6)',
-        buttonBackground: ColorPalette.blue,
+        buttonBackground: '#02AF9C',
         buttonLabel: ColorPalette.white,
         icon: '#1c2025',
         text: '#1c2025'

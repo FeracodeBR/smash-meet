@@ -29,7 +29,9 @@ type Props = BaseProps & {
      */
     contentKey: string | { key: string, params: Object},
 
-    t: Function
+    t: Function,
+
+    noButtons: boolean,
 }
 
 /**
@@ -56,7 +58,11 @@ class ConfirmDialog extends BaseSubmitDialog<Props, *> {
      * @inheritdoc
      */
     _renderAdditionalButtons() {
-        const { _dialogStyles, cancelKey, t } = this.props;
+        const { _dialogStyles, cancelKey, t, noButtons } = this.props;
+
+        if (noButtons) {
+            return null
+        }
 
         return (
             <TouchableOpacity

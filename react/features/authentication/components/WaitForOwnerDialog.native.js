@@ -68,12 +68,13 @@ class WaitForOwnerDialog extends Component<Props> {
                 contentKey = {
                     {
                         key: 'dialog.WaitForHostMsgWOk',
-                        params: { room }
+                        // params: { room }
                     }
                 }
                 okKey = 'dialog.Ok'
                 onCancel = { this._onCancel }
-                onSubmit = { this._onLogin } />
+                onSubmit = { this._onLogin }
+                noButtons />
         );
     }
 
@@ -98,7 +99,7 @@ class WaitForOwnerDialog extends Component<Props> {
      * @returns {void}
      */
     _onLogin() {
-        this.props.dispatch(_openLoginDialog());
+        this.props.dispatch(cancelWaitForOwner());
     }
 }
 
