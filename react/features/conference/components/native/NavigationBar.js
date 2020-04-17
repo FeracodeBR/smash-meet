@@ -54,8 +54,8 @@ class NavigationBar extends Component<Props> {
                 key = { 2 }
                 pointerEvents = 'box-none'
                 style = { styles.navBarWrapper }>
-                <PictureInPictureButton
-                    styles = { styles.navBarButton } />
+                {/*<PictureInPictureButton*/}
+                {/*    styles = { styles.navBarButton } />*/}
                 <View
                     pointerEvents = 'box-none'
                     style = { styles.roomNameWrapper }>
