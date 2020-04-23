@@ -97,7 +97,7 @@ class ConfirmDialog extends BaseSubmitDialog<Props, *> {
 
         return (
             <Text style = { _dialogStyles.text }>
-                { content }
+                Connecting the call, please wait or click on the OK or X button to close this call
             </Text>
         );
     }
